@@ -5,3 +5,6 @@ api-version: 1.19
 depend: [MMOCore, MMOItems, MythicLib, MythicMob]
 softdepend: [PlaceholderAPI, HolographicDisplays]
 authors: [downYoutube2548, Teenkung123]
+commands:
+  mythiccore:
+    permission: mythiccore.admin
