@@ -1,0 +1,257 @@
+General:
+  default-element: PHYSICAL
+  disable-vanilla-damage: true
+
+  decay-rate:
+    A: 200
+    B: 100
+    C: 50
+  default-gauge-unit: 1A
+  aura-whitelist:
+    - PYRO
+    - CRYO
+    - ELECTRO
+    - HYDRO
+    - DENDRO
+  internal-cooldown:
+    default: 300
+
+Special-Aura:
+  FREEZE:
+    icon: 'F'
+    color: "&b"
+  BURNING:
+    icon: 'B'
+    color: '&6'
+  QUICKEN:
+    icon: 'Q'
+    color: "&a"
+
+Reaction-Priority:
+  PYRO:
+    - "REVERSE_OVERLOADED"
+  ELECTRO:
+    - "OVERLOADED"
+
+Elemental-Reaction:
+  OVERLOADED:
+    display: "&cOverloaded"
+    aura-element: PYRO
+    trigger-element: ELECTRO
+    gauge-unit-tax: 1.25
+    resistance-element: PYRO
+    damage-formula: "2 * (16.12 * (attacker_level + 16 ) - 257.23) * (1+ (16*(elemental_mastery/(elemental_mastery + 2000)))) * resistance_multiplier"
+    aoe-radius: 5
+    knockback-multiplier: 1.5
+    damage-indicator:
+      - "&c{damage}"
+      - "&cOverloaded"
+  REVERSE_OVERLOADED:
+    display: "&6Reverse Overloaded"
+    aura-element: ELECTRO
+    trigger-element: PYRO
+    gauge-unit-tax: 1.25
+    resistance-element: PYRO
+    damage-formula: "2 * (16.12 * (attacker_level + 16 ) - 257.23) * (1+ (16*(elemental_mastery/(elemental_mastery + 2000)))) * resistance_multiplier"
+    aoe-radius: 5
+    knockback-multiplier: 1.5
+    damage-indicator:
+      - "&c{damage}"
+      - "&cOverloaded"
+
+Elemental-Modifier:
+  # <Damage Cause>: <Element>
+  FIRE: PYRO
+  FIRE_TICK: PYRO
+  HOT_FLOOR: PYRO
+  LAVA: PYRO
+  FREEZE: CRYO
+
+# don't forget to disable damage-indicator in MythicLib config.yml if you enable this
+Indicators:
+  enable: true
+  decimal-format: '0.0'
+  format: '{color}{icon} {value}'
+  crit-format: '{color}&l{icon} {value}'
+  shield-attack-format: '&7🛡{icon} -{value}'
+  custom-font:
+    enabled: false
+    normal:
+      '0': 'ᜀ'
+      '1': 'ᜁ'
+      '2': 'ᜂ'
+      '3': 'ᜃ'
+      '4': 'ᜄ'
+      '5': 'ᜅ'
+      '6': 'ᜆ'
+      '7': 'ᜇ'
+      '8': 'ᜈ'
+      '9': 'ᜉ'
+      'dot': 'ᜊ'
+      'inter': 'ᜍ'
+    crit:
+      '0': 'ᜐ'
+      '1': 'ᜑ'
+      '2': 'ᜒ'
+      '3': 'ᜓ'
+      '4': '᜔'
+      '5': '᜕'
+      '6': '᜖'
+      '7': '᜗'
+      '8': '᜘'
+      '9': '᜙'
+      'dot': 'ᜋ'
+      'inter': 'ᜍ'
+  split-holograms: true
+  # required Holographic Display
+  radial-velocity: -0.3
+  gravity: 1
+  initial-upward-velocity: 1.0
+  entity-height-percent: 0.5
+  y-offset: 0
+
+Damage-Calculation:
+
+  final-damage: "total_damage * defense_multiplier * resistance_multiplier * level_multiplier"
+
+  total-damage: "((damage * (1+(attack_buff_percent/100))) + attack_buff) * (1 + ((elemental_damage_bonus + all_elemental_damage_bonus) / 100))"
+  defense-multiplier: "1 - (((1 - (attacker_ignore_defense / 100)) * victim_defense) / (victim_defense + (5 * attacker_level)+500))"
+  resistance-multiplier:
+    resistance<0: "1 - (elemental_resistance/2/100)"
+    resistance<75: "1 - (elemental_resistance/100)"
+    resistance>=75: "1/((4 * elemental_resistance/100)+1)"
+  level-multiplier:
+    player: "2 - (2/(1+1.075^(attacker_level - victim_level)))"
+    mob: "3 - (3/(1+1.025^(attacker_level - victim_level)))"
+
+Stats:
+  BOOLEAN_STAT:
+    AST_DISABLE_REGULAR_DAMAGE:
+      Name: Disable Regular Damage
+      Icon:
+        Name: Disable Regular Damage
+        Material: SNOWBALL
+        Lore: [ '&7Disable regular damage of this weapon.' ]
+
+  DOUBLE_STAT:
+    AST_CRITICAL_RATE:
+      Name: Critical Rate
+      Icon:
+        Name: Critical Rate (%)
+        Material: NETHERITE_SWORD
+        Lore: [ '&7Increase critical rate' ]
+    AST_CRITICAL_DAMAGE:
+      Name: Critical Damage
+      Icon:
+        Name: Critical Damage (%)
+        Material: NETHERITE_SWORD
+        Lore: [ '&7Increase critical damage' ]
+
+    AST_ELEMENTAL_RESISTANCE:
+      Name: Elemental Resistance
+      Icon:
+        Name: "%element% Resistance (%)"
+        Lore: [ '&7Resistance to %element% damage' ]
+    AST_ELEMENTAL_DAMAGE_BONUS:
+      Name: Elemental Damage Bonus
+      Icon:
+        Name: "%element% Damage Bonus (%)"
+        Lore: [ '&7Increase %element% damage' ]
+
+    AST_ALL_ELEMENTAL_RESISTANCE:
+      Name: Elemental Resistance
+      Icon:
+        Name: Elemental Resistance (%)
+        Material: NETHER_STAR
+        Lore: ['&7Resistance to all elemental damage']
+    AST_ALL_ELEMENTAL_DAMAGE_BONUS:
+      Name: Elemental Damage Bonus
+      Icon:
+        Name: Elemental Damage Bonus (%)
+        Material: NETHER_STAR
+        Lore: [ '&7Increase all elemental damage' ]
+
+    AST_ELEMENTAL_MASTERY:
+      Name: Elemental Mastery
+      Icon:
+        Name: Elemental Mastery
+        Material: EMERALD
+        Lore: ['&7Increase all elemental reaction damages']
+
+
+
+    AST_IGNORE_DEFENSE:
+      Name: Ignore Defense
+      Icon:
+        Name: Ignore Defense (%)
+        Material: NETHERITE_AXE
+        Lore: ['&7Reduce all defense']
+
+
+
+    AST_ATTACK_DAMAGE_BUFF:
+      Name: Attack Damage Buff
+      Icon:
+        Name: Attack Damage Buff
+        Material: NETHERITE_AXE
+        Lore: [ '&7Reduce all defense' ]
+    AST_ATTACK_DAMAGE_BUFF_PERCENT:
+      Name: Attack Damage Buff (%)
+      Icon:
+        Name: Attack Damage Buff (%)
+        Material: NETHERITE_AXE
+        Lore: [ '&7Reduce all defense' ]
+
+
+
+    AST_HEALING_BONUS:
+      Name: Healing Bonus
+      Icon:
+        Name: Healing Bonus (%)
+        Material: GOLDEN_APPLE
+        Lore: ['&7Increase all healing']
+    AST_INCOMING_HEALING_BONUS:
+      Name: Incoming Healing Bonus
+      Icon:
+        Name: Incoming Healing Bonus (%)
+        Material: GOLDEN_APPLE
+        Lore: ['&7Increase all incoming healing']
+
+
+
+    AST_SANITY_RECHARGE:
+      Name: Sanity Recharge
+      Icon:
+        Name: Sanity Recharge (%)
+        Material: NETHER_STAR
+        Lore: ['&7Increase all sanity recharge']
+    AST_SHIELD_STRENGTH:
+      Name: Shield Strength
+      Icon:
+        Name: Shield Strength (%)
+        Material: SHIELD
+        Lore: ['&7Increase all shield strength']
+    AST_ACCURACY:
+      Name: Accuracy
+      Icon:
+        Name: Accuracy
+        Material: ARROW
+        Lore: ['&7Increase all accuracy']
+    AST_HIDDEN_ACCURACY:
+      Name: Hidden Accuracy
+      Icon:
+        Name: Hidden Accuracy
+        Material: ARROW
+        Lore: ['&7Increase all accuracy']
+    AST_EVASION:
+      Name: Evasion
+      Icon:
+        Name: Evasion
+        Material: FEATHER
+        Lore: ['&7Increase all evasion']
+    AST_HIDDEN_EVASION:
+      Name: Hidden Evasion
+      Icon:
+        Name: Hidden Evasion
+        Material: FEATHER
+        Lore: ['&7Increase all evasion']
