@@ -2,7 +2,7 @@ package com.dev.mythiccore.listener;
 
 import com.dev.mythiccore.listener.events.MiscAttackEvent;
 import com.dev.mythiccore.listener.events.MobAttackEvent;
-import com.dev.mythiccore.stats.provider.ASTEntityStatProvider;
+import com.dev.mythiccore.library.provider.ASTEntityStatProvider;
 import io.lumine.mythic.lib.api.event.AttackEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;

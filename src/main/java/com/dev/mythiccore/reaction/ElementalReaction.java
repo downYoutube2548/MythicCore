@@ -4,7 +4,7 @@ import com.dev.mythiccore.MythicCore;
 import com.dev.mythiccore.aura.AuraData;
 import com.dev.mythiccore.events.attack_handle.attack_priority.TriggerReaction;
 import com.dev.mythiccore.library.ASTAttackMetaData;
-import com.dev.mythiccore.stats.provider.ASTEntityStatProvider;
+import com.dev.mythiccore.library.provider.ASTEntityStatProvider;
 import com.dev.mythiccore.utils.ConfigLoader;
 import com.dev.mythiccore.utils.DamageManager;
 import com.dev.mythiccore.utils.Utils;

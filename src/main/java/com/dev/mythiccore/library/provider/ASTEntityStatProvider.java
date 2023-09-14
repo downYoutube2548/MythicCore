@@ -1,4 +1,4 @@
-package com.dev.mythiccore.stats.provider;
+package com.dev.mythiccore.library.provider;
 
 import io.lumine.mythic.lib.api.item.NBTItem;
 import io.lumine.mythic.lib.api.stat.provider.StatProvider;

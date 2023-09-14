@@ -6,7 +6,7 @@ import com.dev.mythiccore.listener.events.MobAttackEvent;
 import com.dev.mythiccore.reaction.ElementalReaction;
 import com.dev.mythiccore.reaction.reaction_type.DoubleAuraReaction;
 import com.dev.mythiccore.reaction.reaction_type.TriggerAuraReaction;
-import com.dev.mythiccore.stats.provider.ASTEntityStatProvider;
+import com.dev.mythiccore.library.provider.ASTEntityStatProvider;
 import com.dev.mythiccore.utils.ConfigLoader;
 import com.dev.mythiccore.utils.Utils;
 import io.lumine.mythic.lib.api.event.AttackEvent;
