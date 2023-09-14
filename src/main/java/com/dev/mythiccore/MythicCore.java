@@ -16,8 +16,7 @@ import com.dev.mythiccore.events.attack_handle.deal_damage.MobAttack;
 import com.dev.mythiccore.events.attack_handle.deal_damage.PlayerAttack;
 import com.dev.mythiccore.listener.AttackEventListener;
 import com.dev.mythiccore.reaction.ReactionManager;
-import com.dev.mythiccore.reaction.reactions.Overloaded;
-import com.dev.mythiccore.reaction.reactions.ReverseOverloaded;
+import com.dev.mythiccore.reaction.reactions.*;
 import com.dev.mythiccore.utils.ConfigLoader;
 import com.dev.mythiccore.visuals.ASTDamageIndicators;
 import com.dev.mythiccore.visuals.AuraVisualizer;
@@ -93,6 +92,10 @@ public final class MythicCore extends JavaPlugin {
 
         getReactionManager().registerElementalReaction(new Overloaded());
         getReactionManager().registerElementalReaction(new ReverseOverloaded());
+        getReactionManager().registerElementalReaction(new Vaporize());
+        getReactionManager().registerElementalReaction(new ReverseVaporize());
+        getReactionManager().registerElementalReaction(new Melt());
+        getReactionManager().registerElementalReaction(new ReverseMelt());
 
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mm reload");
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mi reload all");

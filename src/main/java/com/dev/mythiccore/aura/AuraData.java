@@ -36,7 +36,8 @@ public class AuraData {
             String auraIcon;
             Element element = MythicLib.plugin.getElements().get(auraID);
             if (element != null) {
-                auraIcon = element.getColor()+element.getLoreIcon();
+                double progress = mapAura.get(auraID).getDuration() / (mapAura.get(auraID).getGaugeUnit() * ConfigLoader.getDecayRate(mapAura.get(auraID).getDecayRate())) * 100;
+                auraIcon = element.getColor()+element.getLoreIcon()+" "+Utils.progressBar(progress, 20, '▌', mapAura.get(auraID).getGaugeUnit())+element.getColor()+" "+mapAura.get(auraID).getDecayRate()+"\n";
             } else {
                 auraIcon = ConfigLoader.getSpecialAuraColor(auraID)+ConfigLoader.getSpecialAuraIcon(auraID);
             }
@@ -56,19 +57,19 @@ public class AuraData {
 
 
         if (!this.mapAura.containsKey(aura)) {
-            this.mapAura.put(aura, new AuraGauge((long) Math.floor(gauge_unit * ConfigLoader.getDecayRate(decay_rate)), decay_rate));
+            this.mapAura.put(aura, new AuraGauge((long) Math.floor(gauge_unit * ConfigLoader.getDecayRate(decay_rate)), gauge_unit, decay_rate));
         } else {
             String old_decay_rate = this.mapAura.get(aura).getDecayRate();
-            this.mapAura.put(aura, new AuraGauge((long) Math.floor(gauge_unit * ConfigLoader.getDecayRate(old_decay_rate)), old_decay_rate));
+            this.mapAura.put(aura, new AuraGauge((long) Math.floor(gauge_unit * ConfigLoader.getDecayRate(old_decay_rate)), gauge_unit, old_decay_rate));
         }
 
 
         if (!MythicCore.getAuraManager().entityAura.containsKey(this.uuid)) MythicCore.getAuraManager().entityAura.put(this.uuid, this);
     }
 
-    protected void setAura(String aura, long duration, String decay_rate) {
+    protected void setAura(String aura, long duration, double gauge_unit, String decay_rate) {
         if (MythicLib.plugin.getElements().get(aura) == null && ConfigLoader.getSpecialAuraIcon(aura) == null) return;
-        this.mapAura.put(aura, new AuraGauge(duration, decay_rate));
+        this.mapAura.put(aura, new AuraGauge(duration, gauge_unit, decay_rate));
         if (!MythicCore.getAuraManager().entityAura.containsKey(this.uuid)) MythicCore.getAuraManager().entityAura.put(this.uuid, this);
     }
 
@@ -88,7 +89,7 @@ public class AuraData {
         if (this.mapAura.get(aura).getDuration() <= duration) {
             removeAura(aura);
         } else {
-            setAura(aura, this.mapAura.get(aura).getDuration() - duration, this.mapAura.get(aura).getDecayRate());
+            setAura(aura, this.mapAura.get(aura).getDuration() - duration, this.mapAura.get(aura).getGaugeUnit(), this.mapAura.get(aura).getDecayRate());
         }
     }
 }

@@ -55,10 +55,6 @@ public class ASTDamageIndicators extends GameIndicators {
     )
     public void a(AttackEvent event) {
 
-        for (DamagePacket packet : event.getDamage().getPackets()) {
-            if (Arrays.asList(packet.getTypes()).contains(DamageType.DOT)) return;
-        }
-
         if (!this.enable) { return; }
 
         Entity entity = event.getEntity();
@@ -67,7 +63,7 @@ public class ASTDamageIndicators extends GameIndicators {
             List<String> holos = new ArrayList<>();
             Map<IndicatorType, Double> mappedDamage = this.mapDamage(event.getDamage());
             mappedDamage.forEach((type, val) -> {
-                if (!(val < 0.02)) {
+                if (!(val < 0.02) && type.element != null) {
                     holos.add(computeFormat(val, type.crit, (type.crit) ? crit_format : format, type.element));
                 }
             });

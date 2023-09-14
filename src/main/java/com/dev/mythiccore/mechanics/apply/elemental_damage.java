@@ -62,50 +62,55 @@ public class elemental_damage implements ITargetedEntitySkill {
     public SkillResult castAtEntity(SkillMetadata skillMetadata, AbstractEntity abstractEntity) {
 
         if (BukkitAdapter.adapt(abstractEntity) != null) {
-            Bukkit.getScheduler().runTaskAsynchronously(MythicCore.getInstance(), ()->{
-            Entity bukkittarget = BukkitAdapter.adapt(abstractEntity);
-            Entity bukkitcaster = skillMetadata.getCaster().getEntity().getBukkitEntity();
+            Bukkit.getScheduler().runTaskAsynchronously(MythicCore.getInstance(), ()-> {
+                Entity bukkittarget = BukkitAdapter.adapt(abstractEntity);
+                Entity bukkitcaster = skillMetadata.getCaster().getEntity().getBukkitEntity();
 
-            double gauge_unit = Double.parseDouble(Utils.splitTextAndNumber(gauge)[0]);
-            String decay_rate = Utils.splitTextAndNumber(gauge)[1];
+                double gauge_unit = Double.parseDouble(Utils.splitTextAndNumber(gauge)[0]);
+                String decay_rate = Utils.splitTextAndNumber(gauge)[1];
 
-            Element element1 = Objects.requireNonNull(Element.valueOf(element), ConfigLoader.getDefaultElement());
-            // caster is player
-            if (bukkitcaster instanceof Player) {
+                Element element1 = Objects.requireNonNull(Element.valueOf(element), ConfigLoader.getDefaultElement());
+                // caster is player
+                if (bukkitcaster instanceof Player) {
 
-                //This part will damage the player
+                    //This part will damage the player
 
-                PlayerData playerData = PlayerData.get(bukkitcaster.getUniqueId());
+                    PlayerData playerData = PlayerData.get(bukkitcaster.getUniqueId());
 
-                DamageMetadata damage = new DamageMetadata(amount.get(skillMetadata), element1, DamageType.SKILL);
-                StatMap statMap = playerData.getMMOPlayerData().getStatMap();
-                PlayerMetadata playerMetadata = new PlayerMetadata(statMap, EquipmentSlot.MAIN_HAND);
-                AttackMetadata attack = new ASTAttackMetaData(damage, (LivingEntity) bukkittarget, playerMetadata, cooldown_source);
+                    DamageMetadata damage = new DamageMetadata(amount.get(skillMetadata), element1, DamageType.SKILL);
+                    StatMap statMap = playerData.getMMOPlayerData().getStatMap();
+                    PlayerMetadata playerMetadata = new PlayerMetadata(statMap, EquipmentSlot.MAIN_HAND);
+                    AttackMetadata attack = new ASTAttackMetaData(damage, (LivingEntity) bukkittarget, playerMetadata, cooldown_source);
 
-                Bukkit.getScheduler().runTask(MythicCore.getInstance(), ()-> DamageManager.registerAttack(attack, true, false, EntityDamageEvent.DamageCause.ENTITY_ATTACK));
+                    Bukkit.getScheduler().runTask(MythicCore.getInstance(), () -> {
 
-                for (DamagePacket packet : damage.getPackets()) {
-                    if (packet.getElement() == null) continue;
-                    if (!ConfigLoader.getAuraWhitelist().contains(packet.getElement().getId())) continue;
-                    MythicCore.getAuraManager().getAura(bukkittarget.getUniqueId()).addAura(packet.getElement().getId(), gauge_unit, decay_rate);
-                    Bukkit.getScheduler().runTask(MythicCore.getInstance(), ()->TriggerReaction.triggerReactions(packet, gauge_unit, decay_rate, (LivingEntity) bukkittarget, bukkitcaster, EntityDamageEvent.DamageCause.ENTITY_ATTACK));
+                        for (DamagePacket packet : damage.getPackets()) {
+                            if (packet.getElement() == null) continue;
+                            if (!ConfigLoader.getAuraWhitelist().contains(packet.getElement().getId())) continue;
+                            MythicCore.getAuraManager().getAura(bukkittarget.getUniqueId()).addAura(packet.getElement().getId(), gauge_unit, decay_rate);
+                            TriggerReaction.triggerReactions(packet, gauge_unit, decay_rate, (LivingEntity) bukkittarget, bukkitcaster, EntityDamageEvent.DamageCause.ENTITY_ATTACK);
+                        }
+
+                        DamageManager.registerAttack(attack, true, false, EntityDamageEvent.DamageCause.ENTITY_ATTACK);
+                    });
                 }
-            }
 
-            // caster is not player
-            else {
+                // caster is not player
+                else {
 
-                DamageMetadata damage = new DamageMetadata(amount.get(skillMetadata), Objects.requireNonNull(Element.valueOf(element), ConfigLoader.getDefaultElement()), DamageType.SKILL);
-                AttackMetadata attack = new ASTAttackMetaData(damage, (LivingEntity) bukkittarget, new ASTEntityStatProvider((LivingEntity) bukkitcaster), cooldown_source);
-                Bukkit.getScheduler().runTask(MythicCore.getInstance(), ()-> DamageManager.registerAttack(attack, true, false, EntityDamageEvent.DamageCause.ENTITY_ATTACK));
+                    DamageMetadata damage = new DamageMetadata(amount.get(skillMetadata), Objects.requireNonNull(Element.valueOf(element), ConfigLoader.getDefaultElement()), DamageType.SKILL);
+                    AttackMetadata attack = new ASTAttackMetaData(damage, (LivingEntity) bukkittarget, new ASTEntityStatProvider((LivingEntity) bukkitcaster), cooldown_source);
+                    Bukkit.getScheduler().runTask(MythicCore.getInstance(), () -> {
+                        DamageManager.registerAttack(attack, true, false, EntityDamageEvent.DamageCause.ENTITY_ATTACK);
 
-                for (DamagePacket packet : damage.getPackets()) {
-                    if (packet.getElement() == null) continue;
-                    if (!ConfigLoader.getAuraWhitelist().contains(packet.getElement().getId())) continue;
-                    MythicCore.getAuraManager().getAura(bukkittarget.getUniqueId()).addAura(packet.getElement().getId(), gauge_unit, decay_rate);
-                    Bukkit.getScheduler().runTask(MythicCore.getInstance(), ()->TriggerReaction.triggerReactions(packet, gauge_unit, decay_rate, (LivingEntity) bukkittarget, bukkitcaster, EntityDamageEvent.DamageCause.ENTITY_ATTACK));
+                        for (DamagePacket packet : damage.getPackets()) {
+                            if (packet.getElement() == null) continue;
+                            if (!ConfigLoader.getAuraWhitelist().contains(packet.getElement().getId())) continue;
+                            MythicCore.getAuraManager().getAura(bukkittarget.getUniqueId()).addAura(packet.getElement().getId(), gauge_unit, decay_rate);
+                            TriggerReaction.triggerReactions(packet, gauge_unit, decay_rate, (LivingEntity) bukkittarget, bukkitcaster, EntityDamageEvent.DamageCause.ENTITY_ATTACK);
+                        }
+                    });
                 }
-            }
             });
             return SkillResult.SUCCESS;
         }

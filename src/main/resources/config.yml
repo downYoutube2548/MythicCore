@@ -14,7 +14,7 @@ General:
     - HYDRO
     - DENDRO
   internal-cooldown:
-    default: 300
+    default: 0
 
 Special-Aura:
   FREEZE:
@@ -30,8 +30,14 @@ Special-Aura:
 Reaction-Priority:
   PYRO:
     - "REVERSE_OVERLOADED"
+    - "REVERSE_MELT"
+    - "VAPORIZE"
   ELECTRO:
     - "OVERLOADED"
+  CRYO:
+    - "MELT"
+  HYDRO:
+    - "REVERSE_VAPORIZE"
 
 Elemental-Reaction:
   OVERLOADED:
@@ -41,23 +47,41 @@ Elemental-Reaction:
     gauge-unit-tax: 1.25
     resistance-element: PYRO
     damage-formula: "2 * (16.12 * (attacker_level + 16 ) - 257.23) * (1+ (16*(elemental_mastery/(elemental_mastery + 2000)))) * resistance_multiplier"
-    aoe-radius: 5
+    aoe-radius: 1.5
     knockback-multiplier: 1.5
-    damage-indicator:
-      - "&c{damage}"
-      - "&cOverloaded"
   REVERSE_OVERLOADED:
-    display: "&6Reverse Overloaded"
+    display: "&cOverloaded"
     aura-element: ELECTRO
     trigger-element: PYRO
     gauge-unit-tax: 1.25
     resistance-element: PYRO
     damage-formula: "2 * (16.12 * (attacker_level + 16 ) - 257.23) * (1+ (16*(elemental_mastery/(elemental_mastery + 2000)))) * resistance_multiplier"
-    aoe-radius: 5
+    aoe-radius: 1.5
     knockback-multiplier: 1.5
-    damage-indicator:
-      - "&c{damage}"
-      - "&cOverloaded"
+  VAPORIZE:
+    display: "#f4b65dVaporize"
+    aura-element: HYDRO
+    trigger-element: PYRO
+    gauge-unit-tax: 0.625
+    damage-formula: "raw_damage * 1.75 * (1 + 2.78 * (elemental_mastery / (elemental_mastery + 1200)))"
+  REVERSE_VAPORIZE:
+    display: "#f4b65dVaporize"
+    aura-element: PYRO
+    trigger-element: HYDRO
+    gauge-unit-tax: 2.5
+    damage-formula: "raw_damage * 3 * (1 + 2.78 * (elemental_mastery / (elemental_mastery + 1200)))"
+  MELT:
+    display: "#f4b65dMelt"
+    aura-element: PYRO
+    trigger-element: CRYO
+    gauge-unit-tax: 0.625
+    damage-formula: "raw_damage * 1.75 * (1 + 2.78 * (elemental_mastery / (elemental_mastery + 1200)))"
+  REVERSE_MELT:
+    display: "#f4b65dMelt"
+    aura-element: CRYO
+    trigger-element: PYRO
+    gauge-unit-tax: 2.5
+    damage-formula: "raw_damage * 3 * (1 + 2.78 * (elemental_mastery / (elemental_mastery + 1200)))"
 
 Elemental-Modifier:
   # <Damage Cause>: <Element>

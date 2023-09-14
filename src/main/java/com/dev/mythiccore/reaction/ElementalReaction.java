@@ -3,13 +3,12 @@ package com.dev.mythiccore.reaction;
 import com.dev.mythiccore.MythicCore;
 import com.dev.mythiccore.aura.AuraData;
 import com.dev.mythiccore.events.attack_handle.attack_priority.TriggerReaction;
+import com.dev.mythiccore.library.ASTAttackMetaData;
 import com.dev.mythiccore.stats.provider.ASTEntityStatProvider;
 import com.dev.mythiccore.utils.ConfigLoader;
 import com.dev.mythiccore.utils.DamageManager;
-import com.dev.mythiccore.visuals.ASTDamageIndicators;
+import com.dev.mythiccore.utils.Utils;
 import io.lumine.mythic.lib.MythicLib;
-import io.lumine.mythic.lib.UtilityMethods;
-import io.lumine.mythic.lib.api.event.IndicatorDisplayEvent;
 import io.lumine.mythic.lib.api.player.EquipmentSlot;
 import io.lumine.mythic.lib.api.stat.StatMap;
 import io.lumine.mythic.lib.damage.AttackMetadata;
@@ -25,12 +24,10 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
-import java.util.Random;
 import java.util.UUID;
 
 public abstract class ElementalReaction {
@@ -57,7 +54,7 @@ public abstract class ElementalReaction {
         return this.trigger;
     }
     public String getDisplay() {
-        return this.display;
+        return Utils.colorize(this.display);
     }
 
     public AuraData getAuraData(UUID uuid) {
@@ -98,12 +95,12 @@ public abstract class ElementalReaction {
 
             StatMap statMap = playerData.getMMOPlayerData().getStatMap();
             PlayerMetadata playerMetadata = new PlayerMetadata(statMap, EquipmentSlot.MAIN_HAND);
-            AttackMetadata attack = new AttackMetadata(damage, target, playerMetadata);
+            AttackMetadata attack = new ASTAttackMetaData(damage, target, playerMetadata);
 
             Bukkit.getScheduler().runTask(MythicCore.getInstance(), () -> DamageManager.registerAttack(attack, knockback, true, damage_cause));
 
         }  else {
-            AttackMetadata attack = new AttackMetadata(damage, target, caster != null ? new ASTEntityStatProvider((LivingEntity) caster) : null);
+            AttackMetadata attack = new ASTAttackMetaData(damage, target, caster != null ? new ASTEntityStatProvider((LivingEntity) caster) : null);
             Bukkit.getScheduler().runTask(MythicCore.getInstance(), ()-> DamageManager.registerAttack(attack, knockback, true, damage_cause));
         }
     }
@@ -136,19 +133,6 @@ public abstract class ElementalReaction {
                 MythicCore.getAuraManager().getAura(target.getUniqueId()).addAura(packet.getElement().getId(), gauge_unit, decay_rate);
                 TriggerReaction.triggerReactions(packet, gauge_unit, decay_rate, target, caster, damage_cause);
             }
-        }
-    }
-
-    public void displayIndicator(String text, Entity entity) {
-        if (!(entity instanceof Player) || !UtilityMethods.isVanished((Player)entity)) {
-            ConfigurationSection config = MythicCore.getInstance().getConfig().getConfigurationSection("Indicators");
-            ASTDamageIndicators indicators = new ASTDamageIndicators(config);
-            assert config != null;
-            String format = config.getString("shield-attack-format");
-            assert format != null;
-            double a = new Random().nextDouble() * Math.PI * 2.0;
-
-            Bukkit.getScheduler().runTask(MythicCore.getInstance(), ()->indicators.displayIndicator(entity, indicators.computeFormat(0, false, text, null), new Vector(Math.cos(a), 0.0, Math.sin(a)), IndicatorDisplayEvent.IndicatorType.DAMAGE));
         }
     }
 

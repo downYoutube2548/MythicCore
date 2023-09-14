@@ -1,10 +1,10 @@
-# Damage Handler
+# Mythic Core
 
 ###### A Minecraft Plugin that modifies Minecraft combat mechanics by handle all types of damage and adding elemental systems and elemental reaction systems into the game's combat system.
 
 ## Commands
 
-- `/damagehandle reload` reload plugin configuration
+- `/mythiccore reload` reload plugin configuration
 
 ## MythicMobs Mechanics
 

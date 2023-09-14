@@ -76,10 +76,6 @@ public class Overloaded extends TriggerAuraReaction {
                         aoe_living_entity.setVelocity(new Vector(x, y, z).multiply(getConfig().getDouble("knockback-multiplier")));
                     }
                 }
-
-                for (String indicator : getConfig().getStringList("damage-indicator")) {
-                    displayIndicator(indicator.replace("{damage}", Utils.Format(final_damage)), aoe_living_entity);
-                }
             }
         }
     }

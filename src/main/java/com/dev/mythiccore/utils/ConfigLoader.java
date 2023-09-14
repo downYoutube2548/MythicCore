@@ -15,9 +15,9 @@ import java.util.*;
 public class ConfigLoader {
 
     private static String defaultElement;
-    private static Map<String, String> elementalModifier = new HashMap<>();
+    private static final Map<String, String> elementalModifier = new HashMap<>();
     private static List<String> auraWhitelist;
-    private static HashMap<String, Map<String, Integer>> reactionPriority = new HashMap<>();
+    private static final HashMap<String, Map<String, Integer>> reactionPriority = new HashMap<>();
 
     private static final HashMap<String, DoubleStatRegister> doubleStats = new HashMap<>();
     private static final HashMap<String, BooleanStatRegister> booleanStats = new HashMap<>();
@@ -53,6 +53,10 @@ public class ConfigLoader {
     }
     public static Map<String, Integer> getReactionPriority(String element) {
         return reactionPriority.get(element);
+    }
+
+    public static List<String> getReactionPriorityList(String element) {
+        return MythicCore.getInstance().getConfig().getStringList("Reaction-Priority."+element);
     }
 
     public static String getAuraElement(String reaction_id) {

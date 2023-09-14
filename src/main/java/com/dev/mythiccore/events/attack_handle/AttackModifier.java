@@ -6,7 +6,7 @@ import com.dev.mythiccore.events.attack_handle.attack_priority.TriggerReaction;
 import com.dev.mythiccore.stats.provider.ASTEntityStatProvider;
 import com.dev.mythiccore.utils.ConfigLoader;
 import com.dev.mythiccore.utils.Utils;
-import de.tr7zw.nbtapi.NBTItem;
+import de.tr7zw.changeme.nbtapi.NBTItem;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import io.lumine.mythic.core.mobs.ActiveMob;
 import io.lumine.mythic.core.skills.variables.VariableRegistry;
@@ -15,7 +15,6 @@ import io.lumine.mythic.lib.api.event.PlayerAttackEvent;
 import io.lumine.mythic.lib.damage.DamagePacket;
 import io.lumine.mythic.lib.damage.DamageType;
 import io.lumine.mythic.lib.element.Element;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -101,8 +100,7 @@ public class AttackModifier implements Listener {
                             double gauge_unit = Double.parseDouble(Utils.splitTextAndNumber(variables.getString("AST_ELEMENTAL_DAMAGE_GAUGE_UNIT"))[0]);
                             String decay_rate = Utils.splitTextAndNumber(variables.getString("AST_ELEMENTAL_DAMAGE_GAUGE_UNIT"))[1];
                             MythicCore.getAuraManager().getAura(event.getEntity().getUniqueId()).addAura(element.getId(), gauge_unit, decay_rate);
-                            LivingEntity finalAttacker = attacker;
-                            Bukkit.getScheduler().runTask(MythicCore.getInstance(), ()-> TriggerReaction.triggerReactions(event.getDamage().getPackets().get(0), gauge_unit, decay_rate, event.getEntity(), finalAttacker, event.toBukkit().getCause()));
+                            TriggerReaction.triggerReactions(event.getDamage().getPackets().get(0), gauge_unit, decay_rate, event.getEntity(), attacker, event.toBukkit().getCause());
 
                             return;
                         }

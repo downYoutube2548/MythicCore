@@ -25,10 +25,12 @@ public class InternalCooldown {
                 if (!entityCooldownData.isEmpty()) {
                     for (UUID keys : entityCooldownData.keySet()) {
                         for (LivingEntity entity : entityCooldownData.get(keys).getMapCooldown().keySet()) {
-                            if (entity == null || entity.isDead() || !entity.isValid()) entityCooldownData.get(keys).removeCooldown(entity);
-
-                            for (String source : entityCooldownData.get(keys).getEntityCooldown(entity).keySet()) {
-                                entityCooldownData.get(keys).reduceCooldown(entity, source, 1);
+                            if (entity == null || entity.isDead() || !entity.isValid()) {
+                                entityCooldownData.get(keys).removeCooldown(entity);
+                            } else {
+                                for (String source : entityCooldownData.get(keys).getEntityCooldown(entity).keySet()) {
+                                    entityCooldownData.get(keys).reduceCooldown(entity, source, 1);
+                                }
                             }
                         }
                     }

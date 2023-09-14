@@ -1,5 +1,4 @@
 package com.dev.mythiccore.aura;
-
 import com.dev.mythiccore.MythicCore;
 import org.bukkit.Bukkit;
 
@@ -14,7 +13,6 @@ import java.util.UUID;
  * And count down tick of inflection time
  */
 public class Aura {
-
     protected final Map<UUID, AuraData> entityAura = new HashMap<>();
 
     public AuraData getAura(UUID uuid) {
