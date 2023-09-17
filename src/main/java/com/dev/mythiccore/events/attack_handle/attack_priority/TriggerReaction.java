@@ -2,11 +2,11 @@ package com.dev.mythiccore.events.attack_handle.attack_priority;
 
 import com.dev.mythiccore.MythicCore;
 import com.dev.mythiccore.library.ASTAttackMetaData;
+import com.dev.mythiccore.library.provider.ASTEntityStatProvider;
 import com.dev.mythiccore.listener.events.MobAttackEvent;
 import com.dev.mythiccore.reaction.ElementalReaction;
 import com.dev.mythiccore.reaction.reaction_type.DoubleAuraReaction;
 import com.dev.mythiccore.reaction.reaction_type.TriggerAuraReaction;
-import com.dev.mythiccore.library.provider.ASTEntityStatProvider;
 import com.dev.mythiccore.utils.ConfigLoader;
 import com.dev.mythiccore.utils.Utils;
 import io.lumine.mythic.lib.api.event.AttackEvent;
