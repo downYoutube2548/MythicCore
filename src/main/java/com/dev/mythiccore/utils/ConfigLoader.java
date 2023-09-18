@@ -51,8 +51,9 @@ public class ConfigLoader {
         MythicCore.getInstance().reloadConfig();
         loadConfig();
     }
-    public static Map<String, Integer> getReactionPriority(String element) {
-        return reactionPriority.get(element);
+
+    public static boolean isReactionEnable(String reaction_id) {
+        return MythicCore.getInstance().getConfig().getBoolean("Elemental-Reaction." + reaction_id + ".enable");
     }
 
     public static List<String> getReactionPriorityList(String element) {
@@ -90,6 +91,12 @@ public class ConfigLoader {
     }
     public static Long getInternalCooldown(String source) {
         return MythicCore.getInstance().getConfig().getLong("General.internal-cooldown."+source);
+    }
+    public static ConfigurationSection getReactionConfig() {
+        return MythicCore.getInstance().getConfig().getConfigurationSection("Elemental-Reaction");
+    }
+    public static long getReactionFrequency(String reaction_id) {
+        return MythicCore.getInstance().getConfig().getLong("Elemental-Reaction."+reaction_id+".frequency");
     }
 
     public static String getDefaultElement() {

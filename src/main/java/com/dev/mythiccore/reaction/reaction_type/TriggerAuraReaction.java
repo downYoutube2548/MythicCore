@@ -16,16 +16,15 @@ public abstract class TriggerAuraReaction extends ElementalReaction {
         this.gauge_unit_tax = gauge_unit_tax;
     }
 
-    @Override
-    public void trigger(DamagePacket damage, double gauge_unit, String decay_rate, LivingEntity entity, @Nullable Entity damager, EntityDamageEvent.DamageCause damage_cause) {
+    public void t(DamagePacket damage, double gauge_unit, String decay_rate, LivingEntity entity, @Nullable Entity damager, EntityDamageEvent.DamageCause damage_cause) {
 
         if (damage.getElement() == null) return;
         getAuraData(entity.getUniqueId()).removeAura(getTrigger());
         double final_gauge_unit = gauge_unit * gauge_unit_tax;
         getAuraData(entity.getUniqueId()).reduceAura(getAura(), final_gauge_unit);
 
-        trigger(damage, gauge_unit, decay_rate, damager, entity, damage_cause);
+        trigger(damage, gauge_unit, decay_rate, entity, damager, damage_cause);
     }
 
-    public abstract void trigger(DamagePacket damage, double gauge_unit, String decay_rate, @Nullable Entity damager, LivingEntity entity, EntityDamageEvent.DamageCause damage_cause);
+    public abstract void trigger(DamagePacket damage, double gauge_unit, String decay_rate, LivingEntity entity, @Nullable Entity damager, EntityDamageEvent.DamageCause damage_cause);
 }

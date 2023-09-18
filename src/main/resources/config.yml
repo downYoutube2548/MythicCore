@@ -6,6 +6,7 @@ General:
     A: 200
     B: 100
     C: 50
+    F: 50
   default-gauge-unit: 1A
   aura-whitelist:
     - PYRO
@@ -16,8 +17,16 @@ General:
   internal-cooldown:
     default: 0
 
+Elemental-Modifier:
+  # <Damage Cause>: <Element>
+  FIRE: PYRO
+  FIRE_TICK: PYRO
+  HOT_FLOOR: PYRO
+  LAVA: PYRO
+  FREEZE: CRYO
+
 Special-Aura:
-  FREEZE:
+  FROZEN:
     icon: 'F'
     color: "&b"
   BURNING:
@@ -34,62 +43,133 @@ Reaction-Priority:
     - "VAPORIZE"
   ELECTRO:
     - "OVERLOADED"
+    - "ELECTRO_CHARGED"
+    - "SUPER_CONDUCT"
   CRYO:
     - "MELT"
+    - "REVERSE_SUPER_CONDUCT"
+    - "FROZEN"
   HYDRO:
     - "REVERSE_VAPORIZE"
+    - "ELECTRO_CHARGED"
+    - "REVERSE_FROZEN"
 
 Elemental-Reaction:
   OVERLOADED:
+    enable: true
     display: "&cOverloaded"
     aura-element: PYRO
     trigger-element: ELECTRO
     gauge-unit-tax: 1.25
-    resistance-element: PYRO
-    damage-formula: "2 * (16.12 * (attacker_level + 16 ) - 257.23) * (1+ (16*(elemental_mastery/(elemental_mastery + 2000)))) * resistance_multiplier"
+    damage-element: PYRO
+    damage-formula: "2 * (16.12 * (attacker_level + 16) - 257.23) * (1 + (16 * (elemental_mastery / (elemental_mastery + 2000)))) * resistance_multiplier"
     aoe-radius: 1.5
     knockback-multiplier: 1.5
   REVERSE_OVERLOADED:
+    enable: true
     display: "&cOverloaded"
     aura-element: ELECTRO
     trigger-element: PYRO
     gauge-unit-tax: 1.25
-    resistance-element: PYRO
-    damage-formula: "2 * (16.12 * (attacker_level + 16 ) - 257.23) * (1+ (16*(elemental_mastery/(elemental_mastery + 2000)))) * resistance_multiplier"
+    damage-element: PYRO
+    damage-formula: "2 * (16.12 * (attacker_level + 16) - 257.23) * (1 + (16 * (elemental_mastery / (elemental_mastery + 2000)))) * resistance_multiplier"
     aoe-radius: 1.5
     knockback-multiplier: 1.5
   VAPORIZE:
+    enable: true
     display: "#f4b65dVaporize"
     aura-element: HYDRO
     trigger-element: PYRO
     gauge-unit-tax: 0.625
     damage-formula: "raw_damage * 1.75 * (1 + 2.78 * (elemental_mastery / (elemental_mastery + 1200)))"
   REVERSE_VAPORIZE:
+    enable: true
     display: "#f4b65dVaporize"
     aura-element: PYRO
     trigger-element: HYDRO
     gauge-unit-tax: 2.5
     damage-formula: "raw_damage * 3 * (1 + 2.78 * (elemental_mastery / (elemental_mastery + 1200)))"
   MELT:
+    enable: true
     display: "#f4b65dMelt"
     aura-element: PYRO
     trigger-element: CRYO
     gauge-unit-tax: 0.625
     damage-formula: "raw_damage * 1.75 * (1 + 2.78 * (elemental_mastery / (elemental_mastery + 1200)))"
   REVERSE_MELT:
+    enable: true
     display: "#f4b65dMelt"
     aura-element: CRYO
     trigger-element: PYRO
     gauge-unit-tax: 2.5
     damage-formula: "raw_damage * 3 * (1 + 2.78 * (elemental_mastery / (elemental_mastery + 1200)))"
+  SUPER_CONDUCT:
+    enable: true
+    display: "#bab3feSuperconduct"
+    aura-element: CRYO
+    trigger-element: ELECTRO
+    gauge-unit-tax: 1.25
+    aoe-radius: 1.5
+    damage-element: CRYO
+    resistance-reduction-element: PHYSICAL
+    resistance-reduction: 40
+    resistance-reduction-duration: 240
+    damage-formula: "0.5 * (16.12 * (attacker_level + 16) - 257.23) * (1 + (16 * (elemental_mastery / (elemental_mastery + 2000)))) * resistance_multiplier"
+  REVERSE_SUPER_CONDUCT:
+    enable: true
+    display: "#bab3feSuperconduct"
+    aura-element: ELECTRO
+    trigger-element: CRYO
+    gauge-unit-tax: 1.25
+    aoe-radius: 1.5
+    damage-element: CRYO
+    resistance-reduction-element: PHYSICAL
+    resistance-reduction: 40
+    resistance-reduction-duration: 240
+    damage-formula: "0.5 * (16.12 * (attacker_level + 16) - 257.23) * (1 + (16 * (elemental_mastery / (elemental_mastery + 2000)))) * resistance_multiplier"
+  ELECTRO_CHARGED:
+    enable: true
+    display: "#f19bfbElectro-Charged"
+    first-aura-element: HYDRO
+    second-aura-element: ELECTRO
+    frequency: 20
+    gauge-unit-tax: 0.3
+    damage-element: ELECTRO
+    damage-formula: "1.2 * (16.12 * (attacker_level + 16) - 257.23) * (1 + (16 * (elemental_mastery / (elemental_mastery + 2000)))) * resistance_multiplier"
+  FROZEN:
+    enable: true
+    display: ""
+    aura-element: HYDRO
+    trigger-element: CRYO
+    frozen-aura-id: FROZEN
+    frozen-aura-gauge-decay-rate: F
+    gauge-unit-tax: 1.25
+  REVERSE_FROZEN:
+    enable: true
+    display: ""
+    aura-element: HYDRO
+    trigger-element: CRYO
+    frozen-aura-id: FROZEN
+    frozen-aura-gauge-decay-rate: F
+    gauge-unit-tax: 1.25
 
-Elemental-Modifier:
-  # <Damage Cause>: <Element>
-  FIRE: PYRO
-  FIRE_TICK: PYRO
-  HOT_FLOOR: PYRO
-  LAVA: PYRO
-  FREEZE: CRYO
+
+Damage-Calculation:
+
+  final-damage: "total_damage * defense_multiplier * resistance_multiplier * level_multiplier"
+
+  total-damage: "((damage * (1+(attack_buff_percent/100))) + attack_buff) * (1 + ((elemental_damage_bonus + all_elemental_damage_bonus) / 100))"
+  defense-multiplier: "1 - (((1 - (attacker_ignore_defense / 100)) * victim_defense) / (victim_defense + (5 * attacker_level)+500))"
+  resistance-multiplier:
+    resistance<0: "1 - (elemental_resistance/2/100)"
+    resistance<75: "1 - (elemental_resistance/100)"
+    resistance>=75: "1/((4 * elemental_resistance/100)+1)"
+  level-multiplier:
+    player: "2 - (2/(1+1.075^(attacker_level - victim_level)))"
+    mob: "3 - (3/(1+1.025^(attacker_level - victim_level)))"
+
+  #total-resistance: "pure_resistance - (resistance_reduction/100 * ((pure_resistance^2)^0.5))"
+  total-resistance: "pure_resistance - resistance_reduction"
 
 # don't forget to disable damage-indicator in MythicLib config.yml if you enable this
 Indicators:
@@ -133,20 +213,6 @@ Indicators:
   initial-upward-velocity: 1.0
   entity-height-percent: 0.5
   y-offset: 0
-
-Damage-Calculation:
-
-  final-damage: "total_damage * defense_multiplier * resistance_multiplier * level_multiplier"
-
-  total-damage: "((damage * (1+(attack_buff_percent/100))) + attack_buff) * (1 + ((elemental_damage_bonus + all_elemental_damage_bonus) / 100))"
-  defense-multiplier: "1 - (((1 - (attacker_ignore_defense / 100)) * victim_defense) / (victim_defense + (5 * attacker_level)+500))"
-  resistance-multiplier:
-    resistance<0: "1 - (elemental_resistance/2/100)"
-    resistance<75: "1 - (elemental_resistance/100)"
-    resistance>=75: "1/((4 * elemental_resistance/100)+1)"
-  level-multiplier:
-    player: "2 - (2/(1+1.075^(attacker_level - victim_level)))"
-    mob: "3 - (3/(1+1.025^(attacker_level - victim_level)))"
 
 Stats:
   BOOLEAN_STAT:

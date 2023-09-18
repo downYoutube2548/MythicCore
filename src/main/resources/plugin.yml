@@ -2,7 +2,7 @@ name: MythicCore
 version: '${project.version}'
 main: com.dev.mythiccore.MythicCore
 api-version: 1.19
-depend: [MMOCore, MMOItems, MythicLib, MythicMob]
+depend: [MMOCore, MMOItems, MythicLib, MythicMobs]
 softdepend: [PlaceholderAPI, HolographicDisplays]
 authors: [downYoutube2548, Teenkung123]
 commands:

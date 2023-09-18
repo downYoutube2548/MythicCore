@@ -1,7 +1,6 @@
 package com.dev.mythiccore.reaction.reactions;
 
 import com.dev.mythiccore.reaction.reaction_type.TriggerAuraReaction;
-import com.dev.mythiccore.utils.ConfigLoader;
 import com.dev.mythiccore.utils.StatCalculation;
 import com.dev.mythiccore.utils.Utils;
 import io.lumine.mythic.bukkit.MythicBukkit;
@@ -23,16 +22,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Overloaded extends TriggerAuraReaction {
-    public Overloaded() {
-        super("OVERLOADED", ConfigLoader.getReactionDisplay("OVERLOADED"), ConfigLoader.getAuraElement("OVERLOADED"), ConfigLoader.getTriggerElement("OVERLOADED"), ConfigLoader.getGaugeUnitTax("OVERLOADED"));
+
+    public Overloaded(String id, String display, String aura, String trigger, double gauge_unit_tax) {
+        super(id, display, aura, trigger, gauge_unit_tax);
     }
 
     @Override
-    public void trigger(DamagePacket damage, double gauge_unit, String decay_rate, @Nullable Entity damager, LivingEntity entity, EntityDamageEvent.DamageCause damage_cause) {
+    public void trigger(DamagePacket damage, double gauge_unit, String decay_rate, LivingEntity entity, @Nullable Entity damager, EntityDamageEvent.DamageCause damage_cause) {
 
         int attacker_level = 1;
         double elemental_mastery = 0;
-        double resistance_multiplier = StatCalculation.getResistanceMultiplier(entity.getUniqueId(), getConfig().getString("resistance-element"));
+        double resistance_multiplier = StatCalculation.getResistanceMultiplier(entity.getUniqueId(), getConfig().getString("damage-element"));
 
         if (damager != null) {
             if (damager instanceof Player player) {
@@ -64,7 +64,7 @@ public class Overloaded extends TriggerAuraReaction {
         for (Entity aoe_entity : aoe_entities) {
             if (aoe_entity == damager || aoe_entity.isInvulnerable() || (aoe_entity instanceof Player player && (player.getGameMode().equals(GameMode.CREATIVE) || player.getGameMode().equals(GameMode.SPECTATOR)))) continue;
             if (aoe_entity instanceof LivingEntity aoe_living_entity && !aoe_living_entity.isInvulnerable()) {
-                damage(final_damage, damager, aoe_living_entity, "PYRO", false, true, damage_cause);
+                damage(final_damage, damager, aoe_living_entity, getConfig().getString("damage-element"), false, true, damage_cause);
 
                 if (damager != null) {
                     Vector kb = aoe_living_entity.getLocation().toVector().subtract(damager.getLocation().toVector());

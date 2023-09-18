@@ -266,7 +266,15 @@ public class StatCalculation {
     }
 
     public static double getResistance(double pure_resistance, double resistance_reduction) {
-        return pure_resistance - (resistance_reduction/100 * Math.abs(pure_resistance));
+
+        String formula = ConfigLoader.getDamageCalculation("total-resistance");
+        Expression expression = new ExpressionBuilder(formula)
+                .variables("pure_resistance", "resistance_reduction")
+                .build()
+                .setVariable("pure_resistance", pure_resistance)
+                .setVariable("resistance_reduction", resistance_reduction);
+
+        return expression.evaluate();
     }
 
     public static double getDefense(UUID uuid) {

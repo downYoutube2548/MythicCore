@@ -3,7 +3,7 @@ package com.dev.mythiccore.events.attack_handle;
 import com.dev.mythiccore.MythicCore;
 import com.dev.mythiccore.commands.core;
 import com.dev.mythiccore.events.attack_handle.attack_priority.TriggerReaction;
-import com.dev.mythiccore.library.provider.ASTEntityStatProvider;
+import com.dev.mythiccore.library.ASTEntityStatProvider;
 import com.dev.mythiccore.utils.ConfigLoader;
 import com.dev.mythiccore.utils.Utils;
 import de.tr7zw.changeme.nbtapi.NBTItem;

@@ -1,7 +1,6 @@
 package com.dev.mythiccore.reaction.reactions;
 
 import com.dev.mythiccore.reaction.reaction_type.TriggerAuraReaction;
-import com.dev.mythiccore.utils.ConfigLoader;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import io.lumine.mythic.core.mobs.ActiveMob;
 import io.lumine.mythic.lib.damage.DamagePacket;
@@ -16,12 +15,13 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.jetbrains.annotations.Nullable;
 
 public class Melt extends TriggerAuraReaction {
-    public Melt() {
-        super("MELT", ConfigLoader.getReactionDisplay("MELT"), ConfigLoader.getAuraElement("MELT"), ConfigLoader.getTriggerElement("MELT"), ConfigLoader.getGaugeUnitTax("MELT"));
+
+    public Melt(String id, String display, String aura, String trigger, double gauge_unit_tax) {
+        super(id, display, aura, trigger, gauge_unit_tax);
     }
 
     @Override
-    public void trigger(DamagePacket damage, double gauge_unit, String decay_rate, @Nullable Entity damager, LivingEntity entity, EntityDamageEvent.DamageCause damage_cause) {
+    public void trigger(DamagePacket damage, double gauge_unit, String decay_rate, LivingEntity entity, @Nullable Entity damager, EntityDamageEvent.DamageCause damage_cause) {
         int attacker_level = 1;
         double elemental_mastery = 0;
 

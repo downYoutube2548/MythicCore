@@ -4,7 +4,7 @@ import com.dev.mythiccore.MythicCore;
 import com.dev.mythiccore.aura.AuraData;
 import com.dev.mythiccore.events.attack_handle.attack_priority.TriggerReaction;
 import com.dev.mythiccore.library.ASTAttackMetaData;
-import com.dev.mythiccore.library.provider.ASTEntityStatProvider;
+import com.dev.mythiccore.library.ASTEntityStatProvider;
 import com.dev.mythiccore.utils.ConfigLoader;
 import com.dev.mythiccore.utils.DamageManager;
 import com.dev.mythiccore.utils.Utils;
@@ -25,7 +25,6 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -135,7 +134,4 @@ public abstract class ElementalReaction {
             }
         }
     }
-
-    public abstract void trigger(DamagePacket damage, double gauge_unit, String decay_rate, LivingEntity entity, @Nullable Entity damager, EntityDamageEvent.DamageCause damage_cause);
-
 }

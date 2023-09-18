@@ -15,10 +15,14 @@ import java.util.UUID;
  * And count down tick of buff time
  */
 public class Buff {
-    public final Map<UUID, BuffData> mapBuffData = new HashMap<>();
+    protected final Map<UUID, BuffData> mapBuffData = new HashMap<>();
 
     public BuffData getBuff(UUID uuid) {
         return !mapBuffData.containsKey(uuid) ? new BuffData(uuid) : mapBuffData.get(uuid);
+    }
+
+    public Map<UUID, BuffData> getMapBuffData() {
+        return mapBuffData;
     }
 
     public void startTick() {

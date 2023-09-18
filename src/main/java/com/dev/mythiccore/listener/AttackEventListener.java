@@ -1,6 +1,6 @@
 package com.dev.mythiccore.listener;
 
-import com.dev.mythiccore.library.provider.ASTEntityStatProvider;
+import com.dev.mythiccore.library.ASTEntityStatProvider;
 import com.dev.mythiccore.listener.events.MiscAttackEvent;
 import com.dev.mythiccore.listener.events.MobAttackEvent;
 import io.lumine.mythic.lib.api.event.AttackEvent;

@@ -1,6 +1,6 @@
 package com.dev.mythiccore.utils;
 
-import com.dev.mythiccore.library.provider.ASTEntityStatProvider;
+import com.dev.mythiccore.library.ASTEntityStatProvider;
 import io.lumine.mythic.bukkit.utils.lib.lang3.Validate;
 import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.damage.AttackMetadata;

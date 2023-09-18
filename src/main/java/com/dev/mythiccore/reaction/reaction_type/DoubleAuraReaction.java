@@ -1,5 +1,6 @@
 package com.dev.mythiccore.reaction.reaction_type;
 
+import com.dev.mythiccore.library.SnapshotStats;
 import com.dev.mythiccore.reaction.ElementalReaction;
 import io.lumine.mythic.lib.damage.DamagePacket;
 import org.bukkit.entity.Entity;
@@ -22,16 +23,15 @@ public abstract class DoubleAuraReaction extends ElementalReaction {
         return reaction_frequency;
     }
 
-    @Override
-    public void trigger(DamagePacket damage, double gauge_unit, String decay_rate, LivingEntity entity, @Nullable Entity damager, EntityDamageEvent.DamageCause damage_cause) {
+    public void t(DamagePacket damage, double gauge_unit, String decay_rate, LivingEntity entity, @Nullable Entity damager, EntityDamageEvent.DamageCause damage_cause, SnapshotStats stats) {
 
         if (damage.getElement() == null) return;
         double final_gauge_unit = gauge_unit * gauge_unit_tax;
         getAuraData(entity.getUniqueId()).reduceAura(getAura(), final_gauge_unit);
         getAuraData(entity.getUniqueId()).reduceAura(getTrigger(), final_gauge_unit);
 
-        trigger(damage, gauge_unit, decay_rate, damager, entity, damage_cause);
+        trigger(damage, gauge_unit, decay_rate, entity, damager, damage_cause, stats);
     }
 
-    public abstract void trigger(DamagePacket damage, double gauge_unit, String decay_rate, @Nullable Entity damager, LivingEntity entity, EntityDamageEvent.DamageCause damage_cause);
+    public abstract void trigger(DamagePacket damage, double gauge_unit, String decay_rate, LivingEntity entity, @Nullable Entity damager, EntityDamageEvent.DamageCause damage_cause, SnapshotStats stats);
 }

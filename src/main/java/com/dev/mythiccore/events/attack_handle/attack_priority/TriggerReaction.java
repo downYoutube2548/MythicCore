@@ -2,17 +2,22 @@ package com.dev.mythiccore.events.attack_handle.attack_priority;
 
 import com.dev.mythiccore.MythicCore;
 import com.dev.mythiccore.library.ASTAttackMetaData;
-import com.dev.mythiccore.library.provider.ASTEntityStatProvider;
+import com.dev.mythiccore.library.ASTEntityStatProvider;
+import com.dev.mythiccore.library.SnapshotStats;
 import com.dev.mythiccore.listener.events.MobAttackEvent;
 import com.dev.mythiccore.reaction.ElementalReaction;
 import com.dev.mythiccore.reaction.reaction_type.DoubleAuraReaction;
 import com.dev.mythiccore.reaction.reaction_type.TriggerAuraReaction;
 import com.dev.mythiccore.utils.ConfigLoader;
 import com.dev.mythiccore.utils.Utils;
+import io.lumine.mythic.bukkit.MythicBukkit;
+import io.lumine.mythic.core.mobs.ActiveMob;
 import io.lumine.mythic.lib.api.event.AttackEvent;
 import io.lumine.mythic.lib.api.event.PlayerAttackEvent;
+import io.lumine.mythic.lib.api.stat.StatInstance;
 import io.lumine.mythic.lib.damage.DamagePacket;
 import io.lumine.mythic.lib.damage.DamageType;
+import net.Indyuce.mmocore.api.player.PlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -114,8 +119,8 @@ public class TriggerReaction {
 
             if (rawReaction instanceof TriggerAuraReaction reaction) {
                 if (MythicCore.getAuraManager().getAura(entity.getUniqueId()).getMapAura().containsKey(rawReaction.getAura()) && MythicCore.getAuraManager().getAura(entity.getUniqueId()).getMapAura().containsKey(rawReaction.getTrigger())) {
-                    Utils.displayIndicator(reaction.getDisplay(), entity);
-                    reaction.trigger(damage, gauge_unit, decay_rate, entity, damager, damage_cause);
+                    if (!reaction.getDisplay().equals("")) Utils.displayIndicator(reaction.getDisplay(), entity);
+                    reaction.t(damage, gauge_unit, decay_rate, entity, damager, damage_cause);
                 }
             } else if (rawReaction instanceof DoubleAuraReaction reaction) {
                 if (reaction.getAura().equals(damage.getElement().getId()) || reaction.getTrigger().equals(damage.getElement().getId())) {
@@ -123,7 +128,7 @@ public class TriggerReaction {
 
                         if (reactionTasks.containsKey(entity) && reactionTasks.get(entity).contains(reaction)) return;
 
-                        Utils.displayIndicator(reaction.getDisplay(), entity);
+                        if (!reaction.getDisplay().equals("")) Utils.displayIndicator(reaction.getDisplay(), entity);
 
                         if (!reactionTasks.containsKey(entity)) {
                             reactionTasks.put(entity, new HashSet<>(Set.of(reaction)));
@@ -131,9 +136,27 @@ public class TriggerReaction {
                             reactionTasks.get(entity).add(reaction);
                         }
 
+                        SnapshotStats stats = new SnapshotStats();
+                        if (damager != null) {
+                            if (damager instanceof Player player) {
+                                PlayerData playerData = PlayerData.get(player);
+                                for (StatInstance instance : playerData.getStats().getMap().getInstances()) {
+                                    stats.setStat(instance.getStat(), instance.getTotal());
+                                }
+                                stats.setStat("LEVEL", playerData.getLevel());
+                            } else {
+                                ActiveMob mythicMob = MythicBukkit.inst().getMobManager().getActiveMob(damager.getUniqueId()).orElse(null);
+                                stats.setStat("LEVEL", (mythicMob != null) ? mythicMob.getLevel() : 1);
+                            }
+                        } else {
+                            stats.setStat("LEVEL", 1);
+                        }
+
                         Bukkit.getScheduler().runTaskTimerAsynchronously(MythicCore.getInstance(), (task) -> {
                             if (MythicCore.getAuraManager().getAura(entity.getUniqueId()).getMapAura().containsKey(rawReaction.getAura()) && MythicCore.getAuraManager().getAura(entity.getUniqueId()).getMapAura().containsKey(rawReaction.getTrigger())) {
-                                reaction.trigger(damage, gauge_unit, decay_rate, entity, damager, damage_cause);
+
+                                Bukkit.getScheduler().runTask(MythicCore.getInstance(), ()->reaction.t(damage, gauge_unit, decay_rate, entity, damager, damage_cause, stats));
+
                             } else {
 
                                 if (reactionTasks.containsKey(entity)) {

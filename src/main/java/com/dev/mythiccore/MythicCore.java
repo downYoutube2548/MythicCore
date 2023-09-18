@@ -44,9 +44,9 @@ public final class MythicCore extends JavaPlugin {
     //  1. Level Difference Multiplier (Done)
     //  2. Elemental Inflection (Done)
     //  3. Resistance Reduction & Defense Reduction (Done)
-    //  4. Entity Elemental Inflection Status
-    //  5. Elemental Reaction
-    //  6. Configurable Damage Equation (Done)
+    //  4. Entity Elemental Inflection Status (Done)
+    //  5. Configurable Damage Equation (Done)
+    //  6. Elemental Reaction
     //  7. More...
 
     private static MythicCore instance;
@@ -90,12 +90,17 @@ public final class MythicCore extends JavaPlugin {
         getAttack().registerAttackEvent(new ShieldRefutation());
         getAttack().registerAttackEvent(new TriggerReaction());
 
-        getReactionManager().registerElementalReaction(new Overloaded());
-        getReactionManager().registerElementalReaction(new ReverseOverloaded());
-        getReactionManager().registerElementalReaction(new Vaporize());
-        getReactionManager().registerElementalReaction(new ReverseVaporize());
-        getReactionManager().registerElementalReaction(new Melt());
-        getReactionManager().registerElementalReaction(new ReverseMelt());
+        if (ConfigLoader.isReactionEnable("OVERLOADED")) getReactionManager().registerElementalReaction(new Overloaded("OVERLOADED", ConfigLoader.getReactionDisplay("OVERLOADED"), ConfigLoader.getAuraElement("OVERLOADED"), ConfigLoader.getTriggerElement("OVERLOADED"), ConfigLoader.getGaugeUnitTax("OVERLOADED")));
+        if (ConfigLoader.isReactionEnable("REVERSE_OVERLOADED")) getReactionManager().registerElementalReaction(new Overloaded("REVERSE_OVERLOADED", ConfigLoader.getReactionDisplay("REVERSE_OVERLOADED"), ConfigLoader.getAuraElement("REVERSE_OVERLOADED"), ConfigLoader.getTriggerElement("REVERSE_OVERLOADED"), ConfigLoader.getGaugeUnitTax("REVERSE_OVERLOADED")));
+        if (ConfigLoader.isReactionEnable("VAPORIZE")) getReactionManager().registerElementalReaction(new Vaporize("VAPORIZE", ConfigLoader.getReactionDisplay("VAPORIZE"), ConfigLoader.getAuraElement("VAPORIZE"), ConfigLoader.getTriggerElement("VAPORIZE"), ConfigLoader.getGaugeUnitTax("VAPORIZE")));
+        if (ConfigLoader.isReactionEnable("REVERSE_VAPORIZE")) getReactionManager().registerElementalReaction(new Vaporize("REVERSE_VAPORIZE", ConfigLoader.getReactionDisplay("REVERSE_VAPORIZE"), ConfigLoader.getAuraElement("REVERSE_VAPORIZE"), ConfigLoader.getTriggerElement("REVERSE_VAPORIZE"), ConfigLoader.getGaugeUnitTax("REVERSE_VAPORIZE")));
+        if (ConfigLoader.isReactionEnable("MELT")) getReactionManager().registerElementalReaction(new Melt("MELT", ConfigLoader.getReactionDisplay("MELT"), ConfigLoader.getAuraElement("MELT"), ConfigLoader.getTriggerElement("MELT"), ConfigLoader.getGaugeUnitTax("MELT")));
+        if (ConfigLoader.isReactionEnable("REVERSE_MELT")) getReactionManager().registerElementalReaction(new Melt("REVERSE_MELT", ConfigLoader.getReactionDisplay("REVERSE_MELT"), ConfigLoader.getAuraElement("REVERSE_MELT"), ConfigLoader.getTriggerElement("REVERSE_MELT"), ConfigLoader.getGaugeUnitTax("REVERSE_MELT")));
+        if (ConfigLoader.isReactionEnable("SUPER_CONDUCT")) getReactionManager().registerElementalReaction(new SuperConduct("SUPER_CONDUCT", ConfigLoader.getReactionDisplay("SUPER_CONDUCT"), ConfigLoader.getAuraElement("SUPER_CONDUCT"), ConfigLoader.getTriggerElement("SUPER_CONDUCT"), ConfigLoader.getGaugeUnitTax("SUPER_CONDUCT")));
+        if (ConfigLoader.isReactionEnable("REVERSE_SUPER_CONDUCT")) getReactionManager().registerElementalReaction(new SuperConduct("REVERSE_SUPER_CONDUCT", ConfigLoader.getReactionDisplay("REVERSE_SUPER_CONDUCT"), ConfigLoader.getAuraElement("REVERSE_SUPER_CONDUCT"), ConfigLoader.getTriggerElement("REVERSE_SUPER_CONDUCT"), ConfigLoader.getGaugeUnitTax("REVERSE_SUPER_CONDUCT")));
+        if (ConfigLoader.isReactionEnable("ELECTRO_CHARGED")) getReactionManager().registerElementalReaction(new ElectroCharged("ELECTRO_CHARGED", ConfigLoader.getReactionDisplay("ELECTRO_CHARGED"), ConfigLoader.getReactionConfig().getString("ELECTRO_CHARGED.first-aura-element"), ConfigLoader.getReactionConfig().getString("ELECTRO_CHARGED.second-aura-element"), ConfigLoader.getReactionFrequency("ELECTRO_CHARGED"), ConfigLoader.getGaugeUnitTax("ELECTRO_CHARGED")));
+        if (ConfigLoader.isReactionEnable("FROZEN")) getReactionManager().registerElementalReaction(new Frozen("FROZEN", ConfigLoader.getReactionDisplay("FROZEN"), ConfigLoader.getAuraElement("FROZEN"), ConfigLoader.getTriggerElement("FROZEN"), ConfigLoader.getGaugeUnitTax("FROZEN")));
+        if (ConfigLoader.isReactionEnable("REVERSE_FROZEN")) getReactionManager().registerElementalReaction(new Frozen("REVERSE_FROZEN", ConfigLoader.getReactionDisplay("REVERSE_FROZEN"), ConfigLoader.getAuraElement("REVERSE_FROZEN"), ConfigLoader.getTriggerElement("REVERSE_FROZEN"), ConfigLoader.getGaugeUnitTax("REVERSE_FROZEN")));
 
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mm reload");
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mi reload all");
