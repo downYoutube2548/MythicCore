@@ -10,8 +10,9 @@ public class SnapshotStats {
         this.statsMap = new HashMap<>();
     }
 
-    public void setStat(String stat, double value) {
+    public SnapshotStats setStat(String stat, double value) {
         statsMap.put(stat, value);
+        return this;
     }
 
     public double getStat(String stat) {

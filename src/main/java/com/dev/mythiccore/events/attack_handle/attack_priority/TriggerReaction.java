@@ -28,6 +28,7 @@ import java.util.*;
 public class TriggerReaction {
 
     private static final Map<LivingEntity, Set<DoubleAuraReaction>> reactionTasks = new HashMap<>();
+    private static final Map<LivingEntity, Map<DoubleAuraReaction, SnapshotStats>> snapshotStats = new HashMap<>();
 
     @AttackHandle(priority = 2)
     public void attack(PlayerAttackEvent event) {
@@ -126,6 +127,27 @@ public class TriggerReaction {
                 if (reaction.getAura().equals(damage.getElement().getId()) || reaction.getTrigger().equals(damage.getElement().getId())) {
                     if (MythicCore.getAuraManager().getAura(entity.getUniqueId()).getMapAura().containsKey(rawReaction.getAura()) && MythicCore.getAuraManager().getAura(entity.getUniqueId()).getMapAura().containsKey(rawReaction.getTrigger())) {
 
+                        if (!snapshotStats.containsKey(entity)) {
+                            snapshotStats.put(entity, new HashMap<>(Map.of(reaction, new SnapshotStats())));
+                        } else {
+                            snapshotStats.get(entity).put(reaction, new SnapshotStats());
+                        }
+
+                        if (damager != null) {
+                            if (damager instanceof Player player) {
+                                PlayerData playerData = PlayerData.get(player);
+                                for (StatInstance instance : playerData.getStats().getMap().getInstances()) {
+                                    snapshotStats.get(entity).get(reaction).setStat(instance.getStat(), instance.getTotal());
+                                }
+                                snapshotStats.get(entity).get(reaction).setStat("LEVEL", playerData.getLevel());
+                            } else {
+                                ActiveMob mythicMob = MythicBukkit.inst().getMobManager().getActiveMob(damager.getUniqueId()).orElse(null);
+                                snapshotStats.get(entity).get(reaction).setStat("LEVEL", (mythicMob != null) ? mythicMob.getLevel() : 1);
+                            }
+                        } else {
+                            snapshotStats.get(entity).get(reaction).setStat("LEVEL", 1);
+                        }
+
                         if (reactionTasks.containsKey(entity) && reactionTasks.get(entity).contains(reaction)) return;
 
                         if (!reaction.getDisplay().equals("")) Utils.displayIndicator(reaction.getDisplay(), entity);
@@ -136,26 +158,10 @@ public class TriggerReaction {
                             reactionTasks.get(entity).add(reaction);
                         }
 
-                        SnapshotStats stats = new SnapshotStats();
-                        if (damager != null) {
-                            if (damager instanceof Player player) {
-                                PlayerData playerData = PlayerData.get(player);
-                                for (StatInstance instance : playerData.getStats().getMap().getInstances()) {
-                                    stats.setStat(instance.getStat(), instance.getTotal());
-                                }
-                                stats.setStat("LEVEL", playerData.getLevel());
-                            } else {
-                                ActiveMob mythicMob = MythicBukkit.inst().getMobManager().getActiveMob(damager.getUniqueId()).orElse(null);
-                                stats.setStat("LEVEL", (mythicMob != null) ? mythicMob.getLevel() : 1);
-                            }
-                        } else {
-                            stats.setStat("LEVEL", 1);
-                        }
-
                         Bukkit.getScheduler().runTaskTimerAsynchronously(MythicCore.getInstance(), (task) -> {
                             if (MythicCore.getAuraManager().getAura(entity.getUniqueId()).getMapAura().containsKey(rawReaction.getAura()) && MythicCore.getAuraManager().getAura(entity.getUniqueId()).getMapAura().containsKey(rawReaction.getTrigger())) {
 
-                                Bukkit.getScheduler().runTask(MythicCore.getInstance(), ()->reaction.t(damage, gauge_unit, decay_rate, entity, damager, damage_cause, stats));
+                                Bukkit.getScheduler().runTask(MythicCore.getInstance(), () -> reaction.t(damage, gauge_unit, decay_rate, entity, damager, damage_cause, snapshotStats.get(entity).getOrDefault(reaction, new SnapshotStats().setStat("LEVEL", 1))));
 
                             } else {
 
@@ -164,9 +170,14 @@ public class TriggerReaction {
                                     if (reactionTasks.get(entity).isEmpty()) reactionTasks.remove(entity);
                                 }
 
+                                if (snapshotStats.containsKey(entity)) {
+                                    snapshotStats.get(entity).remove(reaction);
+                                    if (snapshotStats.get(entity).isEmpty()) snapshotStats.remove(entity);
+                                }
+
                                 task.cancel();
                             }
-                        }, reaction.getFrequency(), reaction.getFrequency());
+                        }, 3, reaction.getFrequency());
                     }
                 }
             }
