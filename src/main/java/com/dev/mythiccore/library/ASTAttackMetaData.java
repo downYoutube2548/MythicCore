@@ -8,23 +8,21 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class ASTAttackMetaData extends AttackMetadata {
-    private String attack_source;
+    private String cooldown_source;
+    private AttackSource attack_source;
 
-    public ASTAttackMetaData(@NotNull DamageMetadata damage, @NotNull LivingEntity target, @Nullable StatProvider attacker) {
+    public ASTAttackMetaData(@NotNull DamageMetadata damage, @NotNull LivingEntity target, @Nullable StatProvider attacker, String cooldown_source, AttackSource attack_source) {
         super(damage, target, attacker);
-        this.attack_source = "default";
-    }
-
-    public ASTAttackMetaData(@NotNull DamageMetadata damage, @NotNull LivingEntity target, @Nullable StatProvider attacker, String attack_source) {
-        super(damage, target, attacker);
+        this.cooldown_source = cooldown_source;
         this.attack_source = attack_source;
     }
 
-    public String getAttackSource() {
-        return attack_source;
+    public String getInternalCooldownSource() {
+        return cooldown_source;
     }
-
-    public void setAttackSource(String attack_source) {
-        this.attack_source = attack_source;
+    public AttackSource getAttackSource() { return attack_source; }
+    public void setAttackSource(AttackSource attack_source) { this.attack_source = attack_source; }
+    public void setInternalCooldownSource(String attack_source) {
+        this.cooldown_source = attack_source;
     }
 }

@@ -15,7 +15,7 @@ General:
     - HYDRO
     - DENDRO
   internal-cooldown:
-    default: 0
+    default: 20
 
 Elemental-Modifier:
   # <Damage Cause>: <Element>

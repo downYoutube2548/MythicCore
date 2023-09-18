@@ -34,8 +34,11 @@ public class TriggerReaction {
     public void attack(PlayerAttackEvent event) {
 
         if (event.getAttack() instanceof ASTAttackMetaData ast_attack_data) {
-            if (MythicCore.getCooldownManager().getCooldown(event.getAttacker().getPlayer().getUniqueId()).getCooldown(event.getEntity(), ast_attack_data.getAttackSource()) > 0) return;
-            MythicCore.getCooldownManager().getCooldown(event.getAttacker().getPlayer().getUniqueId()).setCooldown(event.getEntity(), ast_attack_data.getAttackSource(), ConfigLoader.getInternalCooldown(ast_attack_data.getAttackSource()));
+            if (!ast_attack_data.getInternalCooldownSource().equals("0")) {
+                if (MythicCore.getCooldownManager().getCooldown(event.getAttacker().getPlayer().getUniqueId()).getCooldown(event.getEntity(), ast_attack_data.getInternalCooldownSource()) > 0)
+                    return;
+                MythicCore.getCooldownManager().getCooldown(event.getAttacker().getPlayer().getUniqueId()).setCooldown(event.getEntity(), ast_attack_data.getInternalCooldownSource(), ConfigLoader.getInternalCooldown(ast_attack_data.getInternalCooldownSource()));
+            }
         } else {
             if (MythicCore.getCooldownManager().getCooldown(event.getAttacker().getPlayer().getUniqueId()).getCooldown(event.getEntity(), "default") > 0) return;
             MythicCore.getCooldownManager().getCooldown(event.getAttacker().getPlayer().getUniqueId()).setCooldown(event.getEntity(), "default", ConfigLoader.getInternalCooldown("default"));
@@ -89,8 +92,10 @@ public class TriggerReaction {
 
                 if (attacker != null) {
                     if (a.getAttack() instanceof ASTAttackMetaData ast_attack_data) {
-                        if (MythicCore.getCooldownManager().getCooldown(attacker.getUniqueId()).getCooldown(a.getEntity(), ast_attack_data.getAttackSource()) > 0) return;
-                        MythicCore.getCooldownManager().getCooldown(attacker.getUniqueId()).setCooldown(a.getEntity(), ast_attack_data.getAttackSource(), ConfigLoader.getInternalCooldown(ast_attack_data.getAttackSource()));
+                        if (!ast_attack_data.getInternalCooldownSource().equals("0")) {
+                            if (MythicCore.getCooldownManager().getCooldown(attacker.getUniqueId()).getCooldown(a.getEntity(), ast_attack_data.getInternalCooldownSource()) > 0) return;
+                            MythicCore.getCooldownManager().getCooldown(attacker.getUniqueId()).setCooldown(a.getEntity(), ast_attack_data.getInternalCooldownSource(), ConfigLoader.getInternalCooldown(ast_attack_data.getInternalCooldownSource()));
+                        }
                     } else {
                         if (MythicCore.getCooldownManager().getCooldown(attacker.getUniqueId()).getCooldown(a.getEntity(), "default") > 0) return;
                         MythicCore.getCooldownManager().getCooldown(attacker.getUniqueId()).setCooldown(a.getEntity(), "default", ConfigLoader.getInternalCooldown("default"));

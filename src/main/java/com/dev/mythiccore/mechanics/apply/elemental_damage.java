@@ -4,6 +4,7 @@ import com.dev.mythiccore.MythicCore;
 import com.dev.mythiccore.events.attack_handle.attack_priority.TriggerReaction;
 import com.dev.mythiccore.library.ASTAttackMetaData;
 import com.dev.mythiccore.library.ASTEntityStatProvider;
+import com.dev.mythiccore.library.AttackSource;
 import com.dev.mythiccore.utils.ConfigLoader;
 import com.dev.mythiccore.utils.DamageManager;
 import com.dev.mythiccore.utils.Utils;
@@ -80,7 +81,7 @@ public class elemental_damage implements ITargetedEntitySkill {
                     DamageMetadata damage = new DamageMetadata(amount.get(skillMetadata), element1, DamageType.SKILL);
                     StatMap statMap = playerData.getMMOPlayerData().getStatMap();
                     PlayerMetadata playerMetadata = new PlayerMetadata(statMap, EquipmentSlot.MAIN_HAND);
-                    AttackMetadata attack = new ASTAttackMetaData(damage, (LivingEntity) bukkittarget, playerMetadata, cooldown_source);
+                    AttackMetadata attack = new ASTAttackMetaData(damage, (LivingEntity) bukkittarget, playerMetadata, cooldown_source, AttackSource.SKILL);
 
                     Bukkit.getScheduler().runTask(MythicCore.getInstance(), () -> {
 
@@ -99,7 +100,7 @@ public class elemental_damage implements ITargetedEntitySkill {
                 else {
 
                     DamageMetadata damage = new DamageMetadata(amount.get(skillMetadata), Objects.requireNonNull(Element.valueOf(element), ConfigLoader.getDefaultElement()), DamageType.SKILL);
-                    AttackMetadata attack = new ASTAttackMetaData(damage, (LivingEntity) bukkittarget, new ASTEntityStatProvider((LivingEntity) bukkitcaster), cooldown_source);
+                    AttackMetadata attack = new ASTAttackMetaData(damage, (LivingEntity) bukkittarget, new ASTEntityStatProvider((LivingEntity) bukkitcaster), cooldown_source, AttackSource.SKILL);
                     Bukkit.getScheduler().runTask(MythicCore.getInstance(), () -> {
                         DamageManager.registerAttack(attack, true, false, EntityDamageEvent.DamageCause.ENTITY_ATTACK);
 

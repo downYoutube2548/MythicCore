@@ -1,7 +1,6 @@
 package com.dev.mythiccore.events.attack_handle;
 
 import com.dev.mythiccore.MythicCore;
-import com.dev.mythiccore.commands.core;
 import com.dev.mythiccore.events.attack_handle.attack_priority.TriggerReaction;
 import com.dev.mythiccore.library.ASTEntityStatProvider;
 import com.dev.mythiccore.utils.ConfigLoader;
@@ -22,7 +21,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
@@ -34,12 +32,6 @@ import java.util.Objects;
  * and operation of disable regular damage will happen here
  */
 public class AttackModifier implements Listener {
-
-    @EventHandler
-    public void onInteract(PlayerInteractEntityEvent e) {
-        core.entity = e.getRightClicked();
-    }
-
 
     /** Call when any entity attack
      * Use to set ALL non-elemental damage to default element

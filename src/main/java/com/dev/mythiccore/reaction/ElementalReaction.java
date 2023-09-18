@@ -5,6 +5,7 @@ import com.dev.mythiccore.aura.AuraData;
 import com.dev.mythiccore.events.attack_handle.attack_priority.TriggerReaction;
 import com.dev.mythiccore.library.ASTAttackMetaData;
 import com.dev.mythiccore.library.ASTEntityStatProvider;
+import com.dev.mythiccore.library.AttackSource;
 import com.dev.mythiccore.utils.ConfigLoader;
 import com.dev.mythiccore.utils.DamageManager;
 import com.dev.mythiccore.utils.Utils;
@@ -67,15 +68,15 @@ public abstract class ElementalReaction {
          damage(new DamageMetadata(amount, DamageType.DOT) , caster, target, knockback, damage_cause);
     }
 
-    public void damage(double amount, Entity caster, LivingEntity target, String element, boolean damage_calculate, double aura_gauge_unit, String aura_decay_rate, boolean knockback, EntityDamageEvent.DamageCause damage_cause) {
+    public void damage(double amount, Entity caster, LivingEntity target, String element, boolean damage_calculate, double aura_gauge_unit, String aura_decay_rate, String cooldown_source, boolean knockback, EntityDamageEvent.DamageCause damage_cause) {
         Element e = Objects.requireNonNull(MythicLib.plugin.getElements().get(element));
         DamageMetadata damageMetadata = new DamageMetadata(amount, e, damage_calculate ? DamageType.SKILL : DamageType.DOT);
-        damage(damageMetadata, caster, target, aura_gauge_unit, aura_decay_rate, knockback, damage_cause);
+        damage(damageMetadata, caster, target, aura_gauge_unit, aura_decay_rate, cooldown_source, knockback, damage_cause);
     }
 
-    public void damage(double amount, Entity caster, LivingEntity target, @NotNull Element element, boolean damage_calculate, double aura_gauge_unit, String aura_decay_rate, boolean knockback, EntityDamageEvent.DamageCause damage_cause) {
+    public void damage(double amount, Entity caster, LivingEntity target, @NotNull Element element, boolean damage_calculate, double aura_gauge_unit, String aura_decay_rate, String cooldown_source, boolean knockback, EntityDamageEvent.DamageCause damage_cause) {
         DamageMetadata damageMetadata = new DamageMetadata(amount, element, damage_calculate ? DamageType.SKILL : DamageType.DOT);
-        damage(damageMetadata, caster, target, aura_gauge_unit, aura_decay_rate, knockback, damage_cause);
+        damage(damageMetadata, caster, target, aura_gauge_unit, aura_decay_rate, cooldown_source, knockback, damage_cause);
     }
 
     public void damage(double amount, Entity caster, LivingEntity target, String element, boolean damage_calculate, boolean knockback, EntityDamageEvent.DamageCause damage_cause) {
@@ -94,24 +95,24 @@ public abstract class ElementalReaction {
 
             StatMap statMap = playerData.getMMOPlayerData().getStatMap();
             PlayerMetadata playerMetadata = new PlayerMetadata(statMap, EquipmentSlot.MAIN_HAND);
-            AttackMetadata attack = new ASTAttackMetaData(damage, target, playerMetadata);
+            AttackMetadata attack = new ASTAttackMetaData(damage, target, playerMetadata, "0", AttackSource.REACTION);
 
             Bukkit.getScheduler().runTask(MythicCore.getInstance(), () -> DamageManager.registerAttack(attack, knockback, true, damage_cause));
 
         }  else {
-            AttackMetadata attack = new ASTAttackMetaData(damage, target, caster != null ? new ASTEntityStatProvider((LivingEntity) caster) : null);
-            Bukkit.getScheduler().runTask(MythicCore.getInstance(), ()-> DamageManager.registerAttack(attack, knockback, true, damage_cause));
+            AttackMetadata attack = new ASTAttackMetaData(damage, target, caster != null ? new ASTEntityStatProvider((LivingEntity) caster) : null, "0", AttackSource.REACTION);
+            Bukkit.getScheduler().runTask(MythicCore.getInstance(), () -> DamageManager.registerAttack(attack, knockback, true, damage_cause));
         }
     }
 
-    private void damage(DamageMetadata damage, Entity caster, LivingEntity target, double gauge_unit, String decay_rate, boolean knockback, EntityDamageEvent.DamageCause damage_cause) {
+    private void damage(DamageMetadata damage, Entity caster, LivingEntity target, double gauge_unit, String decay_rate, String cooldown_source, boolean knockback, EntityDamageEvent.DamageCause damage_cause) {
 
         if (caster instanceof Player) {
             PlayerData playerData = PlayerData.get(caster.getUniqueId());
 
             StatMap statMap = playerData.getMMOPlayerData().getStatMap();
             PlayerMetadata playerMetadata = new PlayerMetadata(statMap, EquipmentSlot.MAIN_HAND);
-            AttackMetadata attack = new AttackMetadata(damage, target, playerMetadata);
+            AttackMetadata attack = new ASTAttackMetaData(damage, target, playerMetadata, cooldown_source, AttackSource.REACTION);
 
             Bukkit.getScheduler().runTask(MythicCore.getInstance(), () -> DamageManager.registerAttack(attack, knockback, true, damage_cause));
 
@@ -123,7 +124,7 @@ public abstract class ElementalReaction {
             }
 
         }  else {
-            AttackMetadata attack = new AttackMetadata(damage, target, caster != null ? new ASTEntityStatProvider((LivingEntity) caster) : null);
+            AttackMetadata attack = new ASTAttackMetaData(damage, target, caster != null ? new ASTEntityStatProvider((LivingEntity) caster) : null, cooldown_source, AttackSource.REACTION);
             Bukkit.getScheduler().runTask(MythicCore.getInstance(), ()-> DamageManager.registerAttack(attack, knockback, true, damage_cause));
 
             for (DamagePacket packet : damage.getPackets()) {
