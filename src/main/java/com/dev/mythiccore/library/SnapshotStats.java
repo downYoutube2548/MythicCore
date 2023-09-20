@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SnapshotStats {
-    private Map<String, Double> statsMap;
+    private final Map<String, Double> statsMap;
 
     public SnapshotStats() {
         this.statsMap = new HashMap<>();
