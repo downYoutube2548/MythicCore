@@ -2,9 +2,11 @@ package com.dev.mythiccore;
 
 import com.dev.mythiccore.aura.Aura;
 import com.dev.mythiccore.buff.Buff;
+import com.dev.mythiccore.combat.Combat;
 import com.dev.mythiccore.commands.core;
 import com.dev.mythiccore.cooldown.InternalCooldown;
 import com.dev.mythiccore.events.MythicMechanicLoad;
+import com.dev.mythiccore.events.PlayerDeath;
 import com.dev.mythiccore.events.attack_handle.AttackModifier;
 import com.dev.mythiccore.events.attack_handle.CancelFireTick;
 import com.dev.mythiccore.events.attack_handle.RemoveVanillaDamage;
@@ -17,6 +19,8 @@ import com.dev.mythiccore.events.attack_handle.deal_damage.PlayerAttack;
 import com.dev.mythiccore.listener.AttackEventListener;
 import com.dev.mythiccore.reaction.ReactionManager;
 import com.dev.mythiccore.reaction.reactions.*;
+import com.dev.mythiccore.reaction.reactions.frozen.FreezeActionCanceling;
+import com.dev.mythiccore.reaction.reactions.frozen.Frozen;
 import com.dev.mythiccore.utils.ConfigLoader;
 import com.dev.mythiccore.visuals.ASTDamageIndicators;
 import com.dev.mythiccore.visuals.AuraVisualizer;
@@ -85,6 +89,9 @@ public final class MythicCore extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new CancelFireTick(), this);
         Bukkit.getPluginManager().registerEvents(new ASTDamageIndicators(getConfig().getConfigurationSection("Indicators")), this);
         Bukkit.getPluginManager().registerEvents(new RemoveVanillaDamage(), this);
+        Bukkit.getPluginManager().registerEvents(new Combat(), this);
+        Bukkit.getPluginManager().registerEvents(new FreezeActionCanceling(), this);
+        Bukkit.getPluginManager().registerEvents(new PlayerDeath(), this);
         Bukkit.getPluginManager().registerEvents(getAttack(), this);
 
         getAttack().registerAttackEvent(new ShieldRefutation());

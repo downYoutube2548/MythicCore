@@ -24,10 +24,11 @@ public class MobAttack implements Listener {
 
             LivingEntity attacker;
             Entity damager = event.getDamager();
+
             if (damager instanceof Projectile projectile) {
 
                 // return if damager is Thrown Potion
-                if (projectile instanceof AreaEffectCloud || projectile instanceof ThrownPotion) {
+                if (projectile instanceof ThrownPotion) {
                     new MiscAttack().onMiscAttack(new MiscAttackEvent(event.toBukkit(), event.getAttack()));
                     return;
                 }
@@ -38,6 +39,11 @@ public class MobAttack implements Listener {
                 }
 
                 attacker = (LivingEntity) projectile.getShooter();
+
+            } else if (damager instanceof AreaEffectCloud) {
+
+                new MiscAttack().onMiscAttack(new MiscAttackEvent(event.toBukkit(), event.getAttack()));
+                return;
 
             } else if (damager instanceof LivingEntity) {
 

@@ -52,6 +52,10 @@ public class CooldownData {
         removeCooldown(entity);
     }
 
+    public void clearCooldown() {
+        MythicCore.getCooldownManager().entityCooldownData.remove(this.uuid);
+    }
+
     public void reduceCooldown(LivingEntity entity, String source, long duration) {
         if (cooldowns.containsKey(entity) && cooldowns.get(entity).containsKey(source)) {
             if (duration >= cooldowns.get(entity).get(source)) {

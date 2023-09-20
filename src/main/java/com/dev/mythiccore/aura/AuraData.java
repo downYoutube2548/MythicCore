@@ -82,6 +82,10 @@ public class AuraData {
         if (mapAura.isEmpty()) MythicCore.getAuraManager().entityAura.remove(this.uuid);
     }
 
+    public void clearAura() {
+        MythicCore.getAuraManager().entityAura.remove(this.uuid);
+    }
+
     protected void reduceAura(String aura, long duration) {
         if (MythicLib.plugin.getElements().get(aura) == null && ConfigLoader.getSpecialAuraIcon(aura) == null) return;
         if (!this.mapAura.containsKey(aura)) return;

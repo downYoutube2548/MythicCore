@@ -118,8 +118,7 @@ public abstract class ElementalReaction {
 
             for (DamagePacket packet : damage.getPackets()) {
                 if (packet.getElement() == null) continue;
-                if (!ConfigLoader.getAuraWhitelist().contains(packet.getElement().getId())) continue;
-                MythicCore.getAuraManager().getAura(target.getUniqueId()).addAura(packet.getElement().getId(), gauge_unit, decay_rate);
+                if (ConfigLoader.getAuraWhitelist().contains(packet.getElement().getId())) MythicCore.getAuraManager().getAura(target.getUniqueId()).addAura(packet.getElement().getId(), gauge_unit, decay_rate);
                 TriggerReaction.triggerReactions(packet, gauge_unit, decay_rate, target, caster, damage_cause);
             }
 
@@ -129,8 +128,7 @@ public abstract class ElementalReaction {
 
             for (DamagePacket packet : damage.getPackets()) {
                 if (packet.getElement() == null) continue;
-                if (!ConfigLoader.getAuraWhitelist().contains(packet.getElement().getId())) continue;
-                MythicCore.getAuraManager().getAura(target.getUniqueId()).addAura(packet.getElement().getId(), gauge_unit, decay_rate);
+                if (ConfigLoader.getAuraWhitelist().contains(packet.getElement().getId())) MythicCore.getAuraManager().getAura(target.getUniqueId()).addAura(packet.getElement().getId(), gauge_unit, decay_rate);
                 TriggerReaction.triggerReactions(packet, gauge_unit, decay_rate, target, caster, damage_cause);
             }
         }

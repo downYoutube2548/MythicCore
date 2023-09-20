@@ -37,15 +37,4 @@ public class MythicMechanicLoad implements Listener {
             event.register(new set_resistance(event.getConfig()));
         }
     }
-
-    /*
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void attack(PlayerAttackEvent event) {
-        for (DamagePacket packet : event.getDamage().getPackets()) {
-            if (packet.getElement() == null) continue;
-            packet.setValue(50);
-        }
-    }
-
-     */
 }

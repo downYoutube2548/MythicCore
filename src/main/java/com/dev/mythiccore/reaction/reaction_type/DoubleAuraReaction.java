@@ -26,7 +26,7 @@ public abstract class DoubleAuraReaction extends ElementalReaction {
     public void t(DamagePacket damage, double gauge_unit, String decay_rate, LivingEntity entity, @Nullable Entity damager, EntityDamageEvent.DamageCause damage_cause, SnapshotStats stats) {
 
         if (damage.getElement() == null) return;
-        double final_gauge_unit = gauge_unit * gauge_unit_tax;
+        double final_gauge_unit = gauge_unit_tax;
         getAuraData(entity.getUniqueId()).reduceAura(getAura(), final_gauge_unit);
         getAuraData(entity.getUniqueId()).reduceAura(getTrigger(), final_gauge_unit);
 

@@ -1,5 +1,6 @@
 package com.dev.mythiccore.reaction.reactions;
 
+import com.dev.mythiccore.combat.Combat;
 import com.dev.mythiccore.reaction.reaction_type.TriggerAuraReaction;
 import com.dev.mythiccore.utils.StatCalculation;
 import com.dev.mythiccore.utils.Utils;
@@ -32,7 +33,6 @@ public class Overloaded extends TriggerAuraReaction {
 
         int attacker_level = 1;
         double elemental_mastery = 0;
-        double resistance_multiplier = StatCalculation.getResistanceMultiplier(entity.getUniqueId(), getConfig().getString("damage-element"));
 
         if (damager != null) {
             if (damager instanceof Player player) {
@@ -47,23 +47,26 @@ public class Overloaded extends TriggerAuraReaction {
             }
         }
 
-        String formula = getConfig().getString("damage-formula");
-        assert formula != null;
-        Expression expression = new ExpressionBuilder(formula)
-                .variables("attacker_level", "elemental_mastery", "resistance_multiplier")
-                .build()
-                .setVariable("attacker_level", attacker_level)
-                .setVariable("elemental_mastery", elemental_mastery)
-                .setVariable("resistance_multiplier", resistance_multiplier);
-
-        double final_damage = expression.evaluate();
 
         double aoe_radius = getConfig().getDouble("aoe-radius");
         List<Entity> aoe_entities = new ArrayList<>(entity.getNearbyEntities(aoe_radius, aoe_radius, aoe_radius));
         aoe_entities.add(entity);
         for (Entity aoe_entity : aoe_entities) {
-            if (aoe_entity == damager || aoe_entity.isInvulnerable() || (aoe_entity instanceof Player player && (player.getGameMode().equals(GameMode.CREATIVE) || player.getGameMode().equals(GameMode.SPECTATOR)))) continue;
+            if (aoe_entity == damager || aoe_entity.isInvulnerable() || aoe_entity.hasMetadata("NPC") || !Combat.getLastMobType(damager).equals(Combat.getMobType(aoe_entity)) || (aoe_entity instanceof Player player && (player.getGameMode().equals(GameMode.CREATIVE) || player.getGameMode().equals(GameMode.SPECTATOR)))) continue;
             if (aoe_entity instanceof LivingEntity aoe_living_entity && !aoe_living_entity.isInvulnerable()) {
+
+                double resistance_multiplier = StatCalculation.getResistanceMultiplier(entity.getUniqueId(), getConfig().getString("damage-element"));
+
+                String formula = getConfig().getString("damage-formula");
+                assert formula != null;
+                Expression expression = new ExpressionBuilder(formula)
+                        .variables("attacker_level", "elemental_mastery", "resistance_multiplier")
+                        .build()
+                        .setVariable("attacker_level", attacker_level)
+                        .setVariable("elemental_mastery", elemental_mastery)
+                        .setVariable("resistance_multiplier", resistance_multiplier);
+                double final_damage = expression.evaluate();
+
                 damage(final_damage, damager, aoe_living_entity, getConfig().getString("damage-element"), false, true, damage_cause);
 
                 if (damager != null) {

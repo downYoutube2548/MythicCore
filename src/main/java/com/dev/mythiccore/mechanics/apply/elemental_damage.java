@@ -87,8 +87,7 @@ public class elemental_damage implements ITargetedEntitySkill {
 
                         for (DamagePacket packet : damage.getPackets()) {
                             if (packet.getElement() == null) continue;
-                            if (!ConfigLoader.getAuraWhitelist().contains(packet.getElement().getId())) continue;
-                            MythicCore.getAuraManager().getAura(bukkittarget.getUniqueId()).addAura(packet.getElement().getId(), gauge_unit, decay_rate);
+                            if (ConfigLoader.getAuraWhitelist().contains(packet.getElement().getId())) MythicCore.getAuraManager().getAura(bukkittarget.getUniqueId()).addAura(packet.getElement().getId(), gauge_unit, decay_rate);
                             TriggerReaction.triggerReactions(packet, gauge_unit, decay_rate, (LivingEntity) bukkittarget, bukkitcaster, EntityDamageEvent.DamageCause.ENTITY_ATTACK);
                         }
 
@@ -106,8 +105,7 @@ public class elemental_damage implements ITargetedEntitySkill {
 
                         for (DamagePacket packet : damage.getPackets()) {
                             if (packet.getElement() == null) continue;
-                            if (!ConfigLoader.getAuraWhitelist().contains(packet.getElement().getId())) continue;
-                            MythicCore.getAuraManager().getAura(bukkittarget.getUniqueId()).addAura(packet.getElement().getId(), gauge_unit, decay_rate);
+                            if (ConfigLoader.getAuraWhitelist().contains(packet.getElement().getId())) MythicCore.getAuraManager().getAura(bukkittarget.getUniqueId()).addAura(packet.getElement().getId(), gauge_unit, decay_rate);
                             TriggerReaction.triggerReactions(packet, gauge_unit, decay_rate, (LivingEntity) bukkittarget, bukkitcaster, EntityDamageEvent.DamageCause.ENTITY_ATTACK);
                         }
                     });

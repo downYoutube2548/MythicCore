@@ -2,6 +2,7 @@ package com.dev.mythiccore.reaction.reactions;
 
 import com.dev.mythiccore.MythicCore;
 import com.dev.mythiccore.buff.buffs.ElementalResistanceReduction;
+import com.dev.mythiccore.combat.Combat;
 import com.dev.mythiccore.reaction.reaction_type.TriggerAuraReaction;
 import com.dev.mythiccore.utils.StatCalculation;
 import io.lumine.mythic.bukkit.MythicBukkit;
@@ -61,7 +62,7 @@ public class SuperConduct extends TriggerAuraReaction {
         List<Entity> aoe_entities = new ArrayList<>(entity.getNearbyEntities(aoe_radius, aoe_radius, aoe_radius));
         aoe_entities.add(entity);
         for (Entity aoe_entity : aoe_entities) {
-            if (aoe_entity == damager || aoe_entity.isInvulnerable() || (aoe_entity instanceof Player player && (player.getGameMode().equals(GameMode.CREATIVE) || player.getGameMode().equals(GameMode.SPECTATOR)))) continue;
+            if (aoe_entity == damager || aoe_entity.isInvulnerable() || aoe_entity.hasMetadata("NPC") || !Combat.getLastMobType(damager).equals(Combat.getMobType(aoe_entity)) || (aoe_entity instanceof Player player && (player.getGameMode().equals(GameMode.CREATIVE) || player.getGameMode().equals(GameMode.SPECTATOR)))) continue;
             if (aoe_entity instanceof LivingEntity aoe_living_entity && !aoe_living_entity.isInvulnerable()) {
                 damage(final_damage, damager, aoe_living_entity, getConfig().getString("damage-element"), false, true, damage_cause);
                 MythicCore.getBuffManager().getBuff(aoe_living_entity.getUniqueId()).addBuff(new ElementalResistanceReduction(getConfig().getDouble("resistance-reduction"), getConfig().getLong("resistance-reduction-duration"), getConfig().getString("resistance-reduction-element")));

@@ -74,7 +74,7 @@ public class ConfigLoader {
         return MythicCore.getInstance().getConfig().getDouble("Elemental-Reaction."+reaction_id+".gauge-unit-tax");
     }
     public static Long getDecayRate(String suffix) {
-        return MythicCore.getInstance().getConfig().getLong("General.decay-rate."+suffix);
+        return MythicCore.getInstance().getConfig().getLong("General.decay-rate."+suffix, 200);
     }
     public static Double getDefaultGaugeUnit() { return Double.parseDouble(Objects.requireNonNull(MythicCore.getInstance().getConfig().getString("General.default-gauge-unit")).split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)")[0]); }
     public static String getDefaultDecayRate() { return Objects.requireNonNull(MythicCore.getInstance().getConfig().getString("General.default-gauge-unit")).split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)")[1]; }
@@ -115,6 +115,10 @@ public class ConfigLoader {
                 }
             }
         }
+    }
+
+    public static String getMessage(String path, boolean prefix) {
+        return prefix ? Utils.colorize(MythicCore.getInstance().getConfig().getString("message.prefix")+MythicCore.getInstance().getConfig().getString("message."+path)) : Utils.colorize(MythicCore.getInstance().getConfig().getString(path));
     }
 
     private static void registerDoubleStats(ConfigurationSection stats) {

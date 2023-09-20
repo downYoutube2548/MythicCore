@@ -1,6 +1,7 @@
 package com.dev.mythiccore.events.attack_handle.attack_priority;
 
 import com.dev.mythiccore.MythicCore;
+import com.dev.mythiccore.combat.Combat;
 import com.dev.mythiccore.library.ASTAttackMetaData;
 import com.dev.mythiccore.library.ASTEntityStatProvider;
 import com.dev.mythiccore.library.SnapshotStats;
@@ -33,22 +34,21 @@ public class TriggerReaction {
     @AttackHandle(priority = 2)
     public void attack(PlayerAttackEvent event) {
 
-        if (event.getAttack() instanceof ASTAttackMetaData ast_attack_data) {
-            if (!ast_attack_data.getInternalCooldownSource().equals("0")) {
-                if (MythicCore.getCooldownManager().getCooldown(event.getAttacker().getPlayer().getUniqueId()).getCooldown(event.getEntity(), ast_attack_data.getInternalCooldownSource()) > 0)
-                    return;
-                MythicCore.getCooldownManager().getCooldown(event.getAttacker().getPlayer().getUniqueId()).setCooldown(event.getEntity(), ast_attack_data.getInternalCooldownSource(), ConfigLoader.getInternalCooldown(ast_attack_data.getInternalCooldownSource()));
-            }
-        } else {
-            if (MythicCore.getCooldownManager().getCooldown(event.getAttacker().getPlayer().getUniqueId()).getCooldown(event.getEntity(), "default") > 0) return;
-            MythicCore.getCooldownManager().getCooldown(event.getAttacker().getPlayer().getUniqueId()).setCooldown(event.getEntity(), "default", ConfigLoader.getInternalCooldown("default"));
-        }
-
         for (DamagePacket packet : event.getDamage().getPackets()) {
+
+            if (!Arrays.asList(packet.getTypes()).contains(DamageType.DOT)) {
+                if (event.getAttack() instanceof ASTAttackMetaData ast_attack_data) {
+                    if (MythicCore.getCooldownManager().getCooldown(event.getAttacker().getPlayer().getUniqueId()).getCooldown(event.getEntity(), ast_attack_data.getInternalCooldownSource()) > 0) return;
+                    MythicCore.getCooldownManager().getCooldown(event.getAttacker().getPlayer().getUniqueId()).setCooldown(event.getEntity(), ast_attack_data.getInternalCooldownSource(), ConfigLoader.getInternalCooldown(ast_attack_data.getInternalCooldownSource()));
+                } else {
+                    if (MythicCore.getCooldownManager().getCooldown(event.getAttacker().getPlayer().getUniqueId()).getCooldown(event.getEntity(), "default") > 0) return;
+                    MythicCore.getCooldownManager().getCooldown(event.getAttacker().getPlayer().getUniqueId()).setCooldown(event.getEntity(), "default", ConfigLoader.getInternalCooldown("default"));
+                }
+            }
+
             if (Arrays.asList(packet.getTypes()).contains(DamageType.SKILL) || Arrays.asList(packet.getTypes()).contains(DamageType.DOT)) continue;
             if (packet.getElement() == null) continue;
-            if (!ConfigLoader.getAuraWhitelist().contains(packet.getElement().getId())) continue;
-            MythicCore.getAuraManager().getAura(event.getEntity().getUniqueId()).addAura(packet.getElement().getId(), ConfigLoader.getDefaultGaugeUnit(), ConfigLoader.getDefaultDecayRate());
+            if (ConfigLoader.getAuraWhitelist().contains(packet.getElement().getId())) MythicCore.getAuraManager().getAura(event.getEntity().getUniqueId()).addAura(packet.getElement().getId(), ConfigLoader.getDefaultGaugeUnit(), ConfigLoader.getDefaultDecayRate());
             triggerReactions(packet, ConfigLoader.getDefaultGaugeUnit(), ConfigLoader.getDefaultDecayRate(), event.getEntity(), event.getAttacker().getPlayer(), event.toBukkit().getCause());
         }
     }
@@ -76,7 +76,7 @@ public class TriggerReaction {
                     if (damager instanceof Projectile projectile) {
 
                         // if damager is not Thrown Potion
-                        if (!(projectile instanceof AreaEffectCloud || projectile instanceof ThrownPotion)) {
+                        if (!(projectile instanceof ThrownPotion)) {
                             // if shooter is living entity
                             if (projectile.getShooter() instanceof LivingEntity) {
                                 attacker = (LivingEntity) projectile.getShooter();
@@ -90,23 +90,23 @@ public class TriggerReaction {
                     }
                 }
 
-                if (attacker != null) {
-                    if (a.getAttack() instanceof ASTAttackMetaData ast_attack_data) {
-                        if (!ast_attack_data.getInternalCooldownSource().equals("0")) {
-                            if (MythicCore.getCooldownManager().getCooldown(attacker.getUniqueId()).getCooldown(a.getEntity(), ast_attack_data.getInternalCooldownSource()) > 0) return;
-                            MythicCore.getCooldownManager().getCooldown(attacker.getUniqueId()).setCooldown(a.getEntity(), ast_attack_data.getInternalCooldownSource(), ConfigLoader.getInternalCooldown(ast_attack_data.getInternalCooldownSource()));
-                        }
-                    } else {
-                        if (MythicCore.getCooldownManager().getCooldown(attacker.getUniqueId()).getCooldown(a.getEntity(), "default") > 0) return;
-                        MythicCore.getCooldownManager().getCooldown(attacker.getUniqueId()).setCooldown(a.getEntity(), "default", ConfigLoader.getInternalCooldown("default"));
-                    }
-                }
-
                 for (DamagePacket packet : a.getDamage().getPackets()) {
+
+                    if (!Arrays.asList(packet.getTypes()).contains(DamageType.DOT)) {
+                        if (attacker != null) {
+                            if (a.getAttack() instanceof ASTAttackMetaData ast_attack_data) {
+                                if (MythicCore.getCooldownManager().getCooldown(attacker.getUniqueId()).getCooldown(a.getEntity(), ast_attack_data.getInternalCooldownSource()) > 0) return;
+                                MythicCore.getCooldownManager().getCooldown(attacker.getUniqueId()).setCooldown(a.getEntity(), ast_attack_data.getInternalCooldownSource(), ConfigLoader.getInternalCooldown(ast_attack_data.getInternalCooldownSource()));
+                            } else {
+                                if (MythicCore.getCooldownManager().getCooldown(attacker.getUniqueId()).getCooldown(a.getEntity(), "default") > 0) return;
+                                MythicCore.getCooldownManager().getCooldown(attacker.getUniqueId()).setCooldown(a.getEntity(), "default", ConfigLoader.getInternalCooldown("default"));
+                            }
+                        }
+                    }
+
                     if (Arrays.asList(packet.getTypes()).contains(DamageType.SKILL) || Arrays.asList(packet.getTypes()).contains(DamageType.DOT)) continue;
                     if (packet.getElement() == null) continue;
-                    if (!ConfigLoader.getAuraWhitelist().contains(packet.getElement().getId())) continue;
-                    MythicCore.getAuraManager().getAura(a.getEntity().getUniqueId()).addAura(packet.getElement().getId(), ConfigLoader.getDefaultGaugeUnit(), ConfigLoader.getDefaultDecayRate());
+                    if (ConfigLoader.getAuraWhitelist().contains(packet.getElement().getId())) MythicCore.getAuraManager().getAura(a.getEntity().getUniqueId()).addAura(packet.getElement().getId(), ConfigLoader.getDefaultGaugeUnit(), ConfigLoader.getDefaultDecayRate());
                     triggerReactions(packet, ConfigLoader.getDefaultGaugeUnit(), ConfigLoader.getDefaultDecayRate(), a.getEntity(), attacker, a.toBukkit().getCause());
                 }
             }
@@ -145,12 +145,15 @@ public class TriggerReaction {
                                     snapshotStats.get(entity).get(reaction).setStat(instance.getStat(), instance.getTotal());
                                 }
                                 snapshotStats.get(entity).get(reaction).setStat("LEVEL", playerData.getLevel());
+                                snapshotStats.get(entity).get(reaction).setStat("LAST_MOB_TYPE", Combat.getLastMobType(player).getId());
                             } else {
                                 ActiveMob mythicMob = MythicBukkit.inst().getMobManager().getActiveMob(damager.getUniqueId()).orElse(null);
                                 snapshotStats.get(entity).get(reaction).setStat("LEVEL", (mythicMob != null) ? mythicMob.getLevel() : 1);
+                                snapshotStats.get(entity).get(reaction).setStat("LAST_MOB_TYPE", Combat.getLastMobType(damager).getId());
                             }
                         } else {
                             snapshotStats.get(entity).get(reaction).setStat("LEVEL", 1);
+                            snapshotStats.get(entity).get(reaction).setStat("LAST_MOB_TYPE", Combat.MobType.NULL.getId());
                         }
 
                         if (reactionTasks.containsKey(entity) && reactionTasks.get(entity).contains(reaction)) return;

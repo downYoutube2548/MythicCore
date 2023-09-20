@@ -84,6 +84,10 @@ public class BuffData {
         }
     }
 
+    public void clearBuff() {
+        MythicCore.getBuffManager().mapBuffData.remove(this.uuid);
+    }
+
     public void reduceDuration(UUID uuid, long duration) {
         for (BuffStatus buff : totalBuff) {
             if (buff.getUniqueId() == uuid) {

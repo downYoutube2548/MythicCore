@@ -15,7 +15,7 @@ General:
     - HYDRO
     - DENDRO
   internal-cooldown:
-    default: 20
+    default: 0
 
 Elemental-Modifier:
   # <Damage Cause>: <Element>
@@ -134,6 +134,9 @@ Elemental-Reaction:
     second-aura-element: ELECTRO
     frequency: 20
     gauge-unit-tax: 0.3
+    maximum-bounces-target: 3
+    check-radius: 3
+    bounce-required-aura: HYDRO
     damage-element: ELECTRO
     damage-formula: "1.2 * (16.12 * (attacker_level + 16) - 257.23) * (1 + (16 * (elemental_mastery / (elemental_mastery + 2000)))) * resistance_multiplier"
   FROZEN:
@@ -345,3 +348,11 @@ Stats:
         Name: Hidden Evasion
         Material: FEATHER
         Lore: ['&7Increase all evasion']
+
+message:
+  prefix: "&8[&dMythicCore&8] "
+  invalid-decay-rate: "&cDecay Rate ไม่ถูกต้อง!"
+  invalid-aura: "&cออร่าไม่ถูกต้อง!"
+  player-not-found: "&cไม่พบผู้เล่น"
+  syntax-error: "&cคำสั่งไม่ถูกต้อง!"
+  apply-aura-success: "&eใส่ออร่า &6{aura} &eให้กับ &f{player} &eด้วยเกจธาตุ &b{gauge}"
