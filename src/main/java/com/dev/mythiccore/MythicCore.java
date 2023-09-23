@@ -7,6 +7,7 @@ import com.dev.mythiccore.commands.core;
 import com.dev.mythiccore.cooldown.InternalCooldown;
 import com.dev.mythiccore.events.MythicMechanicLoad;
 import com.dev.mythiccore.events.PlayerDeath;
+import com.dev.mythiccore.events.ProjectileLaunch;
 import com.dev.mythiccore.events.attack_handle.AttackModifier;
 import com.dev.mythiccore.events.attack_handle.CancelFireTick;
 import com.dev.mythiccore.events.attack_handle.RemoveVanillaDamage;
@@ -21,10 +22,13 @@ import com.dev.mythiccore.reaction.ReactionManager;
 import com.dev.mythiccore.reaction.reactions.*;
 import com.dev.mythiccore.reaction.reactions.frozen.FreezeActionCanceling;
 import com.dev.mythiccore.reaction.reactions.frozen.Frozen;
+import com.dev.mythiccore.stats.GaugeUnitStat;
+import com.dev.mythiccore.stats.InternalCooldownStat;
 import com.dev.mythiccore.utils.ConfigLoader;
 import com.dev.mythiccore.visuals.ASTDamageIndicators;
 import com.dev.mythiccore.visuals.AuraVisualizer;
 import com.google.common.io.ByteStreams;
+import net.Indyuce.mmoitems.MMOItems;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.TextDisplay;
 import org.bukkit.plugin.Plugin;
@@ -92,10 +96,14 @@ public final class MythicCore extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new Combat(), this);
         Bukkit.getPluginManager().registerEvents(new FreezeActionCanceling(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerDeath(), this);
+        Bukkit.getPluginManager().registerEvents(new ProjectileLaunch(), this);
+        Bukkit.getPluginManager().registerEvents(new TriggerReaction(), this);
         Bukkit.getPluginManager().registerEvents(getAttack(), this);
 
         getAttack().registerAttackEvent(new ShieldRefutation());
-        getAttack().registerAttackEvent(new TriggerReaction());
+
+        MMOItems.plugin.getStats().register(new GaugeUnitStat());
+        MMOItems.plugin.getStats().register(new InternalCooldownStat());
 
         if (ConfigLoader.isReactionEnable("OVERLOADED")) getReactionManager().registerElementalReaction(new Overloaded("OVERLOADED", ConfigLoader.getReactionDisplay("OVERLOADED"), ConfigLoader.getAuraElement("OVERLOADED"), ConfigLoader.getTriggerElement("OVERLOADED"), ConfigLoader.getGaugeUnitTax("OVERLOADED")));
         if (ConfigLoader.isReactionEnable("REVERSE_OVERLOADED")) getReactionManager().registerElementalReaction(new Overloaded("REVERSE_OVERLOADED", ConfigLoader.getReactionDisplay("REVERSE_OVERLOADED"), ConfigLoader.getAuraElement("REVERSE_OVERLOADED"), ConfigLoader.getTriggerElement("REVERSE_OVERLOADED"), ConfigLoader.getGaugeUnitTax("REVERSE_OVERLOADED")));

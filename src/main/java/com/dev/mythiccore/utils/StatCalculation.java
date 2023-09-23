@@ -3,9 +3,12 @@ package com.dev.mythiccore.utils;
 import com.dev.mythiccore.MythicCore;
 import com.dev.mythiccore.buff.buffs.DefenseReduction;
 import com.dev.mythiccore.buff.buffs.ElementalResistanceReduction;
+import com.dev.mythiccore.library.ASTEntityStatProvider;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import io.lumine.mythic.core.mobs.ActiveMob;
+import io.lumine.mythic.lib.api.stat.provider.StatProvider;
 import io.lumine.mythic.lib.damage.DamagePacket;
+import io.lumine.mythic.lib.player.PlayerMetadata;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmocore.api.player.stats.PlayerStats;
 import net.objecthunter.exp4j.Expression;
@@ -32,6 +35,19 @@ public class StatCalculation {
         return expression.evaluate();
     }
 
+    public static double getFinalDamage(StatProvider attacker, UUID victim, DamagePacket damage_packet, boolean crit) {
+        String formula = ConfigLoader.getDamageCalculation("final-damage");
+        Expression expression = new ExpressionBuilder(formula)
+                .variables("total_damage", "defense_multiplier", "resistance_multiplier", "level_multiplier")
+                .build()
+                .setVariable("total_damage", getTotalDamage(attacker, damage_packet, crit))
+                .setVariable("defense_multiplier", getDefenseMultiplier(attacker, victim))
+                .setVariable("resistance_multiplier", damage_packet.getElement() != null ? getResistanceMultiplier(victim, damage_packet.getElement().getId()) : 1)
+                .setVariable("level_multiplier", getLevelDifferentMultiplier(attacker, victim));
+
+        return expression.evaluate();
+    }
+
     public static double getFinalDamage(UUID attacker, UUID victim, DamagePacket damage_packet, boolean crit) {
         String formula = ConfigLoader.getDamageCalculation("final-damage");
         Expression expression = new ExpressionBuilder(formula)
@@ -43,6 +59,24 @@ public class StatCalculation {
                 .setVariable("level_multiplier", getLevelDifferentMultiplier(attacker, victim));
 
         return expression.evaluate();
+    }
+
+    public static double getTotalDamage(StatProvider attacker, DamagePacket damage_packet, boolean crit) {
+        double damage_amount = damage_packet.getValue();
+        double attack_buff_percent = 0;
+        double attack_buff = 0;
+        double elemental_damage_bonus = 0;
+        double all_elemental_damage_bonus = 0;
+
+        if (attacker instanceof PlayerMetadata playerStats) {
+
+            damage_amount = crit ? damage_packet.getValue() * (1 + (playerStats.getStat("AST_CRITICAL_DAMAGE")/100)) : damage_packet.getValue();
+            attack_buff = playerStats.getStat("AST_ATTACK_DAMAGE_BUFF");
+            attack_buff_percent = playerStats.getStat("AST_ATTACK_DAMAGE_BUFF_PERCENT");
+            elemental_damage_bonus = (damage_packet.getElement() == null) ? 0 : playerStats.getStat("AST_"+damage_packet.getElement()+"_DAMAGE_BONUS");
+            all_elemental_damage_bonus = playerStats.getStat("AST_ALL_ELEMENTAL_DAMAGE_BONUS");
+        }
+        return getTotalDamage(damage_amount, attack_buff_percent, attack_buff, elemental_damage_bonus, all_elemental_damage_bonus);
     }
 
     public static double getTotalDamage(UUID uuid, DamagePacket damage_packet, boolean crit) {
@@ -87,6 +121,22 @@ public class StatCalculation {
 
     public static double getDefenseMultiplier(UUID victim) {
         return getDefenseMultiplier(victim, 0, 1);
+    }
+
+    public static double getDefenseMultiplier(StatProvider attacker, UUID victim) {
+
+        double ignore_defense = 0;
+        int level = 1;
+        if (attacker instanceof PlayerMetadata playerStats) {
+
+            ignore_defense = playerStats.getStat("AST_IGNORE_DEFENSE");
+            level = PlayerData.get(playerStats.getPlayer()).getLevel();
+        } else if (attacker instanceof ASTEntityStatProvider entityStatProvider) {
+            ActiveMob mythicMob = MythicBukkit.inst().getMobManager().getActiveMob(entityStatProvider.getEntity().getUniqueId()).orElse(null);
+            level = mythicMob != null ? (int) mythicMob.getLevel() : 1 ;
+        }
+
+        return getDefenseMultiplier(victim, ignore_defense, level);
     }
 
     public static double getDefenseMultiplier(UUID attacker, UUID victim) {
@@ -200,6 +250,16 @@ public class StatCalculation {
         }
 
         return getLevelDifferentMultiplier(entity instanceof Player ? "player" : "mob", 1, level);
+    }
+
+    public static double getLevelDifferentMultiplier(StatProvider attacker, UUID victim) {
+        if (attacker instanceof PlayerMetadata playerMetadata) {
+            return getLevelDifferentMultiplier(playerMetadata.getPlayer().getUniqueId(), victim);
+        } else if (attacker instanceof ASTEntityStatProvider entityStatProvider) {
+            return getLevelDifferentMultiplier(entityStatProvider.getEntity().getUniqueId(), victim);
+        } else {
+            return getLevelDifferentMultiplier(victim);
+        }
     }
 
     public static double getLevelDifferentMultiplier(UUID attacker, UUID victim) {

@@ -3,7 +3,7 @@ package com.dev.mythiccore.reaction;
 import com.dev.mythiccore.MythicCore;
 import com.dev.mythiccore.aura.AuraData;
 import com.dev.mythiccore.events.attack_handle.attack_priority.TriggerReaction;
-import com.dev.mythiccore.library.ASTAttackMetaData;
+import com.dev.mythiccore.library.ASTAttackMetadata;
 import com.dev.mythiccore.library.ASTEntityStatProvider;
 import com.dev.mythiccore.library.AttackSource;
 import com.dev.mythiccore.utils.ConfigLoader;
@@ -95,12 +95,12 @@ public abstract class ElementalReaction {
 
             StatMap statMap = playerData.getMMOPlayerData().getStatMap();
             PlayerMetadata playerMetadata = new PlayerMetadata(statMap, EquipmentSlot.MAIN_HAND);
-            AttackMetadata attack = new ASTAttackMetaData(damage, target, playerMetadata, "0", AttackSource.REACTION);
+            AttackMetadata attack = new ASTAttackMetadata(damage, target, playerMetadata, "0", AttackSource.REACTION);
 
             Bukkit.getScheduler().runTask(MythicCore.getInstance(), () -> DamageManager.registerAttack(attack, knockback, true, damage_cause));
 
         }  else {
-            AttackMetadata attack = new ASTAttackMetaData(damage, target, caster != null ? new ASTEntityStatProvider((LivingEntity) caster) : null, "0", AttackSource.REACTION);
+            AttackMetadata attack = new ASTAttackMetadata(damage, target, caster != null ? new ASTEntityStatProvider((LivingEntity) caster) : null, "0", AttackSource.REACTION);
             Bukkit.getScheduler().runTask(MythicCore.getInstance(), () -> DamageManager.registerAttack(attack, knockback, true, damage_cause));
         }
     }
@@ -112,7 +112,7 @@ public abstract class ElementalReaction {
 
             StatMap statMap = playerData.getMMOPlayerData().getStatMap();
             PlayerMetadata playerMetadata = new PlayerMetadata(statMap, EquipmentSlot.MAIN_HAND);
-            AttackMetadata attack = new ASTAttackMetaData(damage, target, playerMetadata, cooldown_source, AttackSource.REACTION);
+            AttackMetadata attack = new ASTAttackMetadata(damage, target, playerMetadata, cooldown_source, AttackSource.SKILL);
 
             Bukkit.getScheduler().runTask(MythicCore.getInstance(), () -> DamageManager.registerAttack(attack, knockback, true, damage_cause));
 
@@ -123,7 +123,7 @@ public abstract class ElementalReaction {
             }
 
         }  else {
-            AttackMetadata attack = new ASTAttackMetaData(damage, target, caster != null ? new ASTEntityStatProvider((LivingEntity) caster) : null, cooldown_source, AttackSource.REACTION);
+            AttackMetadata attack = new ASTAttackMetadata(damage, target, caster != null ? new ASTEntityStatProvider((LivingEntity) caster) : null, cooldown_source, AttackSource.SKILL);
             Bukkit.getScheduler().runTask(MythicCore.getInstance(), ()-> DamageManager.registerAttack(attack, knockback, true, damage_cause));
 
             for (DamagePacket packet : damage.getPackets()) {

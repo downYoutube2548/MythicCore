@@ -6,7 +6,6 @@ import io.lumine.mythic.lib.damage.DamagePacket;
 import io.lumine.mythic.lib.damage.DamageType;
 import io.lumine.mythic.lib.player.PlayerMetadata;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -21,8 +20,6 @@ public class PlayerAttack implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerAttack(PlayerAttackEvent event) {
-
-        Player attacker = event.getAttacker().getPlayer();
 
         LivingEntity victim = event.getEntity();
 
@@ -41,7 +38,7 @@ public class PlayerAttack implements Listener {
             double AttackerCRITRate = Math.max(Math.min(attackerStats.getStat("AST_CRITICAL_RATE"), 100), 0);
             boolean isCritical = new Random().nextDouble() < AttackerCRITRate / 100;
             if (isCritical) event.getDamage().registerElementalCriticalStrike(packet.getElement());
-            packet.setValue(StatCalculation.getFinalDamage(attacker.getUniqueId(), victim.getUniqueId(), packet, isCritical));
+            packet.setValue(StatCalculation.getFinalDamage(event.getAttacker(), victim.getUniqueId(), packet, isCritical));
         }
     }
 }

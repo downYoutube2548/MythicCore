@@ -1,10 +1,7 @@
 package com.dev.mythiccore.events.attack_handle;
 
-import com.dev.mythiccore.MythicCore;
-import com.dev.mythiccore.events.attack_handle.attack_priority.TriggerReaction;
 import com.dev.mythiccore.library.ASTEntityStatProvider;
 import com.dev.mythiccore.utils.ConfigLoader;
-import com.dev.mythiccore.utils.Utils;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import io.lumine.mythic.core.mobs.ActiveMob;
@@ -13,7 +10,9 @@ import io.lumine.mythic.lib.api.event.AttackEvent;
 import io.lumine.mythic.lib.api.event.PlayerAttackEvent;
 import io.lumine.mythic.lib.damage.DamagePacket;
 import io.lumine.mythic.lib.damage.DamageType;
+import io.lumine.mythic.lib.damage.ProjectileAttackMetadata;
 import io.lumine.mythic.lib.element.Element;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -38,6 +37,8 @@ public class AttackModifier implements Listener {
      */
     @EventHandler(priority = EventPriority.LOWEST)
     public void onEntityAttack(AttackEvent event) {
+        Bukkit.broadcastMessage(String.valueOf(event.getDamage().getPackets().get(0).getValue()));
+
         for (DamagePacket packet : event.getDamage().getPackets()) {
             if (Arrays.asList(packet.getTypes()).contains(DamageType.DOT)) return;
         }
@@ -50,7 +51,7 @@ public class AttackModifier implements Listener {
             // if attacker is player -> check if player's weapon is disabled regular damage -> if yes then set regular damage to 0
             if (event instanceof PlayerAttackEvent e) {
                 Player attacker = e.getAttacker().getPlayer();
-                ItemStack item = attacker.getInventory().getItem(e.getAttacker().getActionHand().toBukkit());
+                ItemStack item = event.getAttack() instanceof ProjectileAttackMetadata projectile ? (ItemStack) (projectile.getProjectile().getMetadata("ATTACK_WEAPON").get(0).value()) : attacker.getInventory().getItem(e.getAttacker().getActionHand().toBukkit());
                 if (item != null && !item.getType().equals(Material.AIR)) {
                     NBTItem nbt = new NBTItem(item);
                     byte disable_regular_damage = nbt.getByte("MMOITEMS_AST_DISABLE_REGULAR_DAMAGE");
@@ -81,18 +82,24 @@ public class AttackModifier implements Listener {
                             Element element = Element.valueOf(variables.getString("AST_ELEMENTAL_DAMAGE_ELEMENT"));
                             if (element == null) return;
 
+                            /*
                             String cooldown_source = variables.getString("AST_ELEMENTAL_DAMAGE_COOLDOWN_SOURCE");
                             if (MythicCore.getCooldownManager().getCooldown(attacker.getUniqueId()).getCooldown(event.getEntity(), cooldown_source) > 0) return;
                             MythicCore.getCooldownManager().getCooldown(attacker.getUniqueId()).setCooldown(event.getEntity(), cooldown_source, ConfigLoader.getInternalCooldown(cooldown_source));
+
+                             */
 
                             event.getDamage().getPackets().get(0).setTypes(new DamageType[]{DamageType.SKILL});
                             event.getDamage().getPackets().get(0).setElement(element);
                             event.getDamage().getPackets().get(0).setValue(damage_amount);
 
+                            /*
                             double gauge_unit = Double.parseDouble(Utils.splitTextAndNumber(variables.getString("AST_ELEMENTAL_DAMAGE_GAUGE_UNIT"))[0]);
                             String decay_rate = Utils.splitTextAndNumber(variables.getString("AST_ELEMENTAL_DAMAGE_GAUGE_UNIT"))[1];
                             MythicCore.getAuraManager().getAura(event.getEntity().getUniqueId()).addAura(element.getId(), gauge_unit, decay_rate);
                             TriggerReaction.triggerReactions(event.getDamage().getPackets().get(0), gauge_unit, decay_rate, event.getEntity(), attacker, event.toBukkit().getCause());
+
+                             */
 
                             return;
                         }
@@ -126,7 +133,7 @@ public class AttackModifier implements Listener {
 
                     if (event instanceof PlayerAttackEvent e) {
                         Player attacker = e.getAttacker().getPlayer();
-                        ItemStack item = attacker.getInventory().getItem(e.getAttacker().getActionHand().toBukkit());
+                        ItemStack item = event.getAttack() instanceof ProjectileAttackMetadata projectile ? (ItemStack) (projectile.getProjectile().getMetadata("ATTACK_WEAPON").get(0).value()) : attacker.getInventory().getItem(e.getAttacker().getActionHand().toBukkit());
                         if (item != null && !item.getType().equals(Material.AIR)) {
                             NBTItem nbt = new NBTItem(item);
                             byte disable_regular_damage = nbt.getByte("MMOITEMS_AST_DISABLE_REGULAR_DAMAGE");

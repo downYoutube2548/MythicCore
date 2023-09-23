@@ -14,18 +14,29 @@ import io.lumine.mythic.core.skills.variables.Variable;
 import io.lumine.mythic.core.skills.variables.VariableType;
 import org.bukkit.entity.Entity;
 
+import java.util.UUID;
+
 public class set_elemental_damage implements ITargetedEntitySkill {
 
     private final String element;
     private final PlaceholderDouble amount;
     private final String gauge;
     private final String cooldown_source;
+    private final long internal_cooldown;
 
     public set_elemental_damage(MythicLineConfig config) {
         amount = config.getPlaceholderDouble(new String[] {"amount", "a"}, 0);
         element = config.getString(new String[] {"element", "e"}, ConfigLoader.getDefaultElement());
         gauge = config.getString(new String[] {"gauge_unit", "gu"}, ConfigLoader.getDefaultGauge());
-        cooldown_source = config.getString(new String[]{"cooldown_source", "icd"}, "default");
+        UUID uuid = UUID.randomUUID();
+
+        if (config.getLong(new String[]{"icd", "internal_cooldown"}, -1) < 0) {
+            cooldown_source = config.getString(new String[]{"icd", "internal_cooldown"}, "default");
+            internal_cooldown = ConfigLoader.getInternalCooldown(cooldown_source);
+        } else {
+            cooldown_source = "INTERNAL_COOLDOWN_"+ uuid;
+            internal_cooldown = config.getLong(new String[]{"icd", "internal_cooldown"}, 0);
+        }
     }
 
     @Override
@@ -39,6 +50,7 @@ public class set_elemental_damage implements ITargetedEntitySkill {
                 mythicMob.getVariables().put("AST_ELEMENTAL_DAMAGE_ELEMENT", Variable.ofType(VariableType.STRING, element));
                 mythicMob.getVariables().put("AST_ELEMENTAL_DAMAGE_GAUGE_UNIT", Variable.ofType(VariableType.STRING, gauge));
                 mythicMob.getVariables().put("AST_ELEMENTAL_DAMAGE_COOLDOWN_SOURCE", Variable.ofType(VariableType.STRING, cooldown_source));
+                mythicMob.getVariables().put("AST_ELEMENTAL_DAMAGE_INTERNAL_COOLDOWN", Variable.ofType(VariableType.INTEGER, internal_cooldown));
                 return SkillResult.SUCCESS;
             }
             return SkillResult.MISSING_COMPATIBILITY;

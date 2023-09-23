@@ -1,8 +1,7 @@
 package com.dev.mythiccore.mechanics.apply;
 
 import com.dev.mythiccore.MythicCore;
-import com.dev.mythiccore.events.attack_handle.attack_priority.TriggerReaction;
-import com.dev.mythiccore.library.ASTAttackMetaData;
+import com.dev.mythiccore.library.ASTAttackMetadata;
 import com.dev.mythiccore.library.ASTEntityStatProvider;
 import com.dev.mythiccore.library.AttackSource;
 import com.dev.mythiccore.utils.ConfigLoader;
@@ -19,7 +18,6 @@ import io.lumine.mythic.lib.api.player.EquipmentSlot;
 import io.lumine.mythic.lib.api.stat.StatMap;
 import io.lumine.mythic.lib.damage.AttackMetadata;
 import io.lumine.mythic.lib.damage.DamageMetadata;
-import io.lumine.mythic.lib.damage.DamagePacket;
 import io.lumine.mythic.lib.damage.DamageType;
 import io.lumine.mythic.lib.element.Element;
 import io.lumine.mythic.lib.player.PlayerMetadata;
@@ -31,6 +29,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 
 import java.util.Objects;
+import java.util.UUID;
 
 //This class will register the ElementDamage Skill to MythicMobs
 public class elemental_damage implements ITargetedEntitySkill {
@@ -38,6 +37,7 @@ public class elemental_damage implements ITargetedEntitySkill {
     private final PlaceholderDouble amount;
     private final String gauge;
     private final String cooldown_source;
+    private final long internal_cooldown;
 
     /**
      * This is constructor for the Skill
@@ -49,7 +49,15 @@ public class elemental_damage implements ITargetedEntitySkill {
         amount = config.getPlaceholderDouble(new String[] {"amount", "a"}, 0);
         element = config.getString(new String[] {"element", "e"}, ConfigLoader.getDefaultElement());
         gauge = config.getString(new String[] {"gauge_unit", "gu"}, ConfigLoader.getDefaultGauge());
-        cooldown_source = config.getString(new String[]{"cooldown_source", "icd"}, "default");
+        UUID uuid = UUID.randomUUID();
+
+        if (config.getLong(new String[]{"icd", "internal_cooldown"}, -1) < 0) {
+            cooldown_source = config.getString(new String[]{"icd", "internal_cooldown"}, "default");
+            internal_cooldown = ConfigLoader.getInternalCooldown(cooldown_source);
+        } else {
+            cooldown_source = "INTERNAL_COOLDOWN_"+ uuid;
+            internal_cooldown = config.getLong(new String[]{"icd", "internal_cooldown"}, 0);
+        }
     }
 
     /**
@@ -81,15 +89,18 @@ public class elemental_damage implements ITargetedEntitySkill {
                     DamageMetadata damage = new DamageMetadata(amount.get(skillMetadata), element1, DamageType.SKILL);
                     StatMap statMap = playerData.getMMOPlayerData().getStatMap();
                     PlayerMetadata playerMetadata = new PlayerMetadata(statMap, EquipmentSlot.MAIN_HAND);
-                    AttackMetadata attack = new ASTAttackMetaData(damage, (LivingEntity) bukkittarget, playerMetadata, cooldown_source, AttackSource.SKILL);
+                    AttackMetadata attack = new ASTAttackMetadata(damage, (LivingEntity) bukkittarget, playerMetadata, cooldown_source, internal_cooldown, gauge_unit, decay_rate, AttackSource.SKILL);
 
                     Bukkit.getScheduler().runTask(MythicCore.getInstance(), () -> {
 
+                        /*
                         for (DamagePacket packet : damage.getPackets()) {
                             if (packet.getElement() == null) continue;
                             if (ConfigLoader.getAuraWhitelist().contains(packet.getElement().getId())) MythicCore.getAuraManager().getAura(bukkittarget.getUniqueId()).addAura(packet.getElement().getId(), gauge_unit, decay_rate);
                             TriggerReaction.triggerReactions(packet, gauge_unit, decay_rate, (LivingEntity) bukkittarget, bukkitcaster, EntityDamageEvent.DamageCause.ENTITY_ATTACK);
                         }
+
+                         */
 
                         DamageManager.registerAttack(attack, true, false, EntityDamageEvent.DamageCause.ENTITY_ATTACK);
                     });
@@ -99,15 +110,18 @@ public class elemental_damage implements ITargetedEntitySkill {
                 else {
 
                     DamageMetadata damage = new DamageMetadata(amount.get(skillMetadata), Objects.requireNonNull(Element.valueOf(element), ConfigLoader.getDefaultElement()), DamageType.SKILL);
-                    AttackMetadata attack = new ASTAttackMetaData(damage, (LivingEntity) bukkittarget, new ASTEntityStatProvider((LivingEntity) bukkitcaster), cooldown_source, AttackSource.SKILL);
+                    AttackMetadata attack = new ASTAttackMetadata(damage, (LivingEntity) bukkittarget, new ASTEntityStatProvider((LivingEntity) bukkitcaster), cooldown_source, internal_cooldown, gauge_unit, decay_rate, AttackSource.SKILL);
                     Bukkit.getScheduler().runTask(MythicCore.getInstance(), () -> {
                         DamageManager.registerAttack(attack, true, false, EntityDamageEvent.DamageCause.ENTITY_ATTACK);
 
+                        /*
                         for (DamagePacket packet : damage.getPackets()) {
                             if (packet.getElement() == null) continue;
                             if (ConfigLoader.getAuraWhitelist().contains(packet.getElement().getId())) MythicCore.getAuraManager().getAura(bukkittarget.getUniqueId()).addAura(packet.getElement().getId(), gauge_unit, decay_rate);
                             TriggerReaction.triggerReactions(packet, gauge_unit, decay_rate, (LivingEntity) bukkittarget, bukkitcaster, EntityDamageEvent.DamageCause.ENTITY_ATTACK);
                         }
+
+                         */
                     });
                 }
             });

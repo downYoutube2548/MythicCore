@@ -23,7 +23,7 @@ public class MiscAttack implements Listener {
             LivingEntity victim = event.getEntity();
 
             for (DamagePacket packet : event.getDamage().getPackets()) {
-                if (packet.getElement() == null || Arrays.asList(packet.getTypes()).contains(DamageType.DOT) || Arrays.asList(packet.getTypes()).contains(DamageType.MINION)) {
+                if (packet.getElement() == null || Arrays.asList(packet.getTypes()).contains(DamageType.DOT)) {
                     continue;
                 }
 

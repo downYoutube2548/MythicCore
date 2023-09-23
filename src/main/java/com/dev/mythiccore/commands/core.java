@@ -4,6 +4,7 @@ import com.dev.mythiccore.MythicCore;
 import com.dev.mythiccore.events.attack_handle.attack_priority.TriggerReaction;
 import com.dev.mythiccore.utils.ConfigLoader;
 import com.dev.mythiccore.utils.Utils;
+import de.tr7zw.changeme.nbtapi.NBTItem;
 import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.damage.DamagePacket;
 import io.lumine.mythic.lib.damage.DamageType;
@@ -74,6 +75,9 @@ public class core implements CommandExecutor, TabExecutor {
                     } else {
                         sender.sendMessage(ConfigLoader.getMessage("syntax-error", true));
                     }
+                } else if (args[0].equals("nbt")) {
+                    NBTItem nbtItem = new NBTItem(player.getInventory().getItemInMainHand());
+                    Bukkit.broadcastMessage(String.valueOf(nbtItem.getLong("MMOITEMS_AST_INTERNAL_COOLDOWN")));
                 } else {
                     sender.sendMessage(ConfigLoader.getMessage("syntax-error", true));
                 }
@@ -93,7 +97,7 @@ public class core implements CommandExecutor, TabExecutor {
 
         List<String> output = new ArrayList<>();
         if (args.length == 1) {
-            List<String> list = List.of("apply-aura");
+            List<String> list = List.of("apply-aura", "nbt");
             output = tabComplete(args[0], list);
         }
         if (args.length > 1) {
