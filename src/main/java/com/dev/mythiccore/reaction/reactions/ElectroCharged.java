@@ -2,10 +2,14 @@ package com.dev.mythiccore.reaction.reactions;
 
 import com.dev.mythiccore.MythicCore;
 import com.dev.mythiccore.combat.Combat;
-import com.dev.mythiccore.library.SnapshotStats;
 import com.dev.mythiccore.reaction.reaction_type.DoubleAuraReaction;
+import com.dev.mythiccore.utils.ConfigLoader;
 import com.dev.mythiccore.utils.StatCalculation;
+import io.lumine.mythic.bukkit.MythicBukkit;
+import io.lumine.mythic.core.mobs.ActiveMob;
+import io.lumine.mythic.lib.api.stat.provider.StatProvider;
 import io.lumine.mythic.lib.damage.DamagePacket;
+import net.Indyuce.mmocore.api.player.PlayerData;
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 import org.bukkit.GameMode;
@@ -28,9 +32,9 @@ public class ElectroCharged extends DoubleAuraReaction {
     }
 
     @Override
-    public void trigger(DamagePacket damage, double gauge_unit, String decay_rate, LivingEntity entity, @Nullable Entity damager, EntityDamageEvent.DamageCause damage_cause, SnapshotStats stats) {
+    public void trigger(DamagePacket damage, double gauge_unit, String decay_rate, LivingEntity entity, @Nullable Entity damager, StatProvider stats, EntityDamageEvent.DamageCause damage_cause, Combat.MobType last_mob_type) {
 
-        BouncingDamage bouncingDamage = new BouncingDamage(damager, entity, stats, getConfig().getInt("maximum-bounces-target"), damage_cause);
+        BouncingDamage bouncingDamage = new BouncingDamage(damager, entity, stats, getConfig().getInt("maximum-bounces-target"), damage_cause, last_mob_type);
         bouncingDamage.start();
 
     }
@@ -39,24 +43,38 @@ public class ElectroCharged extends DoubleAuraReaction {
     private class BouncingDamage extends BukkitRunnable {
         private final Entity damager; // The player or entity initiating the damage
         private final Set<Entity> damagedEntities; // Set to track already damaged entities
-        private final SnapshotStats stats; // The amount of damage to apply
+        private final StatProvider stats; // The amount of damage to apply
         private final int maxBounces; // The maximum number of bounces
         private final LivingEntity entity;
         private final EntityDamageEvent.DamageCause damage_cause;
         private LivingEntity current_entity;
+        private final Combat.MobType last_mob_type;
 
-        public BouncingDamage(@Nullable Entity damager, LivingEntity entity, SnapshotStats stats, int maxBounces, EntityDamageEvent.DamageCause damage_cause) {
+        public BouncingDamage(@Nullable Entity damager, LivingEntity entity, StatProvider stats, int maxBounces, EntityDamageEvent.DamageCause damage_cause, Combat.MobType last_mob_type) {
             this.damager = damager;
             this.entity = entity;
             this.damagedEntities = new HashSet<>();
             this.stats = stats;
             this.maxBounces = maxBounces;
             this.damage_cause = damage_cause;
+            this.last_mob_type = last_mob_type;
         }
 
         @Override
         public void run() {
             // Find a valid target entity that hasn't been damaged yet
+            int level = 1;
+            if (damager != null) {
+                if (damager instanceof Player player) {
+                    level = PlayerData.get(player).getLevel();
+                } else {
+                    ActiveMob mythicMob = MythicBukkit.inst().getMobManager().getActiveMob(damager.getUniqueId()).orElse(null);
+                    if (mythicMob != null) {
+                        level = (int) mythicMob.getLevel();
+                    }
+                }
+            }
+
             LivingEntity currentTarget = (current_entity == null) ? findNextValidTarget(entity) : findNextValidTarget(current_entity);
 
             if (currentTarget != null && !currentTarget.isDead() && currentTarget.isValid()) {
@@ -68,7 +86,7 @@ public class ElectroCharged extends DoubleAuraReaction {
                 Expression expression = new ExpressionBuilder(formula)
                         .variables("attacker_level", "elemental_mastery", "resistance_multiplier")
                         .build()
-                        .setVariable("attacker_level", stats.getStat("LEVEL"))
+                        .setVariable("attacker_level", level)
                         .setVariable("elemental_mastery", stats.getStat("AST_ELEMENTAL_MASTERY"))
                         .setVariable("resistance_multiplier", resistance_multiplier);
 
@@ -95,7 +113,8 @@ public class ElectroCharged extends DoubleAuraReaction {
             double check_radius = getConfig().getDouble("check-radius");
             aoe_entities.addAll(entity.getNearbyEntities(check_radius, check_radius, check_radius));
             for (Entity aoe_entity : aoe_entities) {
-                if (aoe_entity == damager || damagedEntities.contains(aoe_entity) || aoe_entity.isInvulnerable() || aoe_entity.hasMetadata("NPC") || stats.getStat("LAST_MOB_TYPE") != Combat.getMobType(aoe_entity).getId() || (aoe_entity instanceof Player player && (player.getGameMode().equals(GameMode.CREATIVE) || player.getGameMode().equals(GameMode.SPECTATOR)))) continue;
+                boolean mob_type_filter = ConfigLoader.aoeDamageFilterEnable() && last_mob_type != Combat.getMobType(aoe_entity);
+                if (aoe_entity == damager || damagedEntities.contains(aoe_entity) || aoe_entity.isInvulnerable() || aoe_entity.hasMetadata("NPC") || mob_type_filter || (aoe_entity instanceof Player player && (player.getGameMode().equals(GameMode.CREATIVE) || player.getGameMode().equals(GameMode.SPECTATOR)))) continue;
                 if (aoe_entity instanceof LivingEntity aoe_living_entity && !aoe_living_entity.isInvulnerable() && MythicCore.getAuraManager().getAura(aoe_living_entity.getUniqueId()).getMapAura().containsKey(getConfig().getString("bounce-required-aura"))) {
                     return aoe_living_entity;
                 }

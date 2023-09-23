@@ -11,7 +11,6 @@ import com.dev.mythiccore.events.ProjectileLaunch;
 import com.dev.mythiccore.events.attack_handle.AttackModifier;
 import com.dev.mythiccore.events.attack_handle.CancelFireTick;
 import com.dev.mythiccore.events.attack_handle.RemoveVanillaDamage;
-import com.dev.mythiccore.events.attack_handle.attack_priority.Attack;
 import com.dev.mythiccore.events.attack_handle.attack_priority.ShieldRefutation;
 import com.dev.mythiccore.events.attack_handle.attack_priority.TriggerReaction;
 import com.dev.mythiccore.events.attack_handle.deal_damage.MiscAttack;
@@ -61,7 +60,6 @@ public final class MythicCore extends JavaPlugin {
     private static Aura aura;
     private static Buff buff;
     private static InternalCooldown cooldown;
-    private static Attack attack;
     private static ReactionManager reactionManager;
 
     @Override
@@ -70,7 +68,6 @@ public final class MythicCore extends JavaPlugin {
         aura = new Aura();
         buff = new Buff();
         cooldown = new InternalCooldown();
-        attack = new Attack();
         reactionManager = new ReactionManager();
         loadResource(this, "config.yml");
         getConfig().options().copyDefaults();
@@ -98,9 +95,7 @@ public final class MythicCore extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new PlayerDeath(), this);
         Bukkit.getPluginManager().registerEvents(new ProjectileLaunch(), this);
         Bukkit.getPluginManager().registerEvents(new TriggerReaction(), this);
-        Bukkit.getPluginManager().registerEvents(getAttack(), this);
-
-        getAttack().registerAttackEvent(new ShieldRefutation());
+        Bukkit.getPluginManager().registerEvents(new ShieldRefutation(), this);
 
         MMOItems.plugin.getStats().register(new GaugeUnitStat());
         MMOItems.plugin.getStats().register(new InternalCooldownStat());
@@ -137,7 +132,6 @@ public final class MythicCore extends JavaPlugin {
     public static Aura getAuraManager() { return aura; }
     public static Buff getBuffManager() { return buff; }
     public static InternalCooldown getCooldownManager() { return cooldown; }
-    public static Attack getAttack() { return attack; }
     public static ReactionManager getReactionManager() { return reactionManager; }
 
     //What the hell is this?

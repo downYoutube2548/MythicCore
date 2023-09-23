@@ -2,11 +2,9 @@ package com.dev.mythiccore.reaction;
 
 import com.dev.mythiccore.MythicCore;
 import com.dev.mythiccore.aura.AuraData;
-import com.dev.mythiccore.events.attack_handle.attack_priority.TriggerReaction;
 import com.dev.mythiccore.library.ASTAttackMetadata;
 import com.dev.mythiccore.library.ASTEntityStatProvider;
 import com.dev.mythiccore.library.AttackSource;
-import com.dev.mythiccore.utils.ConfigLoader;
 import com.dev.mythiccore.utils.DamageManager;
 import com.dev.mythiccore.utils.Utils;
 import io.lumine.mythic.lib.MythicLib;
@@ -14,7 +12,6 @@ import io.lumine.mythic.lib.api.player.EquipmentSlot;
 import io.lumine.mythic.lib.api.stat.StatMap;
 import io.lumine.mythic.lib.damage.AttackMetadata;
 import io.lumine.mythic.lib.damage.DamageMetadata;
-import io.lumine.mythic.lib.damage.DamagePacket;
 import io.lumine.mythic.lib.damage.DamageType;
 import io.lumine.mythic.lib.element.Element;
 import io.lumine.mythic.lib.player.PlayerMetadata;
@@ -112,25 +109,14 @@ public abstract class ElementalReaction {
 
             StatMap statMap = playerData.getMMOPlayerData().getStatMap();
             PlayerMetadata playerMetadata = new PlayerMetadata(statMap, EquipmentSlot.MAIN_HAND);
-            AttackMetadata attack = new ASTAttackMetadata(damage, target, playerMetadata, cooldown_source, AttackSource.SKILL);
+            AttackMetadata attack = new ASTAttackMetadata(damage, target, playerMetadata, cooldown_source, gauge_unit, decay_rate, AttackSource.SKILL);
 
             Bukkit.getScheduler().runTask(MythicCore.getInstance(), () -> DamageManager.registerAttack(attack, knockback, true, damage_cause));
 
-            for (DamagePacket packet : damage.getPackets()) {
-                if (packet.getElement() == null) continue;
-                if (ConfigLoader.getAuraWhitelist().contains(packet.getElement().getId())) MythicCore.getAuraManager().getAura(target.getUniqueId()).addAura(packet.getElement().getId(), gauge_unit, decay_rate);
-                TriggerReaction.triggerReactions(packet, gauge_unit, decay_rate, target, caster, damage_cause);
-            }
-
         }  else {
-            AttackMetadata attack = new ASTAttackMetadata(damage, target, caster != null ? new ASTEntityStatProvider((LivingEntity) caster) : null, cooldown_source, AttackSource.SKILL);
+            AttackMetadata attack = new ASTAttackMetadata(damage, target, caster != null ? new ASTEntityStatProvider((LivingEntity) caster) : null, cooldown_source, gauge_unit, decay_rate, AttackSource.SKILL);
             Bukkit.getScheduler().runTask(MythicCore.getInstance(), ()-> DamageManager.registerAttack(attack, knockback, true, damage_cause));
 
-            for (DamagePacket packet : damage.getPackets()) {
-                if (packet.getElement() == null) continue;
-                if (ConfigLoader.getAuraWhitelist().contains(packet.getElement().getId())) MythicCore.getAuraManager().getAura(target.getUniqueId()).addAura(packet.getElement().getId(), gauge_unit, decay_rate);
-                TriggerReaction.triggerReactions(packet, gauge_unit, decay_rate, target, caster, damage_cause);
-            }
         }
     }
 }

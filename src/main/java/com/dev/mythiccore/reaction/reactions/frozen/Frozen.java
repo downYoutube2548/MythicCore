@@ -1,6 +1,7 @@
 package com.dev.mythiccore.reaction.reactions.frozen;
 
 import com.dev.mythiccore.reaction.reaction_type.TriggerAuraReaction;
+import io.lumine.mythic.lib.api.stat.provider.StatProvider;
 import io.lumine.mythic.lib.damage.DamagePacket;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -14,7 +15,7 @@ public class Frozen extends TriggerAuraReaction {
     }
 
     @Override
-    public void trigger(DamagePacket damage, double gauge_unit, String decay_rate, LivingEntity entity, @Nullable Entity damager, EntityDamageEvent.DamageCause damage_cause) {
+    public void trigger(DamagePacket damage, double gauge_unit, String decay_rate, LivingEntity entity, @Nullable Entity damager, StatProvider stats, EntityDamageEvent.DamageCause damage_cause) {
         getAuraData(entity.getUniqueId()).addAura(getConfig().getString("frozen-aura-id"), gauge_unit, getConfig().getString("frozen-aura-gauge-decay-rate"));
     }
 

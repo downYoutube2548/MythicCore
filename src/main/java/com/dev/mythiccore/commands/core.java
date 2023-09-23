@@ -6,9 +6,12 @@ import com.dev.mythiccore.utils.ConfigLoader;
 import com.dev.mythiccore.utils.Utils;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import io.lumine.mythic.lib.MythicLib;
+import io.lumine.mythic.lib.api.player.EquipmentSlot;
 import io.lumine.mythic.lib.damage.DamagePacket;
 import io.lumine.mythic.lib.damage.DamageType;
 import io.lumine.mythic.lib.element.Element;
+import io.lumine.mythic.lib.player.PlayerMetadata;
+import net.Indyuce.mmocore.api.player.PlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -56,7 +59,7 @@ public class core implements CommandExecutor, TabExecutor {
 
                                     if (allow_auras.contains(args[2])) MythicCore.getAuraManager().getAura(target.getUniqueId()).addAura(args[2], gauge, decay_rate);
                                     if (gauge > 0) {
-                                        if (elements.contains(args[2])) TriggerReaction.triggerReactions(new DamagePacket(0, Element.valueOf(args[2]), DamageType.SKILL), gauge, decay_rate, target, player, EntityDamageEvent.DamageCause.CUSTOM);
+                                        if (elements.contains(args[2])) TriggerReaction.triggerReactions(new DamagePacket(0, Element.valueOf(args[2]), DamageType.SKILL), gauge, decay_rate, target, player, new PlayerMetadata(PlayerData.get(player).getStats().getMap(), EquipmentSlot.MAIN_HAND), EntityDamageEvent.DamageCause.CUSTOM);
                                     }
                                     sender.sendMessage(ConfigLoader.getMessage("apply-aura-success", true)
                                             .replace("{aura}", args[2])

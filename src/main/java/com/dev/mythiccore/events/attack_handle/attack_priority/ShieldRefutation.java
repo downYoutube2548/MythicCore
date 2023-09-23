@@ -9,10 +9,13 @@ import io.lumine.mythic.lib.damage.DamagePacket;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 
-public class ShieldRefutation {
+public class ShieldRefutation implements Listener {
 
-    @AttackHandle(priority = 1)
+    @EventHandler(priority = EventPriority.HIGH)
     public void attack(AttackEvent event) {
 
         for (DamagePacket packet : event.getDamage().getPackets()) {

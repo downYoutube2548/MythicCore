@@ -12,7 +12,6 @@ import io.lumine.mythic.lib.damage.DamagePacket;
 import io.lumine.mythic.lib.damage.DamageType;
 import io.lumine.mythic.lib.damage.ProjectileAttackMetadata;
 import io.lumine.mythic.lib.element.Element;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -37,7 +36,6 @@ public class AttackModifier implements Listener {
      */
     @EventHandler(priority = EventPriority.LOWEST)
     public void onEntityAttack(AttackEvent event) {
-        Bukkit.broadcastMessage(String.valueOf(event.getDamage().getPackets().get(0).getValue()));
 
         for (DamagePacket packet : event.getDamage().getPackets()) {
             if (Arrays.asList(packet.getTypes()).contains(DamageType.DOT)) return;

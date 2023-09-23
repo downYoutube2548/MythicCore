@@ -98,6 +98,9 @@ public class ConfigLoader {
     public static long getReactionFrequency(String reaction_id) {
         return MythicCore.getInstance().getConfig().getLong("Elemental-Reaction."+reaction_id+".frequency");
     }
+    public static boolean aoeDamageFilterEnable() {
+        return MythicCore.getInstance().getConfig().getBoolean("General.aoe-damage-filter");
+    }
 
     public static String getDefaultElement() {
         return defaultElement;

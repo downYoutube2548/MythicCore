@@ -1,6 +1,7 @@
 General:
   default-element: PHYSICAL
   disable-vanilla-damage: true
+  aoe-damage-filter: true
 
   decay-rate:
     A: 200

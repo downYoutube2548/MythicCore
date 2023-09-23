@@ -1,6 +1,7 @@
 package com.dev.mythiccore.combat;
 
 import com.dev.mythiccore.MythicCore;
+import com.dev.mythiccore.utils.ConfigLoader;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -32,7 +33,7 @@ public class Combat implements Listener {
         }
 
         if (lastCombat.containsKey(damager)) {
-            if (!lastCombat.get(damager).equals(getMobType(event.getEntity()))) {
+            if (ConfigLoader.aoeDamageFilterEnable() && !lastCombat.get(damager).equals(getMobType(event.getEntity()))) {
                 event.setCancelled(true);
                 return;
             }
