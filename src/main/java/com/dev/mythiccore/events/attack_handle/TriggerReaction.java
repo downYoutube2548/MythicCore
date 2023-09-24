@@ -1,4 +1,4 @@
-package com.dev.mythiccore.events.attack_handle.attack_priority;
+package com.dev.mythiccore.events.attack_handle;
 
 import com.dev.mythiccore.MythicCore;
 import com.dev.mythiccore.combat.Combat;

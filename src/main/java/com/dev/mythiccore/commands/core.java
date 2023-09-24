@@ -1,7 +1,7 @@
 package com.dev.mythiccore.commands;
 
 import com.dev.mythiccore.MythicCore;
-import com.dev.mythiccore.events.attack_handle.attack_priority.TriggerReaction;
+import com.dev.mythiccore.events.attack_handle.TriggerReaction;
 import com.dev.mythiccore.utils.ConfigLoader;
 import com.dev.mythiccore.utils.Utils;
 import de.tr7zw.changeme.nbtapi.NBTItem;
