@@ -8,6 +8,8 @@ General:
     B: 100
     C: 50
     F: 50
+    S: 110
+    V: 90
   default-gauge-unit: 1A
   aura-whitelist:
     - PYRO
@@ -31,30 +33,32 @@ Special-Aura:
   FROZEN:
     icon: 'F'
     color: "&b"
-  BURNING:
-    icon: 'B'
-    color: '&6'
   QUICKEN:
     icon: 'Q'
     color: "&a"
 
 Reaction-Priority:
   PYRO:
-    - "REVERSE_OVERLOADED"
-    - "REVERSE_MELT"
-    - "VAPORIZE"
+    - REVERSE_OVERLOADED
+    - REVERSE_MELT
+    - VAPORIZE
+    - BURNING
   ELECTRO:
-    - "OVERLOADED"
-    - "ELECTRO_CHARGED"
-    - "SUPER_CONDUCT"
+    - OVERLOADED
+    - ELECTRO_CHARGED
+    - SUPER_CONDUCT
   CRYO:
-    - "MELT"
-    - "REVERSE_SUPER_CONDUCT"
-    - "FROZEN"
+    - MELT
+    - REVERSE_SUPER_CONDUCT
+    - FROZEN
   HYDRO:
-    - "REVERSE_VAPORIZE"
-    - "ELECTRO_CHARGED"
-    - "REVERSE_FROZEN"
+    - REVERSE_VAPORIZE
+    - ELECTRO_CHARGED
+    - REVERSE_FROZEN
+  DENDRO:
+    - BURNING
+  ANEMO:
+    - SWIRL
 
 Elemental-Reaction:
   OVERLOADED:
@@ -147,17 +151,47 @@ Elemental-Reaction:
     aura-element: HYDRO
     trigger-element: CRYO
     frozen-aura-id: FROZEN
+    frozen-slowness-amplifier: 4
     frozen-aura-gauge-decay-rate: F
     gauge-unit-tax: 1.25
   REVERSE_FROZEN:
     enable: true
     display: ""
-    aura-element: HYDRO
-    trigger-element: CRYO
+    aura-element: CRYO
+    trigger-element: HYDRO
     frozen-aura-id: FROZEN
     frozen-aura-gauge-decay-rate: F
     gauge-unit-tax: 1.25
-
+  BURNING:
+    enable: true
+    display: "&6Burning"
+    first-aura-element: PYRO
+    second-aura-element: DENDRO
+    frequency: 5
+    gauge-unit-tax: 0
+    damage-element: PYRO
+    damage-gauge-unit: 1A
+    damage-formula: "0.3 * (16.12 * (attacker_level + 16) - 257.23) * (1 + (16 * (elemental_mastery / (elemental_mastery + 2000)))) * resistance_multiplier"
+  SWIRL:
+    enable: true
+    display: "#69facdSwirl"
+    swirled-aura-gauge:
+      0-1: 2.25S
+      1-2: 3.25V
+    gauge-unit-tax: 0.625
+    trigger-element: ANEMO
+    can-swirl:
+      - PYRO
+      - HYDRO
+      - CRYO
+      - ELECTRO
+    swirl-radius: 3
+    damage-formula: "0.7 * (16.12 * (attacker_level + 16) - 257.23) * (1 + (16 * (elemental_mastery / (elemental_mastery + 2000)))) * resistance_multiplier"
+  BLOOM:
+    enable: true
+    display: ""
+    gauge-unit-tax: 0.625
+    aura-element: HYDRO
 
 Damage-Calculation:
 

@@ -3,7 +3,7 @@ package com.dev.mythiccore.events.attack_handle.deal_damage;
 import com.dev.mythiccore.library.ASTAttackMetadata;
 import com.dev.mythiccore.library.ASTProjectileAttackMetadata;
 import com.dev.mythiccore.library.AttackSource;
-import com.dev.mythiccore.listener.events.MobAttackEvent;
+import com.dev.mythiccore.listener.events.attack.MobAttackEvent;
 import com.dev.mythiccore.utils.StatCalculation;
 import io.lumine.mythic.lib.damage.DamagePacket;
 import org.bukkit.entity.LivingEntity;

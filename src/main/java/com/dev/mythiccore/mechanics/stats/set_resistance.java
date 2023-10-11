@@ -1,5 +1,6 @@
 package com.dev.mythiccore.mechanics.stats;
 
+import com.dev.mythiccore.utils.ConfigLoader;
 import io.lumine.mythic.api.adapters.AbstractEntity;
 import io.lumine.mythic.api.config.MythicLineConfig;
 import io.lumine.mythic.api.skills.ITargetedEntitySkill;
@@ -18,7 +19,7 @@ public class set_resistance implements ITargetedEntitySkill {
 
     public set_resistance(MythicLineConfig config) {
         amount = config.getDouble(new String[]{"amount", "a"}, 0);
-        element = config.getString(new String[]{"element", "e"});
+        element = config.getString(new String[]{"element", "e"}, ConfigLoader.getDefaultElement());
     }
 
     @Override

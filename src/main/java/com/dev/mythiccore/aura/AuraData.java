@@ -1,10 +1,13 @@
 package com.dev.mythiccore.aura;
 
 import com.dev.mythiccore.MythicCore;
+import com.dev.mythiccore.listener.events.aura.AuraApplyEvent;
+import com.dev.mythiccore.listener.events.aura.AuraTerminatedEvent;
 import com.dev.mythiccore.utils.ConfigLoader;
 import com.dev.mythiccore.utils.Utils;
 import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.element.Element;
+import org.bukkit.Bukkit;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -62,7 +65,7 @@ public class AuraData {
             String old_decay_rate = this.mapAura.get(aura).getDecayRate();
             this.mapAura.put(aura, new AuraGauge((long) Math.floor(gauge_unit * ConfigLoader.getDecayRate(old_decay_rate)), gauge_unit, old_decay_rate));
         }
-
+        Bukkit.getPluginManager().callEvent(new AuraApplyEvent(uuid, aura));
 
         if (!MythicCore.getAuraManager().entityAura.containsKey(this.uuid)) MythicCore.getAuraManager().entityAura.put(this.uuid, this);
     }
@@ -78,6 +81,7 @@ public class AuraData {
         if (!this.mapAura.containsKey(aura)) return;
 
         this.mapAura.remove(aura);
+        Bukkit.getScheduler().runTask(MythicCore.getInstance(), ()->Bukkit.getPluginManager().callEvent(new AuraTerminatedEvent(uuid, aura)));
 
         if (mapAura.isEmpty()) MythicCore.getAuraManager().entityAura.remove(this.uuid);
     }

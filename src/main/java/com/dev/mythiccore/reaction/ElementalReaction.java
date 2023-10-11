@@ -65,15 +65,15 @@ public abstract class ElementalReaction {
          damage(new DamageMetadata(amount, DamageType.DOT) , caster, target, knockback, damage_cause);
     }
 
-    public void damage(double amount, Entity caster, LivingEntity target, String element, boolean damage_calculate, double aura_gauge_unit, String aura_decay_rate, String cooldown_source, boolean knockback, EntityDamageEvent.DamageCause damage_cause) {
+    public void damage(double amount, Entity caster, LivingEntity target, String element, boolean damage_calculate, double aura_gauge_unit, String aura_decay_rate, String cooldown_source, long internal_cooldown, boolean knockback, EntityDamageEvent.DamageCause damage_cause) {
         Element e = Objects.requireNonNull(MythicLib.plugin.getElements().get(element));
         DamageMetadata damageMetadata = new DamageMetadata(amount, e, damage_calculate ? DamageType.SKILL : DamageType.DOT);
-        damage(damageMetadata, caster, target, aura_gauge_unit, aura_decay_rate, cooldown_source, knockback, damage_cause);
+        damage(damageMetadata, caster, target, aura_gauge_unit, aura_decay_rate, cooldown_source, internal_cooldown, knockback, damage_cause);
     }
 
-    public void damage(double amount, Entity caster, LivingEntity target, @NotNull Element element, boolean damage_calculate, double aura_gauge_unit, String aura_decay_rate, String cooldown_source, boolean knockback, EntityDamageEvent.DamageCause damage_cause) {
+    public void damage(double amount, Entity caster, LivingEntity target, @NotNull Element element, boolean damage_calculate, double aura_gauge_unit, String aura_decay_rate, String cooldown_source, long internal_cooldown, boolean knockback, EntityDamageEvent.DamageCause damage_cause) {
         DamageMetadata damageMetadata = new DamageMetadata(amount, element, damage_calculate ? DamageType.SKILL : DamageType.DOT);
-        damage(damageMetadata, caster, target, aura_gauge_unit, aura_decay_rate, cooldown_source, knockback, damage_cause);
+        damage(damageMetadata, caster, target, aura_gauge_unit, aura_decay_rate, cooldown_source, internal_cooldown, knockback, damage_cause);
     }
 
     public void damage(double amount, Entity caster, LivingEntity target, String element, boolean damage_calculate, boolean knockback, EntityDamageEvent.DamageCause damage_cause) {
@@ -102,19 +102,19 @@ public abstract class ElementalReaction {
         }
     }
 
-    private void damage(DamageMetadata damage, Entity caster, LivingEntity target, double gauge_unit, String decay_rate, String cooldown_source, boolean knockback, EntityDamageEvent.DamageCause damage_cause) {
+    private void damage(DamageMetadata damage, Entity caster, LivingEntity target, double gauge_unit, String decay_rate, String cooldown_source, long internal_cooldown, boolean knockback, EntityDamageEvent.DamageCause damage_cause) {
 
         if (caster instanceof Player) {
             PlayerData playerData = PlayerData.get(caster.getUniqueId());
 
             StatMap statMap = playerData.getMMOPlayerData().getStatMap();
             PlayerMetadata playerMetadata = new PlayerMetadata(statMap, EquipmentSlot.MAIN_HAND);
-            AttackMetadata attack = new ASTAttackMetadata(damage, target, playerMetadata, cooldown_source, gauge_unit, decay_rate, AttackSource.SKILL);
+            AttackMetadata attack = new ASTAttackMetadata(damage, target, playerMetadata, cooldown_source, internal_cooldown, gauge_unit, decay_rate, AttackSource.SKILL);
 
             Bukkit.getScheduler().runTask(MythicCore.getInstance(), () -> DamageManager.registerAttack(attack, knockback, true, damage_cause));
 
         }  else {
-            AttackMetadata attack = new ASTAttackMetadata(damage, target, caster != null ? new ASTEntityStatProvider((LivingEntity) caster) : null, cooldown_source, gauge_unit, decay_rate, AttackSource.SKILL);
+            AttackMetadata attack = new ASTAttackMetadata(damage, target, caster != null ? new ASTEntityStatProvider((LivingEntity) caster) : null, cooldown_source, internal_cooldown, gauge_unit, decay_rate, AttackSource.SKILL);
             Bukkit.getScheduler().runTask(MythicCore.getInstance(), ()-> DamageManager.registerAttack(attack, knockback, true, damage_cause));
 
         }

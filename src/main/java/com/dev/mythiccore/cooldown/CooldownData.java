@@ -49,7 +49,7 @@ public class CooldownData {
         if (!cooldowns.containsKey(entity)) return;
         if (!cooldowns.get(entity).containsKey(source)) return;
         cooldowns.get(entity).remove(source);
-        removeCooldown(entity);
+        if (cooldowns.get(entity).isEmpty()) removeCooldown(entity);
     }
 
     public void clearCooldown() {

@@ -26,8 +26,8 @@ public class Aura {
             try {
                 if (!entityAura.isEmpty()) {
                     for (UUID keys : entityAura.keySet()) {
-                        for (String element : entityAura.get(keys).getMapAura().keySet()) {
-                            entityAura.get(keys).reduceAura(element, 1);
+                        for (String aura : entityAura.get(keys).getMapAura().keySet()) {
+                            entityAura.get(keys).reduceAura(aura, 1);
                         }
                     }
                 }

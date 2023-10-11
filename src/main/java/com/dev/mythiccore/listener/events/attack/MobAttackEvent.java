@@ -1,4 +1,4 @@
-package com.dev.mythiccore.listener.events;
+package com.dev.mythiccore.listener.events.attack;
 
 import io.lumine.mythic.lib.damage.AttackMetadata;
 import io.lumine.mythic.lib.damage.DamageMetadata;

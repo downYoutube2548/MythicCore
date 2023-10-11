@@ -18,6 +18,4 @@ public class Frozen extends TriggerAuraReaction {
     public void trigger(DamagePacket damage, double gauge_unit, String decay_rate, LivingEntity entity, @Nullable Entity damager, StatProvider stats, EntityDamageEvent.DamageCause damage_cause) {
         getAuraData(entity.getUniqueId()).addAura(getConfig().getString("frozen-aura-id"), gauge_unit, getConfig().getString("frozen-aura-gauge-decay-rate"));
     }
-
-
 }

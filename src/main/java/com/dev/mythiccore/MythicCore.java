@@ -8,18 +8,14 @@ import com.dev.mythiccore.cooldown.InternalCooldown;
 import com.dev.mythiccore.events.MythicMechanicLoad;
 import com.dev.mythiccore.events.PlayerDeath;
 import com.dev.mythiccore.events.ProjectileLaunch;
-import com.dev.mythiccore.events.attack_handle.AttackModifier;
-import com.dev.mythiccore.events.attack_handle.CancelFireTick;
-import com.dev.mythiccore.events.attack_handle.RemoveVanillaDamage;
-import com.dev.mythiccore.events.attack_handle.ShieldRefutation;
-import com.dev.mythiccore.events.attack_handle.TriggerReaction;
+import com.dev.mythiccore.events.attack_handle.*;
 import com.dev.mythiccore.events.attack_handle.deal_damage.MiscAttack;
 import com.dev.mythiccore.events.attack_handle.deal_damage.MobAttack;
 import com.dev.mythiccore.events.attack_handle.deal_damage.PlayerAttack;
 import com.dev.mythiccore.listener.AttackEventListener;
 import com.dev.mythiccore.reaction.ReactionManager;
 import com.dev.mythiccore.reaction.reactions.*;
-import com.dev.mythiccore.reaction.reactions.frozen.FreezeActionCanceling;
+import com.dev.mythiccore.reaction.reactions.frozen.FreezeEffect;
 import com.dev.mythiccore.reaction.reactions.frozen.Frozen;
 import com.dev.mythiccore.stats.GaugeUnitStat;
 import com.dev.mythiccore.stats.InternalCooldownStat;
@@ -76,6 +72,7 @@ public final class MythicCore extends JavaPlugin {
         aura.startTick();
         buff.startTick();
         cooldown.startTick();
+        FreezeEffect.effectApplier();
         AuraVisualizer.start();
 
         Objects.requireNonNull(Bukkit.getPluginCommand("mythiccore")).setExecutor(new core());
@@ -91,7 +88,6 @@ public final class MythicCore extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new ASTDamageIndicators(getConfig().getConfigurationSection("Indicators")), this);
         Bukkit.getPluginManager().registerEvents(new RemoveVanillaDamage(), this);
         Bukkit.getPluginManager().registerEvents(new Combat(), this);
-        Bukkit.getPluginManager().registerEvents(new FreezeActionCanceling(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerDeath(), this);
         Bukkit.getPluginManager().registerEvents(new ProjectileLaunch(), this);
         Bukkit.getPluginManager().registerEvents(new TriggerReaction(), this);
@@ -111,11 +107,17 @@ public final class MythicCore extends JavaPlugin {
         if (ConfigLoader.isReactionEnable("ELECTRO_CHARGED")) getReactionManager().registerElementalReaction(new ElectroCharged("ELECTRO_CHARGED", ConfigLoader.getReactionDisplay("ELECTRO_CHARGED"), ConfigLoader.getReactionConfig().getString("ELECTRO_CHARGED.first-aura-element"), ConfigLoader.getReactionConfig().getString("ELECTRO_CHARGED.second-aura-element"), ConfigLoader.getReactionFrequency("ELECTRO_CHARGED"), ConfigLoader.getGaugeUnitTax("ELECTRO_CHARGED")));
         if (ConfigLoader.isReactionEnable("FROZEN")) getReactionManager().registerElementalReaction(new Frozen("FROZEN", ConfigLoader.getReactionDisplay("FROZEN"), ConfigLoader.getAuraElement("FROZEN"), ConfigLoader.getTriggerElement("FROZEN"), ConfigLoader.getGaugeUnitTax("FROZEN")));
         if (ConfigLoader.isReactionEnable("REVERSE_FROZEN")) getReactionManager().registerElementalReaction(new Frozen("REVERSE_FROZEN", ConfigLoader.getReactionDisplay("REVERSE_FROZEN"), ConfigLoader.getAuraElement("REVERSE_FROZEN"), ConfigLoader.getTriggerElement("REVERSE_FROZEN"), ConfigLoader.getGaugeUnitTax("REVERSE_FROZEN")));
+        if (ConfigLoader.isReactionEnable("BURNING")) getReactionManager().registerElementalReaction(new Burning("BURNING", ConfigLoader.getReactionDisplay("BURNING"), ConfigLoader.getReactionConfig().getString("BURNING.first-aura-element"), ConfigLoader.getReactionConfig().getString("BURNING.second-aura-element"), ConfigLoader.getReactionFrequency("BURNING"), ConfigLoader.getGaugeUnitTax("BURNING")));
+
+        if (ConfigLoader.isReactionEnable("SWIRL")) {
+            for (String can_swirl : MythicCore.getInstance().getConfig().getStringList("Elemental-Reaction.SWIRL.can-swirl")) {
+                getReactionManager().registerElementalReaction(new Swirl("SWIRL", ConfigLoader.getReactionDisplay("SWIRL"), can_swirl, ConfigLoader.getTriggerElement("SWIRL"), ConfigLoader.getGaugeUnitTax("SWIRL")));
+            }
+        }
 
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mm reload");
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mi reload all");
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mmocore reload");
-
 
     }
 

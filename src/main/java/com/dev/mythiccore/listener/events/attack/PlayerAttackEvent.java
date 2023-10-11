@@ -1,34 +1,33 @@
-package com.dev.mythiccore.listener.events;
+package com.dev.mythiccore.listener.events.attack;
 
 import io.lumine.mythic.lib.damage.AttackMetadata;
 import io.lumine.mythic.lib.damage.DamageMetadata;
+import io.lumine.mythic.lib.player.PlayerMetadata;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * This class is the Event triggered when damage is dealt by another sources exclude Player and Mob
- * can use with @EventHandler
- */
-public class MiscAttackEvent extends Event implements Cancellable {
+public class PlayerAttackEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
-    private final EntityDamageEvent event;
+    private final EntityDamageByEntityEvent event;
     private final AttackMetadata attack;
+    private final PlayerMetadata attacker;
 
-    public MiscAttackEvent(EntityDamageEvent event, AttackMetadata attack) {
+    public PlayerAttackEvent(EntityDamageByEntityEvent event, AttackMetadata attack) {
         this.event = event;
         this.attack = attack;
+        this.attacker = (PlayerMetadata) attack.getAttacker();
     }
 
-    public boolean isCancelled() {
-        return this.event.isCancelled();
+    public EntityDamageByEntityEvent toBukkit() {
+        return event;
     }
 
-    public void setCancelled(boolean value) {
-        this.event.setCancelled(value);
+    public PlayerMetadata getAttacker() {
+        return attacker;
     }
 
     public @NotNull AttackMetadata getAttack() {
@@ -43,11 +42,18 @@ public class MiscAttackEvent extends Event implements Cancellable {
         return this.attack.getTarget();
     }
 
-    public EntityDamageEvent toBukkit() {
-        return this.event;
+    @Override
+    public boolean isCancelled() {
+        return false;
+    }
+
+    @Override
+    public void setCancelled(boolean b) {
+
     }
 
     @NotNull
+    @Override
     public HandlerList getHandlers() {
         return handlers;
     }

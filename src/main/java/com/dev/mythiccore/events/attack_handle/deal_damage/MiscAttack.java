@@ -1,6 +1,6 @@
 package com.dev.mythiccore.events.attack_handle.deal_damage;
 
-import com.dev.mythiccore.listener.events.MiscAttackEvent;
+import com.dev.mythiccore.listener.events.attack.MiscAttackEvent;
 import com.dev.mythiccore.utils.StatCalculation;
 import io.lumine.mythic.lib.damage.DamagePacket;
 import io.lumine.mythic.lib.damage.DamageType;

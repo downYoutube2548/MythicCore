@@ -9,6 +9,7 @@ import net.Indyuce.mmoitems.MMOItems;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -78,7 +79,7 @@ public class ConfigLoader {
     }
     public static Double getDefaultGaugeUnit() { return Double.parseDouble(Objects.requireNonNull(MythicCore.getInstance().getConfig().getString("General.default-gauge-unit")).split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)")[0]); }
     public static String getDefaultDecayRate() { return Objects.requireNonNull(MythicCore.getInstance().getConfig().getString("General.default-gauge-unit")).split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)")[1]; }
-    public static String getDefaultGauge() { return MythicCore.getInstance().getConfig().getString("General.default-gauge-unit"); }
+    public static @NotNull String getDefaultGauge() { return MythicCore.getInstance().getConfig().getString("General.default-gauge-unit", "1A"); }
     public static String getSpecialAuraIcon(String aura_id) {
         return MythicCore.getInstance().getConfig().getString("Special-Aura."+aura_id+".icon");
     }
