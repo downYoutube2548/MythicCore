@@ -1,6 +1,6 @@
 # Mythic Core
 
-A Minecraft Plugin that modifies Minecraft combat mechanics by handle all types of damage and adding elemental systems and elemental reaction systems into the game's combat system.
+A Minecraft Plugin that modifies Minecraft combat mechanics by handling all types of damage and adding elemental systems and elemental reaction systems into the game's combat system.
 
 ## Commands
 
@@ -182,5 +182,5 @@ test:
       ast-hidden-evasion: '&r &7Hidden Evasion: &f{value}'
    ```
    
-3. Using stats id above to specify lore format of MMOItem in `plugins/MMOItems/language/lore-format.yml`
-4. Disable damage indicators from MythicLibs plugin.
+3. Use the stats id above to specify the lore format of MMOItem in `plugins/MMOItems/language/lore-format.yml`
+4. Disable damage indicators from the MythicLibs plugin.
