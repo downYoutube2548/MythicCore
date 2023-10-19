@@ -117,7 +117,7 @@ public class TriggerReaction implements Listener {
             if (packet.getElement() == null) continue;
 
             if (ConfigLoader.getAuraWhitelist().contains(packet.getElement().getId())) MythicCore.getAuraManager().getAura(event.getEntity().getUniqueId()).addAura(packet.getElement().getId(), ConfigLoader.getDefaultGaugeUnit(), ConfigLoader.getDefaultDecayRate());
-            triggerReactions(packet, ConfigLoader.getDefaultGaugeUnit(), ConfigLoader.getDefaultDecayRate(), event.getEntity(), null, event.getAttack().getAttacker(), event.toBukkit().getCause());
+            triggerReactions(packet, ConfigLoader.getDefaultGaugeUnit(), ConfigLoader.getDefaultDecayRate(), event.getEntity(), null, s -> 0, event.toBukkit().getCause());
         }
     }
 
@@ -129,70 +129,70 @@ public class TriggerReaction implements Listener {
         for (String reaction_id : reaction_ids) {
 
             if (!MythicCore.getReactionManager().getElementalReactions().containsKey(reaction_id)) continue;
-            for (ElementalReaction rawReaction : MythicCore.getReactionManager().getElementalReactions().get(reaction_id)) {
+            ElementalReaction rawReaction = MythicCore.getReactionManager().getElementalReactions().get(reaction_id);
 
-                if (rawReaction instanceof TriggerAuraReaction reaction) {
-                    if (MythicCore.getAuraManager().getAura(entity.getUniqueId()).getMapAura().containsKey(rawReaction.getAura()) && damage.getElement().getId().equals(rawReaction.getTrigger())) {
-                        if (!reaction.getDisplay().equals("")) Utils.displayIndicator(reaction.getDisplay(), entity);
-                        reaction.t(damage, gauge_unit, decay_rate, entity, damager, statProvider, damage_cause);
-                        reaction_success = true;
-                    }
-                } else if (rawReaction instanceof DoubleAuraReaction reaction) {
-                    if (reaction.getAura().equals(damage.getElement().getId()) || reaction.getTrigger().equals(damage.getElement().getId())) {
-                        if (MythicCore.getAuraManager().getAura(entity.getUniqueId()).getMapAura().containsKey(rawReaction.getAura()) && MythicCore.getAuraManager().getAura(entity.getUniqueId()).getMapAura().containsKey(rawReaction.getTrigger())) {
+            if (rawReaction instanceof TriggerAuraReaction reaction) {
+                if (MythicCore.getAuraManager().getAura(entity.getUniqueId()).getMapAura().containsKey(rawReaction.getAura()) && damage.getElement().getId().equals(rawReaction.getTrigger())) {
+                    if (!reaction.getDisplay().equals("")) Utils.displayIndicator(reaction.getDisplay(), entity);
+                    reaction.t(damage, gauge_unit, decay_rate, entity, damager, statProvider, damage_cause);
+                    reaction_success = true;
+                }
+            } else if (rawReaction instanceof DoubleAuraReaction reaction) {
+                if (reaction.getAura().equals(damage.getElement().getId()) || reaction.getTrigger().equals(damage.getElement().getId())) {
+                    if (MythicCore.getAuraManager().getAura(entity.getUniqueId()).getMapAura().containsKey(rawReaction.getAura()) && MythicCore.getAuraManager().getAura(entity.getUniqueId()).getMapAura().containsKey(rawReaction.getTrigger())) {
 
-                            if (!statProviderMap.containsKey(entity)) {
-                                statProviderMap.put(entity, new HashMap<>(Map.of(reaction, statProvider)));
-                            } else {
-                                statProviderMap.get(entity).put(reaction, statProvider);
-                            }
-
-                            // if already have task
-                            if (reactionTasks.containsKey(entity) && reactionTasks.get(entity).contains(reaction))
-                                return false;
-
-                            // display indicator
-                            if (!reaction.getDisplay().equals(""))
-                                Utils.displayIndicator(reaction.getDisplay(), entity);
-
-                            if (!reactionTasks.containsKey(entity)) {
-                                reactionTasks.put(entity, new HashSet<>(Set.of(reaction)));
-                            } else {
-                                reactionTasks.get(entity).add(reaction);
-                            }
-
-                            Combat.MobType last_mob_type = Combat.MobType.NULL;
-                            if (damager != null) {
-                                last_mob_type = Combat.getLastMobType(damager);
-                            }
-
-                            reaction_success = true;
-
-                            Combat.MobType finalLast_mob_type = last_mob_type;
-                            Bukkit.getScheduler().runTaskTimerAsynchronously(MythicCore.getInstance(), (task) -> {
-                                if (MythicCore.getAuraManager().getAura(entity.getUniqueId()).getMapAura().containsKey(rawReaction.getAura()) && MythicCore.getAuraManager().getAura(entity.getUniqueId()).getMapAura().containsKey(rawReaction.getTrigger())) {
-
-                                    Bukkit.getScheduler().runTask(MythicCore.getInstance(), () -> reaction.t(damage, gauge_unit, decay_rate, entity, damager, statProviderMap.get(entity).get(reaction), damage_cause, finalLast_mob_type));
-
-                                } else {
-
-                                    if (reactionTasks.containsKey(entity)) {
-                                        reactionTasks.get(entity).remove(reaction);
-                                        if (reactionTasks.get(entity).isEmpty()) reactionTasks.remove(entity);
-                                    }
-
-                                    if (statProviderMap.containsKey(entity)) {
-                                        statProviderMap.get(entity).remove(reaction);
-                                        if (statProviderMap.get(entity).isEmpty()) statProviderMap.remove(entity);
-                                    }
-
-                                    task.cancel();
-                                }
-                            }, 3, reaction.getFrequency());
+                        if (!statProviderMap.containsKey(entity)) {
+                            statProviderMap.put(entity, new HashMap<>(Map.of(reaction, statProvider)));
+                        } else {
+                            statProviderMap.get(entity).put(reaction, statProvider);
                         }
+
+                        // if already have task
+                        if (reactionTasks.containsKey(entity) && reactionTasks.get(entity).contains(reaction))
+                            return false;
+
+                        // display indicator
+                        if (!reaction.getDisplay().equals(""))
+                            Utils.displayIndicator(reaction.getDisplay(), entity);
+
+                        if (!reactionTasks.containsKey(entity)) {
+                            reactionTasks.put(entity, new HashSet<>(Set.of(reaction)));
+                        } else {
+                            reactionTasks.get(entity).add(reaction);
+                        }
+
+                        Combat.MobType last_mob_type = Combat.MobType.NULL;
+                        if (damager != null) {
+                            last_mob_type = Combat.getLastMobType(damager);
+                        }
+
+                        reaction_success = true;
+
+                        Combat.MobType finalLast_mob_type = last_mob_type;
+                        Bukkit.getScheduler().runTaskTimerAsynchronously(MythicCore.getInstance(), (task) -> {
+                            if (MythicCore.getAuraManager().getAura(entity.getUniqueId()).getMapAura().containsKey(rawReaction.getAura()) && MythicCore.getAuraManager().getAura(entity.getUniqueId()).getMapAura().containsKey(rawReaction.getTrigger())) {
+
+                                Bukkit.getScheduler().runTask(MythicCore.getInstance(), () -> reaction.t(damage, gauge_unit, decay_rate, entity, damager, statProviderMap.get(entity).get(reaction), damage_cause, finalLast_mob_type));
+
+                            } else {
+
+                                if (reactionTasks.containsKey(entity)) {
+                                    reactionTasks.get(entity).remove(reaction);
+                                    if (reactionTasks.get(entity).isEmpty()) reactionTasks.remove(entity);
+                                }
+
+                                if (statProviderMap.containsKey(entity)) {
+                                    statProviderMap.get(entity).remove(reaction);
+                                    if (statProviderMap.get(entity).isEmpty()) statProviderMap.remove(entity);
+                                }
+
+                                task.cancel();
+                            }
+                        }, 3, reaction.getFrequency());
                     }
                 }
             }
+
         }
 
         return reaction_success;

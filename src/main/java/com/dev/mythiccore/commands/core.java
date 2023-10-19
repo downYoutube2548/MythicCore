@@ -14,6 +14,8 @@ import io.lumine.mythic.lib.player.PlayerMetadata;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -21,6 +23,7 @@ import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -57,9 +60,11 @@ public class core implements CommandExecutor, TabExecutor {
                                     List<String> allow_auras = new ArrayList<>(Objects.requireNonNull(MythicCore.getInstance().getConfig().getConfigurationSection("Special-Aura")).getKeys(false));
                                     allow_auras.addAll(ConfigLoader.getAuraWhitelist());
 
-                                    if (allow_auras.contains(args[2])) MythicCore.getAuraManager().getAura(target.getUniqueId()).addAura(args[2], gauge, decay_rate);
+                                    if (allow_auras.contains(args[2]))
+                                        MythicCore.getAuraManager().getAura(target.getUniqueId()).addAura(args[2], gauge, decay_rate);
                                     if (gauge > 0) {
-                                        if (elements.contains(args[2])) TriggerReaction.triggerReactions(new DamagePacket(0, Element.valueOf(args[2]), DamageType.SKILL), gauge, decay_rate, target, player, new PlayerMetadata(PlayerData.get(player).getStats().getMap(), EquipmentSlot.MAIN_HAND), EntityDamageEvent.DamageCause.CUSTOM);
+                                        if (elements.contains(args[2]))
+                                            TriggerReaction.triggerReactions(new DamagePacket(0, Element.valueOf(args[2]), DamageType.SKILL), gauge, decay_rate, target, player, new PlayerMetadata(PlayerData.get(player).getStats().getMap(), EquipmentSlot.MAIN_HAND), EntityDamageEvent.DamageCause.CUSTOM);
                                     }
                                     sender.sendMessage(ConfigLoader.getMessage("apply-aura-success", true)
                                             .replace("{aura}", args[2])
@@ -81,6 +86,50 @@ public class core implements CommandExecutor, TabExecutor {
                 } else if (args[0].equals("nbt")) {
                     NBTItem nbtItem = new NBTItem(player.getInventory().getItemInMainHand());
                     Bukkit.broadcastMessage(String.valueOf(nbtItem.getLong("MMOITEMS_AST_INTERNAL_COOLDOWN")));
+                } else if (args[0].equals("remove-entity")) {
+                    if (args.length >= 2) {
+                        int radius = Integer.parseInt(args[1]);
+                        for (Entity entity : player.getNearbyEntities(radius, radius, radius)) {
+                            entity.remove();
+                        }
+                    } else {
+                        sender.sendMessage(ConfigLoader.getMessage("syntax-error", true));
+                    }
+                } else if (args[0].equals("test")) {
+
+                    generateRotatedCircle(player.getLocation(), 5, 360, Double.parseDouble(args[1]), Double.parseDouble(args[2]));
+
+                    /*
+                    double radius = 5;
+                    int points = 360;
+
+                    Vector direction = (player.getLocation().clone().add(0, -1, 0).subtract(player.getLocation())).toVector();
+                    double thetaX = Math.acos(direction.getX() / direction.length());
+                    double thetaY = Math.acos(direction.getY() / direction.length());
+                    double thetaZ = Math.acos(direction.getZ() / direction.length());
+
+                    double angleIncrement = 360.0 / points;
+                    for (int i = 0; i < points; i++) {
+                        double phi = Math.PI * i / points; // Random polar angle
+                        double theta = 2 * Math.PI * i / points; // Random azimuthal angle
+
+                        double x = radius * Math.sin(phi) * Math.cos(theta);
+                        double y = radius * Math.sin(phi) * Math.sin(theta);
+                        double z = radius * Math.cos(phi);
+
+
+                        player.getLocation().getWorld().spawnParticle(
+                                Particle.END_ROD, // particle
+                                player.getLocation().clone().add(0, 0.15, 0), // location
+                                0, // count
+                                x, y, z, // offset
+                                0.1, // speed
+                                null, // Object: data
+                                true // force
+                        );
+                    }
+
+                     */
                 } else {
                     sender.sendMessage(ConfigLoader.getMessage("syntax-error", true));
                 }
@@ -100,7 +149,7 @@ public class core implements CommandExecutor, TabExecutor {
 
         List<String> output = new ArrayList<>();
         if (args.length == 1) {
-            List<String> list = List.of("apply-aura", "nbt");
+            List<String> list = List.of("apply-aura", "nbt", "remove-entity", "test");
             output = tabComplete(args[0], list);
         }
         if (args.length > 1) {
@@ -138,4 +187,32 @@ public class core implements CommandExecutor, TabExecutor {
         }
         return matches;
     }
+
+    public static void generateRotatedCircle(Location center, int radius, int numPoints, double xRotationAngle, double yRotationAngle) {
+        double xRotationRadians = Math.toRadians(xRotationAngle);
+        double yRotationRadians = Math.toRadians(yRotationAngle);
+
+        for (int i = 0; i < numPoints; i++) {
+            double x = radius * Math.cos(i);
+            double y = radius * Math.sin(i);
+            double z = 0;
+
+            // Apply X-axis rotation
+            Vector rotatedX = new Vector(x, y, z).rotateAroundX(xRotationRadians);
+
+            // Apply Y-axis rotation
+            Vector rotatedXY = rotatedX.clone().rotateAroundY(yRotationRadians);
+
+            Objects.requireNonNull(center.getWorld()).spawnParticle(
+                    Particle.END_ROD, // particle
+                    center, // location
+                    0, // count
+                    rotatedXY.getX(), rotatedXY.getY(), rotatedXY.getZ(),
+                    0.1, // speed
+                    null, // Object: data
+                    true // force
+            );
+        }
+    }
+
 }

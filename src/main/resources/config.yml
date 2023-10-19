@@ -26,7 +26,7 @@ Elemental-Modifier:
   FIRE: PYRO
   FIRE_TICK: PYRO
   HOT_FLOOR: PYRO
-  LAVA: PYRO
+  LAVA: DENDRO
   FREEZE: CRYO
 
 Special-Aura:
@@ -54,11 +54,16 @@ Reaction-Priority:
   HYDRO:
     - REVERSE_VAPORIZE
     - ELECTRO_CHARGED
+    - REVERSE_BLOOM
     - REVERSE_FROZEN
   DENDRO:
+    - BLOOM
     - BURNING
   ANEMO:
-    - SWIRL
+    - SWIRL_PYRO
+    - SWIRL_HYDRO
+    - SWIRL_CRYO
+    - SWIRL_ELECTRO
 
 Elemental-Reaction:
   OVERLOADED:
@@ -66,16 +71,6 @@ Elemental-Reaction:
     display: "&cOverloaded"
     aura-element: PYRO
     trigger-element: ELECTRO
-    gauge-unit-tax: 1.25
-    damage-element: PYRO
-    damage-formula: "2 * (16.12 * (attacker_level + 16) - 257.23) * (1 + (16 * (elemental_mastery / (elemental_mastery + 2000)))) * resistance_multiplier"
-    aoe-radius: 1.5
-    knockback-multiplier: 1.5
-  REVERSE_OVERLOADED:
-    enable: true
-    display: "&cOverloaded"
-    aura-element: ELECTRO
-    trigger-element: PYRO
     gauge-unit-tax: 1.25
     damage-element: PYRO
     damage-formula: "2 * (16.12 * (attacker_level + 16) - 257.23) * (1 + (16 * (elemental_mastery / (elemental_mastery + 2000)))) * resistance_multiplier"
@@ -121,18 +116,6 @@ Elemental-Reaction:
     resistance-reduction: 40
     resistance-reduction-duration: 240
     damage-formula: "0.5 * (16.12 * (attacker_level + 16) - 257.23) * (1 + (16 * (elemental_mastery / (elemental_mastery + 2000)))) * resistance_multiplier"
-  REVERSE_SUPER_CONDUCT:
-    enable: true
-    display: "#bab3feSuperconduct"
-    aura-element: ELECTRO
-    trigger-element: CRYO
-    gauge-unit-tax: 1.25
-    aoe-radius: 1.5
-    damage-element: CRYO
-    resistance-reduction-element: PHYSICAL
-    resistance-reduction: 40
-    resistance-reduction-duration: 240
-    damage-formula: "0.5 * (16.12 * (attacker_level + 16) - 257.23) * (1 + (16 * (elemental_mastery / (elemental_mastery + 2000)))) * resistance_multiplier"
   ELECTRO_CHARGED:
     enable: true
     display: "#f19bfbElectro-Charged"
@@ -152,14 +135,6 @@ Elemental-Reaction:
     trigger-element: CRYO
     frozen-aura-id: FROZEN
     frozen-slowness-amplifier: 4
-    frozen-aura-gauge-decay-rate: F
-    gauge-unit-tax: 1.25
-  REVERSE_FROZEN:
-    enable: true
-    display: ""
-    aura-element: CRYO
-    trigger-element: HYDRO
-    frozen-aura-id: FROZEN
     frozen-aura-gauge-decay-rate: F
     gauge-unit-tax: 1.25
   BURNING:
@@ -192,6 +167,47 @@ Elemental-Reaction:
     display: ""
     gauge-unit-tax: 0.625
     aura-element: HYDRO
+    trigger-element: DENDRO
+    damage-element: DENDRO
+    dendro-core-spawn-radius: 20
+    dendro-core-tick-explode: 100
+    dendro-core-explode-damage: "2.0 * (16.12 * (attacker_level + 16) - 257.23) * (1 + (16 * (elemental_mastery / (elemental_mastery + 2000)))) * resistance_multiplier"
+    dendro-core-explode-radius: 3
+    maximum-dendro-core-per-chunk: 5
+    dendro-core-trigger-radius: 20
+    dendro-core:
+      material: LIME_STAINED_GLASS
+      model-data: 0
+      explode-sound:
+        - ENTITY_FIREWORK_ROCKET_BLAST:2:1
+      explode-particle:
+        - FLASH:0:0
+        - END_ROD:1:50
+    sub-reaction:
+      HYPERBLOOM:
+        enable: true
+        display: "#f19bfbHyperbloom"
+        trigger-element: ELECTRO
+        take-off-velocity: 20
+        pulling-force: 100
+        life-time-after-trigger: 100 # -1 to disable
+        check-radius: 50
+        launch-particle:
+          particle: SOUL_FIRE_FLAME
+          radius: 0.3
+          points: 45
+          speed: 0.1
+        explode-sound:
+          - ENTITY_FIREWORK_ROCKET_BLAST:2:2
+        explode-particle:
+          - FLASH:0:0
+        damage-element: DENDRO
+        damage-formula: "4.0 * (16.12 * (attacker_level + 16) - 257.23) * (1 + (16 * (elemental_mastery / (elemental_mastery + 2000)))) * resistance_multiplier"
+      BURGEON:
+        enable: true
+        display: "#ff9902Burgeon"
+        trigger-element: PYRO
+        damage-formula: "3.5 * (16.12 * (attacker_level + 16) - 257.23) * (1 + (16 * (elemental_mastery / (elemental_mastery + 2000)))) * resistance_multiplier"
 
 Damage-Calculation:
 

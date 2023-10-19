@@ -13,6 +13,7 @@ import net.Indyuce.mmocore.api.player.PlayerData;
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 import org.bukkit.GameMode;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -27,8 +28,8 @@ import java.util.Set;
 
 public class ElectroCharged extends DoubleAuraReaction {
 
-    public ElectroCharged(String id, String display, String aura1, String aura2, long reaction_frequency, double gauge_unit_tax) {
-        super(id, display, aura1, aura2, reaction_frequency, gauge_unit_tax);
+    public ElectroCharged(String id, ConfigurationSection config, String display, String aura1, String aura2, long reaction_frequency, double gauge_unit_tax) {
+        super(id, config, display, aura1, aura2, reaction_frequency, gauge_unit_tax);
     }
 
     @Override
@@ -78,7 +79,6 @@ public class ElectroCharged extends DoubleAuraReaction {
             LivingEntity currentTarget = (current_entity == null) ? findNextValidTarget(entity) : findNextValidTarget(current_entity);
 
             if (currentTarget != null && !currentTarget.isDead() && currentTarget.isValid()) {
-
                 double resistance_multiplier = StatCalculation.getResistanceMultiplier(currentTarget.getUniqueId(), getConfig().getString("damage-element"));
 
                 String formula = getConfig().getString("damage-formula");
@@ -113,7 +113,7 @@ public class ElectroCharged extends DoubleAuraReaction {
             double check_radius = getConfig().getDouble("check-radius");
             aoe_entities.addAll(entity.getNearbyEntities(check_radius, check_radius, check_radius));
             for (Entity aoe_entity : aoe_entities) {
-                boolean mob_type_filter = ConfigLoader.aoeDamageFilterEnable() && last_mob_type != Combat.getMobType(aoe_entity);
+                boolean mob_type_filter = damager != null && ConfigLoader.aoeDamageFilterEnable() && last_mob_type != Combat.getMobType(aoe_entity);
                 if (aoe_entity == damager || damagedEntities.contains(aoe_entity) || aoe_entity.isInvulnerable() || aoe_entity.hasMetadata("NPC") || mob_type_filter || (aoe_entity instanceof Player player && (player.getGameMode().equals(GameMode.CREATIVE) || player.getGameMode().equals(GameMode.SPECTATOR)))) continue;
                 if (aoe_entity instanceof LivingEntity aoe_living_entity && !aoe_living_entity.isInvulnerable() && MythicCore.getAuraManager().getAura(aoe_living_entity.getUniqueId()).getMapAura().containsKey(getConfig().getString("bounce-required-aura"))) {
                     return aoe_living_entity;

@@ -85,4 +85,12 @@ public class Utils {
 
         return String.format("%s", progressBar.substring(0, progressBar.length()-1));
     }
+
+    public static double randomNumber(double min, double max) {
+        if (min > max) {
+            throw new IllegalArgumentException("Min cannot be greater than max");
+        }
+        Random random = new Random();
+        return min + (max - min) * random.nextDouble();
+    }
 }

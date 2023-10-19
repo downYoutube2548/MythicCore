@@ -5,6 +5,7 @@ import com.dev.mythiccore.buff.Buff;
 import com.dev.mythiccore.combat.Combat;
 import com.dev.mythiccore.commands.core;
 import com.dev.mythiccore.cooldown.InternalCooldown;
+import com.dev.mythiccore.events.ChunkUnload;
 import com.dev.mythiccore.events.MythicMechanicLoad;
 import com.dev.mythiccore.events.PlayerDeath;
 import com.dev.mythiccore.events.ProjectileLaunch;
@@ -15,6 +16,12 @@ import com.dev.mythiccore.events.attack_handle.deal_damage.PlayerAttack;
 import com.dev.mythiccore.listener.AttackEventListener;
 import com.dev.mythiccore.reaction.ReactionManager;
 import com.dev.mythiccore.reaction.reactions.*;
+import com.dev.mythiccore.reaction.reactions.bloom.Bloom;
+import com.dev.mythiccore.reaction.reactions.bloom.DendroCore;
+import com.dev.mythiccore.reaction.reactions.bloom.DendroCoreManager;
+import com.dev.mythiccore.reaction.reactions.bloom.DendroCoreTrigger;
+import com.dev.mythiccore.reaction.reactions.bloom.sub_reaction.Burgeon;
+import com.dev.mythiccore.reaction.reactions.bloom.sub_reaction.HyperBloom;
 import com.dev.mythiccore.reaction.reactions.frozen.FreezeEffect;
 import com.dev.mythiccore.reaction.reactions.frozen.Frozen;
 import com.dev.mythiccore.stats.GaugeUnitStat;
@@ -33,6 +40,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.List;
 import java.util.Objects;
 
 public final class MythicCore extends JavaPlugin {
@@ -74,6 +82,7 @@ public final class MythicCore extends JavaPlugin {
         cooldown.startTick();
         FreezeEffect.effectApplier();
         AuraVisualizer.start();
+        DendroCoreManager.dendroCoreTick();
 
         Objects.requireNonNull(Bukkit.getPluginCommand("mythiccore")).setExecutor(new core());
 
@@ -92,26 +101,39 @@ public final class MythicCore extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new ProjectileLaunch(), this);
         Bukkit.getPluginManager().registerEvents(new TriggerReaction(), this);
         Bukkit.getPluginManager().registerEvents(new ShieldRefutation(), this);
+        Bukkit.getPluginManager().registerEvents(new DendroCoreTrigger(), this);
+        Bukkit.getPluginManager().registerEvents(new ChunkUnload(), this);
 
         MMOItems.plugin.getStats().register(new GaugeUnitStat());
         MMOItems.plugin.getStats().register(new InternalCooldownStat());
 
-        if (ConfigLoader.isReactionEnable("OVERLOADED")) getReactionManager().registerElementalReaction(new Overloaded("OVERLOADED", ConfigLoader.getReactionDisplay("OVERLOADED"), ConfigLoader.getAuraElement("OVERLOADED"), ConfigLoader.getTriggerElement("OVERLOADED"), ConfigLoader.getGaugeUnitTax("OVERLOADED")));
-        if (ConfigLoader.isReactionEnable("REVERSE_OVERLOADED")) getReactionManager().registerElementalReaction(new Overloaded("REVERSE_OVERLOADED", ConfigLoader.getReactionDisplay("REVERSE_OVERLOADED"), ConfigLoader.getAuraElement("REVERSE_OVERLOADED"), ConfigLoader.getTriggerElement("REVERSE_OVERLOADED"), ConfigLoader.getGaugeUnitTax("REVERSE_OVERLOADED")));
-        if (ConfigLoader.isReactionEnable("VAPORIZE")) getReactionManager().registerElementalReaction(new Vaporize("VAPORIZE", ConfigLoader.getReactionDisplay("VAPORIZE"), ConfigLoader.getAuraElement("VAPORIZE"), ConfigLoader.getTriggerElement("VAPORIZE"), ConfigLoader.getGaugeUnitTax("VAPORIZE")));
-        if (ConfigLoader.isReactionEnable("REVERSE_VAPORIZE")) getReactionManager().registerElementalReaction(new Vaporize("REVERSE_VAPORIZE", ConfigLoader.getReactionDisplay("REVERSE_VAPORIZE"), ConfigLoader.getAuraElement("REVERSE_VAPORIZE"), ConfigLoader.getTriggerElement("REVERSE_VAPORIZE"), ConfigLoader.getGaugeUnitTax("REVERSE_VAPORIZE")));
-        if (ConfigLoader.isReactionEnable("MELT")) getReactionManager().registerElementalReaction(new Melt("MELT", ConfigLoader.getReactionDisplay("MELT"), ConfigLoader.getAuraElement("MELT"), ConfigLoader.getTriggerElement("MELT"), ConfigLoader.getGaugeUnitTax("MELT")));
-        if (ConfigLoader.isReactionEnable("REVERSE_MELT")) getReactionManager().registerElementalReaction(new Melt("REVERSE_MELT", ConfigLoader.getReactionDisplay("REVERSE_MELT"), ConfigLoader.getAuraElement("REVERSE_MELT"), ConfigLoader.getTriggerElement("REVERSE_MELT"), ConfigLoader.getGaugeUnitTax("REVERSE_MELT")));
-        if (ConfigLoader.isReactionEnable("SUPER_CONDUCT")) getReactionManager().registerElementalReaction(new SuperConduct("SUPER_CONDUCT", ConfigLoader.getReactionDisplay("SUPER_CONDUCT"), ConfigLoader.getAuraElement("SUPER_CONDUCT"), ConfigLoader.getTriggerElement("SUPER_CONDUCT"), ConfigLoader.getGaugeUnitTax("SUPER_CONDUCT")));
-        if (ConfigLoader.isReactionEnable("REVERSE_SUPER_CONDUCT")) getReactionManager().registerElementalReaction(new SuperConduct("REVERSE_SUPER_CONDUCT", ConfigLoader.getReactionDisplay("REVERSE_SUPER_CONDUCT"), ConfigLoader.getAuraElement("REVERSE_SUPER_CONDUCT"), ConfigLoader.getTriggerElement("REVERSE_SUPER_CONDUCT"), ConfigLoader.getGaugeUnitTax("REVERSE_SUPER_CONDUCT")));
-        if (ConfigLoader.isReactionEnable("ELECTRO_CHARGED")) getReactionManager().registerElementalReaction(new ElectroCharged("ELECTRO_CHARGED", ConfigLoader.getReactionDisplay("ELECTRO_CHARGED"), ConfigLoader.getReactionConfig().getString("ELECTRO_CHARGED.first-aura-element"), ConfigLoader.getReactionConfig().getString("ELECTRO_CHARGED.second-aura-element"), ConfigLoader.getReactionFrequency("ELECTRO_CHARGED"), ConfigLoader.getGaugeUnitTax("ELECTRO_CHARGED")));
-        if (ConfigLoader.isReactionEnable("FROZEN")) getReactionManager().registerElementalReaction(new Frozen("FROZEN", ConfigLoader.getReactionDisplay("FROZEN"), ConfigLoader.getAuraElement("FROZEN"), ConfigLoader.getTriggerElement("FROZEN"), ConfigLoader.getGaugeUnitTax("FROZEN")));
-        if (ConfigLoader.isReactionEnable("REVERSE_FROZEN")) getReactionManager().registerElementalReaction(new Frozen("REVERSE_FROZEN", ConfigLoader.getReactionDisplay("REVERSE_FROZEN"), ConfigLoader.getAuraElement("REVERSE_FROZEN"), ConfigLoader.getTriggerElement("REVERSE_FROZEN"), ConfigLoader.getGaugeUnitTax("REVERSE_FROZEN")));
-        if (ConfigLoader.isReactionEnable("BURNING")) getReactionManager().registerElementalReaction(new Burning("BURNING", ConfigLoader.getReactionDisplay("BURNING"), ConfigLoader.getReactionConfig().getString("BURNING.first-aura-element"), ConfigLoader.getReactionConfig().getString("BURNING.second-aura-element"), ConfigLoader.getReactionFrequency("BURNING"), ConfigLoader.getGaugeUnitTax("BURNING")));
-
+        if (ConfigLoader.isReactionEnable("OVERLOADED")) {
+            getReactionManager().registerElementalReaction(new Overloaded("OVERLOADED", ConfigLoader.getReactionConfig().getConfigurationSection("OVERLOADED"), ConfigLoader.getReactionDisplay("OVERLOADED"), ConfigLoader.getAuraElement("OVERLOADED"), ConfigLoader.getTriggerElement("OVERLOADED"), ConfigLoader.getGaugeUnitTax("OVERLOADED")));
+            getReactionManager().registerElementalReaction(new Overloaded("REVERSE_OVERLOADED", ConfigLoader.getReactionConfig().getConfigurationSection("OVERLOADED"), ConfigLoader.getReactionDisplay("OVERLOADED"), ConfigLoader.getTriggerElement("OVERLOADED"), ConfigLoader.getAuraElement("OVERLOADED"), ConfigLoader.getGaugeUnitTax("OVERLOADED")));
+        }
+        if (ConfigLoader.isReactionEnable("VAPORIZE")) getReactionManager().registerElementalReaction(new Vaporize("VAPORIZE", ConfigLoader.getReactionConfig().getConfigurationSection("VAPORIZE"), ConfigLoader.getReactionDisplay("VAPORIZE"), ConfigLoader.getAuraElement("VAPORIZE"), ConfigLoader.getTriggerElement("VAPORIZE"), ConfigLoader.getGaugeUnitTax("VAPORIZE")));
+        if (ConfigLoader.isReactionEnable("REVERSE_VAPORIZE")) getReactionManager().registerElementalReaction(new Vaporize("REVERSE_VAPORIZE", ConfigLoader.getReactionConfig().getConfigurationSection("REVERSE_VAPORIZE"), ConfigLoader.getReactionDisplay("REVERSE_VAPORIZE"), ConfigLoader.getAuraElement("REVERSE_VAPORIZE"), ConfigLoader.getTriggerElement("REVERSE_VAPORIZE"), ConfigLoader.getGaugeUnitTax("REVERSE_VAPORIZE")));
+        if (ConfigLoader.isReactionEnable("MELT")) getReactionManager().registerElementalReaction(new Melt("MELT", ConfigLoader.getReactionConfig().getConfigurationSection("MELT"), ConfigLoader.getReactionDisplay("MELT"), ConfigLoader.getAuraElement("MELT"), ConfigLoader.getTriggerElement("MELT"), ConfigLoader.getGaugeUnitTax("MELT")));
+        if (ConfigLoader.isReactionEnable("REVERSE_MELT")) getReactionManager().registerElementalReaction(new Melt("REVERSE_MELT", ConfigLoader.getReactionConfig().getConfigurationSection("REVERSE_MELT"), ConfigLoader.getReactionDisplay("REVERSE_MELT"), ConfigLoader.getAuraElement("REVERSE_MELT"), ConfigLoader.getTriggerElement("REVERSE_MELT"), ConfigLoader.getGaugeUnitTax("REVERSE_MELT")));
+        if (ConfigLoader.isReactionEnable("SUPER_CONDUCT")) {
+            getReactionManager().registerElementalReaction(new SuperConduct("SUPER_CONDUCT", ConfigLoader.getReactionConfig().getConfigurationSection("SUPER_CONDUCT"), ConfigLoader.getReactionDisplay("SUPER_CONDUCT"), ConfigLoader.getAuraElement("SUPER_CONDUCT"), ConfigLoader.getTriggerElement("SUPER_CONDUCT"), ConfigLoader.getGaugeUnitTax("SUPER_CONDUCT")));
+            getReactionManager().registerElementalReaction(new SuperConduct("REVERSE_SUPER_CONDUCT", ConfigLoader.getReactionConfig().getConfigurationSection("SUPER_CONDUCT"), ConfigLoader.getReactionDisplay("SUPER_CONDUCT"), ConfigLoader.getTriggerElement("SUPER_CONDUCT"), ConfigLoader.getAuraElement("SUPER_CONDUCT"), ConfigLoader.getGaugeUnitTax("SUPER_CONDUCT")));
+        }
+        if (ConfigLoader.isReactionEnable("ELECTRO_CHARGED")) getReactionManager().registerElementalReaction(new ElectroCharged("ELECTRO_CHARGED", ConfigLoader.getReactionConfig().getConfigurationSection("ELECTRO_CHARGED"), ConfigLoader.getReactionDisplay("ELECTRO_CHARGED"), ConfigLoader.getReactionConfig().getString("ELECTRO_CHARGED.first-aura-element"), ConfigLoader.getReactionConfig().getString("ELECTRO_CHARGED.second-aura-element"), ConfigLoader.getReactionFrequency("ELECTRO_CHARGED"), ConfigLoader.getGaugeUnitTax("ELECTRO_CHARGED")));
+        if (ConfigLoader.isReactionEnable("FROZEN")) {
+            getReactionManager().registerElementalReaction(new Frozen("FROZEN", ConfigLoader.getReactionConfig().getConfigurationSection("FROZEN"), ConfigLoader.getReactionDisplay("FROZEN"), ConfigLoader.getAuraElement("FROZEN"), ConfigLoader.getTriggerElement("FROZEN"), ConfigLoader.getGaugeUnitTax("FROZEN")));
+            getReactionManager().registerElementalReaction(new Frozen("REVERSE_FROZEN", ConfigLoader.getReactionConfig().getConfigurationSection("FROZEN"), ConfigLoader.getReactionDisplay("FROZEN"), ConfigLoader.getTriggerElement("FROZEN"), ConfigLoader.getAuraElement("FROZEN"), ConfigLoader.getGaugeUnitTax("FROZEN")));
+        }
+        if (ConfigLoader.isReactionEnable("BURNING")) getReactionManager().registerElementalReaction(new Burning("BURNING", ConfigLoader.getReactionConfig().getConfigurationSection("BURNING"), ConfigLoader.getReactionDisplay("BURNING"), ConfigLoader.getReactionConfig().getString("BURNING.first-aura-element"), ConfigLoader.getReactionConfig().getString("BURNING.second-aura-element"), ConfigLoader.getReactionFrequency("BURNING"), ConfigLoader.getGaugeUnitTax("BURNING")));
+        if (ConfigLoader.isReactionEnable("BLOOM")) {
+            getReactionManager().registerElementalReaction(new Bloom("BLOOM", ConfigLoader.getReactionConfig().getConfigurationSection("BLOOM"), ConfigLoader.getReactionDisplay("BLOOM"), ConfigLoader.getAuraElement("BLOOM"), ConfigLoader.getTriggerElement("BLOOM"), ConfigLoader.getGaugeUnitTax("BLOOM")));
+            getReactionManager().registerElementalReaction(new Bloom("REVERSE_BLOOM", ConfigLoader.getReactionConfig().getConfigurationSection("BLOOM"), ConfigLoader.getReactionDisplay("BLOOM"), ConfigLoader.getTriggerElement("BLOOM"), ConfigLoader.getAuraElement("BLOOM"), ConfigLoader.getGaugeUnitTax("BLOOM")));
+            if (ConfigLoader.isDendroCoreReactionEnable("HYPERBLOOM")) getReactionManager().registerDendroCoreReaction(new HyperBloom("HYPERBLOOM", ConfigLoader.getReactionConfig().getConfigurationSection("BLOOM.sub-reaction.HYPERBLOOM"), ConfigLoader.getReactionConfig().getString("BLOOM.sub-reaction.HYPERBLOOM.display"), ConfigLoader.getReactionConfig().getString("BLOOM.sub-reaction.HYPERBLOOM.trigger-element")));
+            if (ConfigLoader.isDendroCoreReactionEnable("BURGEON")) getReactionManager().registerDendroCoreReaction(new Burgeon("BURGEON", ConfigLoader.getReactionConfig().getConfigurationSection("BLOOM.sub-reaction.BURGEON"), ConfigLoader.getReactionConfig().getString("BLOOM.sub-reaction.BURGEON.display"), ConfigLoader.getReactionConfig().getString("BLOOM.sub-reaction.BURGEON.trigger-element")));
+        }
         if (ConfigLoader.isReactionEnable("SWIRL")) {
             for (String can_swirl : MythicCore.getInstance().getConfig().getStringList("Elemental-Reaction.SWIRL.can-swirl")) {
-                getReactionManager().registerElementalReaction(new Swirl("SWIRL", ConfigLoader.getReactionDisplay("SWIRL"), can_swirl, ConfigLoader.getTriggerElement("SWIRL"), ConfigLoader.getGaugeUnitTax("SWIRL")));
+                getReactionManager().registerElementalReaction(new Swirl("SWIRL_"+can_swirl, ConfigLoader.getReactionConfig().getConfigurationSection("SWIRL"), ConfigLoader.getReactionDisplay("SWIRL"), can_swirl, ConfigLoader.getTriggerElement("SWIRL"), ConfigLoader.getGaugeUnitTax("SWIRL")));
             }
         }
 
@@ -125,6 +147,11 @@ public final class MythicCore extends JavaPlugin {
     public void onDisable() {
         for (TextDisplay textDisplay : AuraVisualizer.mapHologram.values()) {
             textDisplay.remove();
+        }
+        for (List<DendroCore> dendroCores : DendroCoreManager.dendroCoreInChunk.values()) {
+            for (DendroCore dendroCore : dendroCores) {
+                dendroCore.getDendroCore().remove();
+            }
         }
     }
 

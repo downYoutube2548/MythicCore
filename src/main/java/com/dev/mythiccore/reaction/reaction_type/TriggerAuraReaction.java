@@ -3,6 +3,7 @@ package com.dev.mythiccore.reaction.reaction_type;
 import com.dev.mythiccore.reaction.ElementalReaction;
 import io.lumine.mythic.lib.api.stat.provider.StatProvider;
 import io.lumine.mythic.lib.damage.DamagePacket;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -12,8 +13,8 @@ public abstract class TriggerAuraReaction extends ElementalReaction {
 
     private final double gauge_unit_tax;
 
-    public TriggerAuraReaction(String id, String display, String aura, String trigger, double gauge_unit_tax) {
-        super(id, display, aura, trigger);
+    public TriggerAuraReaction(String id, ConfigurationSection config, String display, String aura, String trigger, double gauge_unit_tax) {
+        super(id, config, display, aura, trigger);
         this.gauge_unit_tax = gauge_unit_tax;
     }
 

@@ -56,6 +56,9 @@ public class ConfigLoader {
     public static boolean isReactionEnable(String reaction_id) {
         return MythicCore.getInstance().getConfig().getBoolean("Elemental-Reaction." + reaction_id + ".enable");
     }
+    public static boolean isDendroCoreReactionEnable(String reaction_id) {
+        return MythicCore.getInstance().getConfig().getBoolean("Elemental-Reaction.BLOOM.sub-reaction." + reaction_id + ".enable");
+    }
 
     public static List<String> getReactionPriorityList(String element) {
         return MythicCore.getInstance().getConfig().getStringList("Reaction-Priority."+element);

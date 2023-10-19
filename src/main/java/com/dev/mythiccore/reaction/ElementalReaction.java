@@ -33,12 +33,14 @@ public abstract class ElementalReaction {
     private final String aura;
     private final String trigger;
     private final String display;
+    private final ConfigurationSection config;
 
-    public ElementalReaction(String id, String display, String aura, String trigger) {
+    public ElementalReaction(String id, ConfigurationSection config, String display, String aura, String trigger) {
         this.id = id;
         this.display = display;
         this.aura = aura;
         this.trigger = trigger;
+        this.config = config;
     }
 
     public String getId() {
@@ -58,7 +60,7 @@ public abstract class ElementalReaction {
         return MythicCore.getAuraManager().getAura(uuid);
     }
     public ConfigurationSection getConfig() {
-        return MythicCore.getInstance().getConfig().getConfigurationSection("Elemental-Reaction."+id);
+        return config;
     }
 
     public void damage(double amount, Entity caster, LivingEntity target, boolean knockback, EntityDamageEvent.DamageCause damage_cause) {

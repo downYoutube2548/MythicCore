@@ -1,27 +1,30 @@
 package com.dev.mythiccore.reaction;
 
-import java.util.ArrayList;
+import com.dev.mythiccore.reaction.reactions.bloom.DendroCoreReaction;
+
 import java.util.HashMap;
-import java.util.List;
 
 public class ReactionManager {
-    private final HashMap<String, List<ElementalReaction>> reactionMap = new HashMap<>();
+    private final HashMap<String, ElementalReaction> reactionMap = new HashMap<>();
+    private final HashMap<String, DendroCoreReaction> dendroCoreReactionMap = new HashMap<>();
 
     public void registerElementalReaction(ElementalReaction reaction) {
-
-        if (reactionMap.containsKey(reaction.getId())) {
-            List<ElementalReaction> reactions = new ArrayList<>(reactionMap.get(reaction.getId()));
-            reactions.add(reaction);
-            reactionMap.put(reaction.getId(), reactions);
-        } else {
-            reactionMap.put(reaction.getId(), new ArrayList<>(List.of(reaction)));
-        }
-
+        reactionMap.put(reaction.getId(), reaction);
     }
     public void unregisterElementalReaction(String reaction_id) {
         reactionMap.remove(reaction_id);
     }
-    public HashMap<String, List<ElementalReaction>> getElementalReactions() {
+    public HashMap<String, ElementalReaction> getElementalReactions() {
         return reactionMap;
+    }
+
+    public void registerDendroCoreReaction(DendroCoreReaction reaction) {
+        dendroCoreReactionMap.put(reaction.getId(), reaction);
+    }
+    public void unregisterDendroCoreReaction(String reaction_id) {
+        dendroCoreReactionMap.remove(reaction_id);
+    }
+    public HashMap<String, DendroCoreReaction> getDendroCoreReactions() {
+        return dendroCoreReactionMap;
     }
 }

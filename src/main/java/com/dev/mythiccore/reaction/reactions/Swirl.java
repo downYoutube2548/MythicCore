@@ -13,6 +13,7 @@ import net.Indyuce.mmocore.api.player.PlayerData;
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 import org.bukkit.GameMode;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -26,8 +27,8 @@ import java.util.Objects;
 public class Swirl extends TriggerAuraReaction {
     private final String aura;
 
-    public Swirl(String id, String display, String aura, String trigger, double gauge_unit_tax) {
-        super(id, display, aura, trigger, gauge_unit_tax);
+    public Swirl(String id, ConfigurationSection config, String display, String aura, String trigger, double gauge_unit_tax) {
+        super(id, config, display, aura, trigger, gauge_unit_tax);
         this.aura = aura;
     }
 
@@ -75,7 +76,8 @@ public class Swirl extends TriggerAuraReaction {
         }
 
         for (Entity swirl_entity : swirl_entities) {
-            if (swirl_entity == damager || swirl_entity.isInvulnerable() || swirl_entity.hasMetadata("NPC") || !Combat.getLastMobType(damager).equals(Combat.getMobType(swirl_entity)) || (swirl_entity instanceof Player player && (player.getGameMode().equals(GameMode.CREATIVE) || player.getGameMode().equals(GameMode.SPECTATOR)))) continue;
+            boolean mob_type_filter = damager != null && ConfigLoader.aoeDamageFilterEnable() && Combat.getLastMobType(damager) != Combat.getMobType(swirl_entity);
+            if (swirl_entity == damager || swirl_entity.isInvulnerable() || swirl_entity.hasMetadata("NPC") || mob_type_filter || (swirl_entity instanceof Player player && (player.getGameMode().equals(GameMode.CREATIVE) || player.getGameMode().equals(GameMode.SPECTATOR)))) continue;
             if (swirl_entity instanceof LivingEntity swirled_living_entity && !swirled_living_entity.isInvulnerable()) {
                 damage(final_damage, damager, swirled_living_entity, this.aura, false, Double.parseDouble(Utils.splitTextAndNumber(swirled_aura_gauge)[0]), Utils.splitTextAndNumber(swirled_aura_gauge)[1], "SWIRL_"+this.aura, 0, false, damage_cause);
             }

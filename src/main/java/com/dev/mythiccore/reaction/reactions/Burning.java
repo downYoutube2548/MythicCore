@@ -11,6 +11,7 @@ import io.lumine.mythic.lib.damage.DamagePacket;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -18,8 +19,8 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.jetbrains.annotations.Nullable;
 
 public class Burning extends DoubleAuraReaction {
-    public Burning(String id, String display, String aura1, String aura2, long reaction_frequency, double gauge_unit_tax) {
-        super(id, display, aura1, aura2, reaction_frequency, gauge_unit_tax);
+    public Burning(String id, ConfigurationSection config, String display, String aura1, String aura2, long reaction_frequency, double gauge_unit_tax) {
+        super(id, config, display, aura1, aura2, reaction_frequency, gauge_unit_tax);
     }
 
     @Override
