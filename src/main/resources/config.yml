@@ -169,12 +169,12 @@ Elemental-Reaction:
     aura-element: HYDRO
     trigger-element: DENDRO
     damage-element: DENDRO
-    dendro-core-spawn-radius: 20
+    dendro-core-spawn-radius: 1.5
     dendro-core-tick-explode: 100
     dendro-core-explode-damage: "2.0 * (16.12 * (attacker_level + 16) - 257.23) * (1 + (16 * (elemental_mastery / (elemental_mastery + 2000)))) * resistance_multiplier"
     dendro-core-explode-radius: 3
     maximum-dendro-core-per-chunk: 5
-    dendro-core-trigger-radius: 20
+    dendro-core-trigger-radius: 3
     dendro-core:
       material: LIME_STAINED_GLASS
       model-data: 0
@@ -191,7 +191,7 @@ Elemental-Reaction:
         take-off-velocity: 20
         pulling-force: 100
         life-time-after-trigger: 100 # -1 to disable
-        check-radius: 50
+        check-radius: 20
         launch-particle:
           particle: SOUL_FIRE_FLAME
           radius: 0.3
@@ -207,6 +207,13 @@ Elemental-Reaction:
         enable: true
         display: "#ff9902Burgeon"
         trigger-element: PYRO
+        check-radius: 50
+        explode-sound:
+          - ENTITY_FIREWORK_ROCKET_BLAST:2:0
+        explode-particle:
+          - FLASH:0:0
+          - FIREWORK:0.5:100
+        damage-element: DENDRO
         damage-formula: "3.5 * (16.12 * (attacker_level + 16) - 257.23) * (1 + (16 * (elemental_mastery / (elemental_mastery + 2000)))) * resistance_multiplier"
 
 Damage-Calculation:
