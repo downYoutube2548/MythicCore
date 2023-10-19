@@ -212,7 +212,7 @@ Elemental-Reaction:
           - ENTITY_FIREWORK_ROCKET_BLAST:2:0
         explode-particle:
           - FLASH:0:0
-          - FIREWORK:0.5:100
+          - FIREWORKS_SPARK:0.5:100
         damage-element: DENDRO
         damage-formula: "3.5 * (16.12 * (attacker_level + 16) - 257.23) * (1 + (16 * (elemental_mastery / (elemental_mastery + 2000)))) * resistance_multiplier"
 

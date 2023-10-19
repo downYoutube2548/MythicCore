@@ -107,8 +107,8 @@ public class HyperBloom extends DendroCoreReaction {
                     for (String s : getConfig().getStringList("explode-sound")) {
                         String[] raw_sound = s.split(":");
                         String sound = raw_sound[0];
-                        int volume = Integer.parseInt(raw_sound[1]);
-                        int pitch = Integer.parseInt(raw_sound[2]);
+                        float volume = Float.parseFloat(raw_sound[1]);
+                        float pitch = Float.parseFloat(raw_sound[2]);
 
                         finalTarget_entity.getWorld().playSound(finalTarget_entity.getLocation(), Sound.valueOf(sound), volume, pitch);
                     }
@@ -116,7 +116,7 @@ public class HyperBloom extends DendroCoreReaction {
                     for (String p : getConfig().getStringList("explode-particle")) {
                         String[] raw_particle = p.split(":");
                         String particle = raw_particle[0];
-                        int speed = Integer.parseInt(raw_particle[1]);
+                        double speed = Double.parseDouble(raw_particle[1]);
                         int count = Integer.parseInt(raw_particle[2]);
 
                         finalTarget_entity.getWorld().spawnParticle(Particle.valueOf(particle), finalTarget_entity.getLocation(), count, 0, 0, 0, speed);
