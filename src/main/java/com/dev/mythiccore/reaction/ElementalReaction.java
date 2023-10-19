@@ -17,6 +17,8 @@ import io.lumine.mythic.lib.element.Element;
 import io.lumine.mythic.lib.player.PlayerMetadata;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import org.bukkit.Bukkit;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -24,6 +26,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -120,5 +123,33 @@ public abstract class ElementalReaction {
             Bukkit.getScheduler().runTask(MythicCore.getInstance(), ()-> DamageManager.registerAttack(attack, knockback, true, damage_cause));
 
         }
+    }
+
+    public void spawnParticle(Entity entity, List<String> particles) {
+        try {
+
+            for (String p : particles) {
+                String[] raw_particle = p.split(":");
+                String particle = raw_particle[0];
+                double speed = Double.parseDouble(raw_particle[1]);
+                int count = Integer.parseInt(raw_particle[2]);
+
+                entity.getWorld().spawnParticle(Particle.valueOf(particle), entity.getLocation(), count, 0, 0, 0, speed);
+            }
+
+        } catch (NumberFormatException ignored) {}
+    }
+
+    public void playSound(Entity entity, List<String> sounds) {
+        try {
+            for (String s : sounds) {
+                String[] raw_sound = s.split(":");
+                String sound = raw_sound[0];
+                float volume = Float.parseFloat(raw_sound[1]);
+                float pitch = Float.parseFloat(raw_sound[2]);
+
+                entity.getWorld().playSound(entity.getLocation(), Sound.valueOf(sound), volume, pitch);
+            }
+        } catch (NumberFormatException ignored) {}
     }
 }

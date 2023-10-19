@@ -3,8 +3,10 @@ package com.dev.mythiccore.visuals;
 import com.dev.mythiccore.MythicCore;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.craftbukkit.v1_19_R3.entity.CraftPlayer;
 import org.bukkit.entity.Display;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.entity.TextDisplay;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.BoundingBox;
@@ -23,20 +25,22 @@ public class AuraVisualizer {
     public static void start() {
 
         Bukkit.getScheduler().runTaskTimer(MythicCore.getInstance(), () -> {
+
             try {
                 for (UUID uuid : mapHologram.keySet()) {
                     Entity entity = Bukkit.getEntity(uuid);
-                    if (entity == null || entity.isDead() || !entity.getLocation().getChunk().isLoaded() || (!MythicCore.getAuraManager().getMapEntityAura().containsKey(uuid) && !MythicCore.getCooldownManager().getEntityCooldown().containsKey(uuid)) && !MythicCore.getBuffManager().getMapBuffData().containsKey(uuid)) {
+                    if (entity == null || entity.isDead() || !entity.getLocation().getChunk().isLoaded() || (!MythicCore.getAuraManager().getMapEntityAura().containsKey(uuid) /*&& !MythicCore.getCooldownManager().getEntityCooldown().containsKey(uuid)) && !MythicCore.getBuffManager().getMapBuffData().containsKey(uuid)*/)) {
                         TextDisplay textDisplay = mapHologram.get(uuid);
                         textDisplay.remove();
                         mapHologram.remove(uuid);
                     }
                 }
 
-                List<UUID> uuids = new ArrayList<>();
-                uuids.addAll(MythicCore.getAuraManager().getMapEntityAura().keySet());
+                List<UUID> uuids = new ArrayList<>(MythicCore.getAuraManager().getMapEntityAura().keySet());
+                /*
                 uuids.addAll(MythicCore.getCooldownManager().getEntityCooldown().keySet());
                 uuids.addAll(MythicCore.getBuffManager().getMapBuffData().keySet());
+                 */
                 for (UUID uuid : uuids) {
                     Entity entity = Bukkit.getEntity(uuid);
                     if (entity == null || entity.isDead() || !entity.getLocation().getChunk().isLoaded()) {
@@ -60,7 +64,7 @@ public class AuraVisualizer {
                         TextDisplay textDisplay = entity.getWorld().spawn(spawnLocation, TextDisplay.class);
                         textDisplay.setPersistent(false);
                         textDisplay.setBillboard(Display.Billboard.CENTER);
-                        textDisplay.setText(MythicCore.getAuraManager().getAura(uuid).getAuraIcon() + " | " + MythicCore.getCooldownManager().getCooldown(uuid).getMapCooldown());
+                        textDisplay.setText(MythicCore.getAuraManager().getAura(uuid).getAuraIcon()/* + " | " + MythicCore.getCooldownManager().getCooldown(uuid).getMapCooldown()*/);
                         textDisplay.setTransformation(new Transformation(textDisplay.getTransformation().getTranslation(), textDisplay.getTransformation().getLeftRotation(), new Vector3f(scale), textDisplay.getTransformation().getRightRotation()));
                         textDisplay.setShadowed(true);
                         textDisplay.setSeeThrough(true);
@@ -70,7 +74,7 @@ public class AuraVisualizer {
 
                     } else {
                         TextDisplay textDisplay = mapHologram.get(uuid);
-                        textDisplay.setText(MythicCore.getAuraManager().getAura(uuid).getAuraIcon()+MythicCore.getCooldownManager().getCooldown(uuid).getMapCooldown()+"\n"+MythicCore.getBuffManager().getBuff(uuid).getActivateBuffs());
+                        textDisplay.setText(MythicCore.getAuraManager().getAura(uuid).getAuraIcon()/*+MythicCore.getCooldownManager().getCooldown(uuid).getMapCooldown()+"\n"+MythicCore.getBuffManager().getBuff(uuid).getActivateBuffs()*/);
                         textDisplay.teleport(spawnLocation);
                     }
                 }

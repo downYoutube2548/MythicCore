@@ -82,5 +82,8 @@ public class Swirl extends TriggerAuraReaction {
                 damage(final_damage, damager, swirled_living_entity, this.aura, false, Double.parseDouble(Utils.splitTextAndNumber(swirled_aura_gauge)[0]), Utils.splitTextAndNumber(swirled_aura_gauge)[1], "SWIRL_"+this.aura, 0, false, damage_cause);
             }
         }
+
+        spawnParticle(entity, getConfig().getStringList("particle"));
+        playSound(entity, getConfig().getStringList("sound"));
     }
 }

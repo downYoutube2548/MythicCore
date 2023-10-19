@@ -38,11 +38,13 @@ public class AuraData {
 
             String auraIcon;
             Element element = MythicLib.plugin.getElements().get(auraID);
-            double progress = mapAura.get(auraID).getDuration() / (mapAura.get(auraID).getGaugeUnit() * ConfigLoader.getDecayRate(mapAura.get(auraID).getDecayRate())) * 100;
+            //double progress = mapAura.get(auraID).getDuration() / (mapAura.get(auraID).getGaugeUnit() * ConfigLoader.getDecayRate(mapAura.get(auraID).getDecayRate())) * 100;
             if (element != null) {
-                auraIcon = element.getColor()+element.getLoreIcon()+" "+Utils.progressBar(progress, 20, '▌', mapAura.get(auraID).getGaugeUnit())+element.getColor()+" "+mapAura.get(auraID).getDecayRate()+"\n";
+                auraIcon = element.getColor()+element.getLoreIcon();
+                //auraIcon = element.getColor()+element.getLoreIcon()+" "+Utils.progressBar(progress, 20, '▌', mapAura.get(auraID).getGaugeUnit())+element.getColor()+" "+mapAura.get(auraID).getDecayRate()+"\n";
             } else {
-                auraIcon = ConfigLoader.getSpecialAuraColor(auraID)+ConfigLoader.getSpecialAuraIcon(auraID)+" "+Utils.progressBar(progress, 20, '▌', mapAura.get(auraID).getGaugeUnit())+ConfigLoader.getSpecialAuraColor(auraID)+" "+mapAura.get(auraID).getDecayRate()+"\n";
+                auraIcon = ConfigLoader.getSpecialAuraColor(auraID)+ConfigLoader.getSpecialAuraIcon(auraID);
+                //auraIcon = ConfigLoader.getSpecialAuraColor(auraID)+ConfigLoader.getSpecialAuraIcon(auraID)+" "+Utils.progressBar(progress, 20, '▌', mapAura.get(auraID).getGaugeUnit())+ConfigLoader.getSpecialAuraColor(auraID)+" "+mapAura.get(auraID).getDecayRate()+"\n";
             }
 
             sb.append(Utils.colorize(auraIcon+"&r"));

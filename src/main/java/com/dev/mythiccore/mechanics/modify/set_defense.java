@@ -1,4 +1,4 @@
-package com.dev.mythiccore.mechanics.stats;
+package com.dev.mythiccore.mechanics.modify;
 
 import io.lumine.mythic.api.adapters.AbstractEntity;
 import io.lumine.mythic.api.config.MythicLineConfig;

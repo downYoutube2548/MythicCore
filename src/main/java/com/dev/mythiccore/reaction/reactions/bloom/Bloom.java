@@ -32,5 +32,8 @@ public class Bloom extends TriggerAuraReaction {
 
         DendroCoreManager.spawnDendroCore(this, dendro_core_loc, damager instanceof LivingEntity livingEntity ? livingEntity : null, stats, 100, damage_cause, Combat.getLastMobType(damager));
 
+        spawnParticle(entity, getConfig().getStringList("particle"));
+        playSound(entity, getConfig().getStringList("sound"));
+
     }
 }

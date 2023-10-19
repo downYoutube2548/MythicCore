@@ -82,6 +82,9 @@ public class Overloaded extends TriggerAuraReaction {
                     }
                 }
             }
+
+            spawnParticle(entity, getConfig().getStringList("particle"));
+            playSound(entity, getConfig().getStringList("sound"));
         }
     }
 }

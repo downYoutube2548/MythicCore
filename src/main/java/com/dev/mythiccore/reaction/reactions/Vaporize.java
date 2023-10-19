@@ -49,5 +49,8 @@ public class Vaporize extends TriggerAuraReaction {
                 .setVariable("elemental_mastery", elemental_mastery);
 
         damage.setValue(expression.evaluate());
+
+        spawnParticle(entity, getConfig().getStringList("particle"));
+        playSound(entity, getConfig().getStringList("sound"));
     }
 }

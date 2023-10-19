@@ -70,5 +70,8 @@ public class SuperConduct extends TriggerAuraReaction {
                 MythicCore.getBuffManager().getBuff(aoe_living_entity.getUniqueId()).addBuff(new ElementalResistanceReduction(getConfig().getDouble("resistance-reduction"), getConfig().getLong("resistance-reduction-duration"), getConfig().getString("resistance-reduction-element")));
             }
         }
+
+        spawnParticle(entity, getConfig().getStringList("particle"));
+        playSound(entity, getConfig().getStringList("sound"));
     }
 }
