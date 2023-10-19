@@ -330,16 +330,12 @@ Stats:
         Material: EMERALD
         Lore: ['&7Increase all elemental reaction damages']
 
-
-
     AST_IGNORE_DEFENSE:
       Name: Ignore Defense
       Icon:
         Name: Ignore Defense (%)
         Material: NETHERITE_AXE
         Lore: ['&7Reduce all defense']
-
-
 
     AST_ATTACK_DAMAGE_BUFF:
       Name: Attack Damage Buff
@@ -354,8 +350,6 @@ Stats:
         Material: NETHERITE_AXE
         Lore: [ '&7Reduce all defense' ]
 
-
-
     AST_HEALING_BONUS:
       Name: Healing Bonus
       Icon:
@@ -368,8 +362,6 @@ Stats:
         Name: Incoming Healing Bonus (%)
         Material: GOLDEN_APPLE
         Lore: ['&7Increase all incoming healing']
-
-
 
     AST_SANITY_RECHARGE:
       Name: Sanity Recharge
