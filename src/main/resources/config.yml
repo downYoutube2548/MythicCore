@@ -83,7 +83,7 @@ Elemental-Reaction:
     trigger-element: ELECTRO
     gauge-unit-tax: 1.25
     damage-element: PYRO
-    damage-formula: "2 * (16.12 * (attacker_level + 16) - 257.23) * (1 + (16 * (elemental_mastery / (elemental_mastery + 2000)))) * resistance_multiplier"
+    damage-formula: "2 * (16.12 * (attacker_level + 16) - 257.23) * (1 + (16 * (elemental_mastery / (elemental_mastery + 2000)) ) + overloaded_bonus/100) * resistance_multiplier"
     aoe-radius: 1.5
     knockback-multiplier: 1.5
   VAPORIZE:
@@ -92,21 +92,21 @@ Elemental-Reaction:
     aura-element: HYDRO
     trigger-element: PYRO
     gauge-unit-tax: 0.625
-    damage-formula: "raw_damage * 1.75 * (1 + ((2.78 * elemental_mastery) / (elemental_mastery + 1200)))"
+    damage-formula: "raw_damage * 1.75 * (1 + ((2.78 * elemental_mastery) / (elemental_mastery + 1200)) + vaporize_bonus/100)"
   REVERSE_VAPORIZE:
     enable: true
     display: "#f4b65dVaporize"
     aura-element: PYRO
     trigger-element: HYDRO
     gauge-unit-tax: 2.5
-    damage-formula: "raw_damage * 3 * (1 + 2.78 * (elemental_mastery / (elemental_mastery + 1200)))"
+    damage-formula: "raw_damage * 3 * (1 + ((2.78 * elemental_mastery) / (elemental_mastery + 1200)) + vaporize_bonus/100)"
   MELT:
     enable: true
     display: "#f4b65dMelt"
     aura-element: PYRO
     trigger-element: CRYO
     gauge-unit-tax: 0.625
-    damage-formula: "raw_damage * 1.75 * (1 + 2.78 * (elemental_mastery / (elemental_mastery + 1200)))"
+    damage-formula: "raw_damage * 1.75 * (1 + ((2.78 * elemental_mastery) / (elemental_mastery + 1200)) + melt_bonus/100)"
   REVERSE_MELT:
     enable: true
     display: "#f4b65dMelt"
@@ -114,7 +114,7 @@ Elemental-Reaction:
     special-aura: FROZEN
     trigger-element: PYRO
     gauge-unit-tax: 2.5
-    damage-formula: "raw_damage * 3 * (1 + 2.78 * (elemental_mastery / (elemental_mastery + 1200)))"
+    damage-formula: "raw_damage * 3 * (1 + ((2.78 * elemental_mastery) / (elemental_mastery + 1200)) + melt_bonus/100)"
   SUPER_CONDUCT:
     enable: true
     display: "#bab3feSuperconduct"
@@ -127,7 +127,7 @@ Elemental-Reaction:
     resistance-reduction-element: PHYSICAL
     resistance-reduction: 40
     resistance-reduction-duration: 240
-    damage-formula: "0.5 * (16.12 * (attacker_level + 16) - 257.23) * (1 + (16 * (elemental_mastery / (elemental_mastery + 2000)))) * resistance_multiplier"
+    damage-formula: "0.5 * (16.12 * (attacker_level + 16) - 257.23) * (1 + ((16 * elemental_mastery) / (elemental_mastery + 2000)) + super_conduct_bonus/100) * resistance_multiplier"
   ELECTRO_CHARGED:
     enable: true
     display: "#f19bfbElectro-Charged"
@@ -139,7 +139,7 @@ Elemental-Reaction:
     check-radius: 3
     bounce-required-aura: HYDRO
     damage-element: ELECTRO
-    damage-formula: "1.2 * (16.12 * (attacker_level + 16) - 257.23) * (1 + (16 * (elemental_mastery / (elemental_mastery + 2000)))) * resistance_multiplier"
+    damage-formula: "1.2 * (16.12 * (attacker_level + 16) - 257.23) * (1 + ((16 * elemental_mastery) / (elemental_mastery + 2000)) + electro_charged_bonus/100) * resistance_multiplier"
   FROZEN:
     enable: true
     display: ""
@@ -159,7 +159,7 @@ Elemental-Reaction:
     gauge-unit-tax: 0.1
     damage-element: PYRO
     damage-gauge-unit: 1A
-    damage-formula: "0.3 * (16.12 * (attacker_level + 16) - 257.23) * (1 + (16 * (elemental_mastery / (elemental_mastery + 2000)))) * resistance_multiplier"
+    damage-formula: "0.3 * (16.12 * (attacker_level + 16) - 257.23) * (1 + ((16 * elemental_mastery) / (elemental_mastery + 2000)) + burning_bonus/100) * resistance_multiplier"
   SWIRL:
     enable: true
     display: "#69facdSwirl"
@@ -177,7 +177,7 @@ Elemental-Reaction:
     aura-overriding:
       FROZEN: CRYO
     swirl-radius: 3
-    damage-formula: "0.7 * (16.12 * (attacker_level + 16) - 257.23) * (1 + (16 * (elemental_mastery / (elemental_mastery + 2000)))) * resistance_multiplier"
+    damage-formula: "0.7 * (16.12 * (attacker_level + 16) - 257.23) * (1 + ((16 * elemental_mastery) / (elemental_mastery + 2000)) + swirl_bonus/100) * resistance_multiplier"
   BLOOM:
     enable: true
     display: "#29bf3eBloom"
@@ -188,7 +188,7 @@ Elemental-Reaction:
     damage-element: DENDRO
     dendro-core-spawn-radius: 2
     dendro-core-tick-explode: 100
-    dendro-core-explode-damage: "2.0 * (16.12 * (attacker_level + 16) - 257.23) * (1 + (16 * (elemental_mastery / (elemental_mastery + 2000)))) * resistance_multiplier"
+    dendro-core-explode-damage: "2.0 * (16.12 * (attacker_level + 16) - 257.23) * (1 + ((16 * elemental_mastery) / (elemental_mastery + 2000)) + bloom_bonus/100) * resistance_multiplier"
     dendro-core-explode-radius: 3
     maximum-dendro-core-per-chunk: 5
     dendro-core-trigger-radius: 4
@@ -219,19 +219,19 @@ Elemental-Reaction:
         explode-particle:
           - FLASH:0:0
         damage-element: DENDRO
-        damage-formula: "4.0 * (16.12 * (attacker_level + 16) - 257.23) * (1 + (16 * (elemental_mastery / (elemental_mastery + 2000)))) * resistance_multiplier"
+        damage-formula: "4.0 * (16.12 * (attacker_level + 16) - 257.23) * (1 + ((16 * elemental_mastery) / (elemental_mastery + 2000)) + hyperbloom_bonus/100) * resistance_multiplier"
       BURGEON:
         enable: true
         display: "#ff9902Burgeon"
         trigger-element: PYRO
-        check-radius: 50
+        check-radius: 5
         explode-sound:
           - ENTITY_FIREWORK_ROCKET_BLAST:2:0
         explode-particle:
           - FLASH:0:0
           - FIREWORKS_SPARK:0.5:100
         damage-element: DENDRO
-        damage-formula: "3.5 * (16.12 * (attacker_level + 16) - 257.23) * (1 + (16 * (elemental_mastery / (elemental_mastery + 2000)))) * resistance_multiplier"
+        damage-formula: "3.5 * (16.12 * (attacker_level + 16) - 257.23) * (1 + ((16 * elemental_mastery) / (elemental_mastery + 2000)) + burgeon_bonus/100) * resistance_multiplier"
   QUICKEN:
     enable: true
     display: ""
@@ -246,14 +246,14 @@ Elemental-Reaction:
     aura-element: QUICKEN
     trigger-element: DENDRO
     gauge-unit-tax: 0
-    damage-formula: "raw_damage + (1.25 * (16.12 * (attacker_level + 16) - 257.23) * (1 + (5 * elemental_mastery / (1200 + elemental_mastery))))"
+    damage-formula: "raw_damage + (1.25 * (16.12 * (attacker_level + 16) - 257.23) * (1 + (5 * elemental_mastery / (1200 + elemental_mastery)) + spread_bonus/100))"
   AGGRAVATE:
     enable: true
     display: "#d983ffAggravate"
     aura-element: QUICKEN
     trigger-element: ELECTRO
     gauge-unit-tax: 0
-    damage-formula: "raw_damage + (1.15 * (16.12 * (attacker_level + 16) - 257.23) * (1 + (5 * elemental_mastery / (1200 + elemental_mastery))))"
+    damage-formula: "raw_damage + (1.15 * (16.12 * (attacker_level + 16) - 257.23) * (1 + (5 * elemental_mastery / (1200 + elemental_mastery)) + aggravate_bonus/100))"
 
 
 Damage-Calculation:
@@ -390,55 +390,128 @@ Stats:
         Material: NETHERITE_AXE
         Lore: [ '&7Reduce all defense' ]
 
-    AST_HEALING_BONUS:
-      Name: Healing Bonus
+    AST_VAPORIZE_BONUS:
+      Name: Vaporize Bonus
       Icon:
-        Name: Healing Bonus (%)
-        Material: GOLDEN_APPLE
-        Lore: ['&7Increase all healing']
-    AST_INCOMING_HEALING_BONUS:
-      Name: Incoming Healing Bonus
+        Name: Vaporize Bonus
+        Material: WATER_BUCKET
+        Lore: [ '&7Increase Vaporize''s damage' ]
+    AST_SWIRL_BONUS:
+      Name: Swirl Bonus
       Icon:
-        Name: Incoming Healing Bonus (%)
-        Material: GOLDEN_APPLE
-        Lore: ['&7Increase all incoming healing']
-
-    AST_SANITY_RECHARGE:
-      Name: Sanity Recharge
+        Name: Swirl Bonus
+        Material: FEATHER
+        Lore: [ '&7Increase Swirl''s damage' ]
+    AST_SUPER_CONDUCT_BONUS:
+      Name: Super Conduct Bonus
       Icon:
-        Name: Sanity Recharge (%)
+        Name: Super Conduct Bonus
+        Material: LIGHTNING_ROD
+        Lore: [ '&7Increase Super Conduct''s damage' ]
+    AST_OVERLOADED_BONUS:
+      Name: Overloaded Bonus
+      Icon:
+        Name: Overloaded Bonus
+        Material: REDSTONE
+        Lore: [ '&7Increase Overloaded''s damage' ]
+    AST_MELT_BONUS:
+      Name: Melt Bonus
+      Icon:
+        Name: Melt Bonus
+        Material: ICE
+        Lore: [ '&7Increase Melt''s damage' ]
+    AST_ELECTRO_CHARGED_BONUS:
+      Name: Electro Charged Bonus
+      Icon:
+        Name: Electro Charged Bonus
         Material: NETHER_STAR
-        Lore: ['&7Increase all sanity recharge']
-    AST_SHIELD_STRENGTH:
-      Name: Shield Strength
+        Lore: [ '&7Increase Electro Charged''s damage' ]
+    AST_BURNING_BONUS:
+      Name: Burning Bonus
       Icon:
-        Name: Shield Strength (%)
-        Material: SHIELD
-        Lore: ['&7Increase all shield strength']
-    AST_ACCURACY:
-      Name: Accuracy
+        Name: Burning Bonus
+        Material: CAMPFIRE
+        Lore: [ '&7Increase Burning''s damage' ]
+    AST_SPREAD_BONUS:
+      Name: Spread Bonus
       Icon:
-        Name: Accuracy
-        Material: ARROW
-        Lore: ['&7Increase all accuracy']
-    AST_HIDDEN_ACCURACY:
-      Name: Hidden Accuracy
+        Name: Spread Bonus
+        Material: STICK
+        Lore: [ '&7Increase Spread''s damage' ]
+    AST_AGGRAVATE_BONUS:
+      Name: Aggravate Bonus
       Icon:
-        Name: Hidden Accuracy
-        Material: ARROW
-        Lore: ['&7Increase all accuracy']
-    AST_EVASION:
-      Name: Evasion
+        Name: Aggravate Bonus
+        Material: BLAZE_ROD
+        Lore: [ '&7Increase Aggravate''s damage' ]
+    AST_BLOOM_BONUS:
+      Name: Bloom Bonus
       Icon:
-        Name: Evasion
-        Material: FEATHER
-        Lore: ['&7Increase all evasion']
-    AST_HIDDEN_EVASION:
-      Name: Hidden Evasion
+        Name: Bloom Bonus
+        Material: LIME_STAINED_GLASS
+        Lore: [ '&7Increase Bloom''s damage' ]
+    AST_BURGEON_BONUS:
+      Name: Burgeon Bonus
       Icon:
-        Name: Hidden Evasion
-        Material: FEATHER
-        Lore: ['&7Increase all evasion']
+        Name: Burgeon Bonus
+        Material: ORANGE_STAINED_GLASS
+        Lore: [ '&7Increase Burgeon''s damage' ]
+    AST_HYPERBLOOM_BONUS:
+      Name: HyperBloom Bonus
+      Icon:
+        Name: HyperBloom Bonus
+        Material: MAGENTA_STAINED_GLASS
+        Lore: [ '&7Increase HyperBloom''s damage' ]
+
+#    AST_HEALING_BONUS:
+#      Name: Healing Bonus
+#      Icon:
+#        Name: Healing Bonus (%)
+#        Material: GOLDEN_APPLE
+#        Lore: ['&7Increase all healing']
+#    AST_INCOMING_HEALING_BONUS:
+#      Name: Incoming Healing Bonus
+#      Icon:
+#        Name: Incoming Healing Bonus (%)
+#        Material: GOLDEN_APPLE
+#        Lore: ['&7Increase all incoming healing']
+#
+#    AST_SANITY_RECHARGE:
+#      Name: Sanity Recharge
+#      Icon:
+#        Name: Sanity Recharge (%)
+#        Material: NETHER_STAR
+#        Lore: ['&7Increase all sanity recharge']
+#    AST_SHIELD_STRENGTH:
+#      Name: Shield Strength
+#      Icon:
+#        Name: Shield Strength (%)
+#        Material: SHIELD
+#        Lore: ['&7Increase all shield strength']
+#    AST_ACCURACY:
+#      Name: Accuracy
+#      Icon:
+#        Name: Accuracy
+#        Material: ARROW
+#        Lore: ['&7Increase all accuracy']
+#    AST_HIDDEN_ACCURACY:
+#      Name: Hidden Accuracy
+#      Icon:
+#        Name: Hidden Accuracy
+#        Material: ARROW
+#        Lore: ['&7Increase all accuracy']
+#    AST_EVASION:
+#      Name: Evasion
+#      Icon:
+#        Name: Evasion
+#        Material: FEATHER
+#        Lore: ['&7Increase all evasion']
+#    AST_HIDDEN_EVASION:
+#      Name: Hidden Evasion
+#      Icon:
+#        Name: Hidden Evasion
+#        Material: FEATHER
+#        Lore: ['&7Increase all evasion']
 
 message:
   prefix: "&8[&dMythicCore&8] "
@@ -447,3 +520,4 @@ message:
   player-not-found: "&cไม่พบผู้เล่น"
   syntax-error: "&cคำสั่งไม่ถูกต้อง!"
   apply-aura-success: "&eใส่ออร่า &6{aura} &eให้กับ &f{player} &eด้วยเกจธาตุ &b{gauge}"
+  reload-success: "&eรีโหลดเรียบร้อยแล้ว!"

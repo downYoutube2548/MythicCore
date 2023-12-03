@@ -36,9 +36,11 @@ public class Swirl extends TriggerAuraReaction {
     public void trigger(DamagePacket damage, double gauge_unit, String decay_rate, LivingEntity entity, @Nullable Entity damager, StatProvider stats, EntityDamageEvent.DamageCause damage_cause) {
 
         int level = 1;
+        double swirl_bonus = 0;
         if (damager != null) {
             if (damager instanceof Player player) {
                 level = PlayerData.get(player).getLevel();
+                swirl_bonus = stats.getStat("AST_SWIRL_BONUS");
             } else {
                 ActiveMob mythicMob = MythicBukkit.inst().getMobManager().getActiveMob(damager.getUniqueId()).orElse(null);
                 if (mythicMob != null) {
@@ -52,11 +54,12 @@ public class Swirl extends TriggerAuraReaction {
         String formula = getConfig().getString("damage-formula");
         assert formula != null;
         Expression expression = new ExpressionBuilder(formula)
-                .variables("attacker_level", "elemental_mastery", "resistance_multiplier", "level_multiplier")
+                .variables("attacker_level", "elemental_mastery", "resistance_multiplier", "swirl_bonus")
                 .build()
                 .setVariable("attacker_level", level)
                 .setVariable("elemental_mastery", stats.getStat("AST_ELEMENTAL_MASTERY"))
-                .setVariable("resistance_multiplier", resistance_multiplier);
+                .setVariable("resistance_multiplier", resistance_multiplier)
+                .setVariable("swirl_bonus", swirl_bonus);
 
         double final_damage = expression.evaluate();
         damage(final_damage, damager, entity, this.aura, false, false, damage_cause);

@@ -34,6 +34,7 @@ public class SuperConduct extends TriggerAuraReaction {
     public void trigger(DamagePacket damage, double gauge_unit, String decay_rate, LivingEntity entity, @Nullable Entity damager, StatProvider stats, EntityDamageEvent.DamageCause damage_cause) {
         int attacker_level = 1;
         double elemental_mastery = 0;
+        double super_conduct_bonus = 0;
         double resistance_multiplier = StatCalculation.getResistanceMultiplier(entity.getUniqueId(), getConfig().getString("damage-element"));
 
         if (damager != null) {
@@ -41,6 +42,7 @@ public class SuperConduct extends TriggerAuraReaction {
                 PlayerData playerData = PlayerData.get(player);
 
                 elemental_mastery = stats.getStat("AST_ELEMENTAL_MASTERY");
+                super_conduct_bonus = stats.getStat("AST_SUPER_CONDUCT_BONUS");
                 attacker_level = playerData.getLevel();
             } else {
                 ActiveMob mythicMob = MythicBukkit.inst().getMobManager().getActiveMob(damager.getUniqueId()).orElse(null);
@@ -51,11 +53,12 @@ public class SuperConduct extends TriggerAuraReaction {
         String formula = getConfig().getString("damage-formula");
         assert formula != null;
         Expression expression = new ExpressionBuilder(formula)
-                .variables("attacker_level", "elemental_mastery", "resistance_multiplier", "level_multiplier")
+                .variables("attacker_level", "elemental_mastery", "resistance_multiplier", "super_conduct_bonus")
                 .build()
                 .setVariable("attacker_level", attacker_level)
                 .setVariable("elemental_mastery", elemental_mastery)
-                .setVariable("resistance_multiplier", resistance_multiplier);
+                .setVariable("resistance_multiplier", resistance_multiplier)
+                .setVariable("super_conduct_bonus", super_conduct_bonus);
 
         double final_damage = expression.evaluate();
 

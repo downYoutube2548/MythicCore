@@ -26,12 +26,14 @@ public class Vaporize extends TriggerAuraReaction {
 
         int attacker_level = 1;
         double elemental_mastery = 0;
+        double vaporize_bonus = 0;
 
         if (damager != null) {
             if (damager instanceof Player player) {
                 PlayerData playerData = PlayerData.get(player);
 
                 elemental_mastery = stats.getStat("AST_ELEMENTAL_MASTERY");
+                vaporize_bonus = stats.getStat("AST_VAPORIZE_BONUS");
                 attacker_level = playerData.getLevel();
             } else {
                 ActiveMob mythicMob = MythicBukkit.inst().getMobManager().getActiveMob(damager.getUniqueId()).orElse(null);
@@ -42,11 +44,12 @@ public class Vaporize extends TriggerAuraReaction {
         String formula = getConfig().getString("damage-formula");
         assert formula != null;
         Expression expression = new ExpressionBuilder(formula)
-                .variables("raw_damage", "attacker_level", "elemental_mastery", "level_multiplier")
+                .variables("raw_damage", "attacker_level", "elemental_mastery", "vaporize_bonus")
                 .build()
                 .setVariable("raw_damage", damage.getValue())
                 .setVariable("attacker_level", attacker_level)
-                .setVariable("elemental_mastery", elemental_mastery);
+                .setVariable("elemental_mastery", elemental_mastery)
+                .setVariable("vaporize_bonus", vaporize_bonus);
 
         damage.setValue(expression.evaluate());
 

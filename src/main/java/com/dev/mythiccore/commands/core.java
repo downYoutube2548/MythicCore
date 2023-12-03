@@ -2,6 +2,7 @@ package com.dev.mythiccore.commands;
 
 import com.dev.mythiccore.MythicCore;
 import com.dev.mythiccore.events.attack_handle.TriggerReaction;
+import com.dev.mythiccore.reaction.ReactionManager;
 import com.dev.mythiccore.utils.ConfigLoader;
 import com.dev.mythiccore.utils.Utils;
 import de.tr7zw.nbtapi.NBTItem;
@@ -41,7 +42,15 @@ public class core implements CommandExecutor, TabExecutor {
 
         if (sender instanceof Player player) {
             if (args.length >= 1) {
-                if (args[0].equals("apply-aura")) {
+                if (args[0].equalsIgnoreCase("reload")) {
+                    MythicCore.getReactionManager().clearReactionMap();
+                    MythicCore.getReactionManager().clearDendroCoreReactionMap();
+                    MythicCore.getInstance().reloadConfig();
+                    ConfigLoader.loadConfig(false);
+                    ReactionManager.registerDefaultReactions();
+                    sender.sendMessage(ConfigLoader.getMessage("reload-success", true));
+                }
+                else if (args[0].equals("apply-aura")) {
                     if (args.length == 4) {
                         Player target = Bukkit.getPlayer(args[1]);
                         if (target != null) {
@@ -149,7 +158,7 @@ public class core implements CommandExecutor, TabExecutor {
 
         List<String> output = new ArrayList<>();
         if (args.length == 1) {
-            List<String> list = List.of("apply-aura", "nbt", "remove-entity", "test");
+            List<String> list = List.of("apply-aura", "nbt", "remove-entity", "test", "reload");
             output = tabComplete(args[0], list);
         }
         if (args.length > 1) {

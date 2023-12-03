@@ -16,7 +16,7 @@ import org.bukkit.entity.Entity;
 
 import java.util.UUID;
 
-public class set_elemental_damage implements ITargetedEntitySkill {
+public class SetElementalDamage implements ITargetedEntitySkill {
 
     private final String element;
     private final PlaceholderDouble amount;
@@ -24,7 +24,7 @@ public class set_elemental_damage implements ITargetedEntitySkill {
     private final String cooldown_source;
     private final long internal_cooldown;
 
-    public set_elemental_damage(MythicLineConfig config) {
+    public SetElementalDamage(MythicLineConfig config) {
         amount = config.getPlaceholderDouble(new String[] {"amount", "a"}, 0);
         element = config.getString(new String[] {"element", "e"}, ConfigLoader.getDefaultElement());
         gauge = config.getString(new String[] {"gauge_unit", "gu"}, ConfigLoader.getDefaultGauge());

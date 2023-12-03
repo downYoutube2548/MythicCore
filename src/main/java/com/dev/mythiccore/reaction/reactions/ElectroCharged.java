@@ -65,9 +65,11 @@ public class ElectroCharged extends DoubleAuraReaction {
         public void run() {
             // Find a valid target entity that hasn't been damaged yet
             int level = 1;
+            double electro_charged_bonus = 0;
             if (damager != null) {
                 if (damager instanceof Player player) {
                     level = PlayerData.get(player).getLevel();
+                    electro_charged_bonus = stats.getStat("AST_ELECTRO_CHARGED_BONUS");
                 } else {
                     ActiveMob mythicMob = MythicBukkit.inst().getMobManager().getActiveMob(damager.getUniqueId()).orElse(null);
                     if (mythicMob != null) {
@@ -84,14 +86,18 @@ public class ElectroCharged extends DoubleAuraReaction {
                 String formula = getConfig().getString("damage-formula");
                 assert formula != null;
                 Expression expression = new ExpressionBuilder(formula)
-                        .variables("attacker_level", "elemental_mastery", "resistance_multiplier", "level_multiplier")
+                        .variables("attacker_level", "elemental_mastery", "resistance_multiplier", "electro_charged_bonus")
                         .build()
                         .setVariable("attacker_level", level)
                         .setVariable("elemental_mastery", stats.getStat("AST_ELEMENTAL_MASTERY"))
-                        .setVariable("resistance_multiplier", resistance_multiplier);
+                        .setVariable("resistance_multiplier", resistance_multiplier)
+                        .setVariable("electro_charged_bonus", electro_charged_bonus);
 
                 double final_damage = expression.evaluate();
                 damage(final_damage, damager, currentTarget, getConfig().getString("damage-element"), false, false, damage_cause);
+
+                spawnParticle(currentTarget, getConfig().getStringList("particle"));
+                playSound(currentTarget, getConfig().getStringList("sound"));
 
                 // Add the entity to the set of damaged entities
                 damagedEntities.add(currentTarget);

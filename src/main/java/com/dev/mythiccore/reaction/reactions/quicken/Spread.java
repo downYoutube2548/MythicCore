@@ -24,12 +24,14 @@ public class Spread extends TriggerAuraReaction {
     public void trigger(DamagePacket damage, double gauge_unit, String decay_rate, LivingEntity entity, @Nullable Entity damager, StatProvider stats, EntityDamageEvent.DamageCause damage_cause) {
         int attacker_level = 1;
         double elemental_mastery = 0;
+        double spread_bonus = 0;
 
         if (damager != null) {
             if (damager instanceof Player player) {
                 PlayerData playerData = PlayerData.get(player);
 
                 elemental_mastery = stats.getStat("AST_ELEMENTAL_MASTERY");
+                spread_bonus = stats.getStat("AST_SPREAD_BONUS");
                 attacker_level = playerData.getLevel();
             } else {
                 ActiveMob mythicMob = MythicBukkit.inst().getMobManager().getActiveMob(damager.getUniqueId()).orElse(null);
@@ -40,11 +42,12 @@ public class Spread extends TriggerAuraReaction {
         String formula = getConfig().getString("damage-formula");
         assert formula != null;
         Expression expression = new ExpressionBuilder(formula)
-                .variables("raw_damage", "attacker_level", "elemental_mastery")
+                .variables("raw_damage", "attacker_level", "elemental_mastery", "spread_bonus")
                 .build()
                 .setVariable("raw_damage", damage.getValue())
                 .setVariable("attacker_level", attacker_level)
-                .setVariable("elemental_mastery", elemental_mastery);
+                .setVariable("elemental_mastery", elemental_mastery)
+                .setVariable("spread_bonus", spread_bonus);
 
         damage.setValue(expression.evaluate());
 

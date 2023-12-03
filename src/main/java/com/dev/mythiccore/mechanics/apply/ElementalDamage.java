@@ -79,6 +79,7 @@ public class ElementalDamage implements ITargetedEntitySkill {
                 String decay_rate = Utils.splitTextAndNumber(gauge)[1];
 
                 Element element1 = Objects.requireNonNull(Element.valueOf(element), ConfigLoader.getDefaultElement());
+
                 // caster is player
                 if (bukkitcaster instanceof Player) {
 

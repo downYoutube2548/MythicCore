@@ -27,9 +27,11 @@ public class Burning extends DoubleAuraReaction {
     public void trigger(DamagePacket damage, double gauge_unit, String decay_rate, LivingEntity entity, @Nullable Entity damager, StatProvider stats, EntityDamageEvent.DamageCause damage_cause, Combat.MobType last_mob_type) {
 
         int level = 1;
+        double burning_bonus = 0;
         if (damager != null) {
             if (damager instanceof Player player) {
                 level = PlayerData.get(player).getLevel();
+                burning_bonus = stats.getStat("AST_BURNING_BONUS");
             } else {
                 ActiveMob mythicMob = MythicBukkit.inst().getMobManager().getActiveMob(damager.getUniqueId()).orElse(null);
                 if (mythicMob != null) {
@@ -43,16 +45,19 @@ public class Burning extends DoubleAuraReaction {
         String formula = getConfig().getString("damage-formula");
         assert formula != null;
         Expression expression = new ExpressionBuilder(formula)
-                .variables("attacker_level", "elemental_mastery", "resistance_multiplier", "level_multiplier")
+                .variables("attacker_level", "elemental_mastery", "resistance_multiplier", "burning_bonus")
                 .build()
                 .setVariable("attacker_level", level)
                 .setVariable("elemental_mastery", stats.getStat("AST_ELEMENTAL_MASTERY"))
-                .setVariable("resistance_multiplier", resistance_multiplier);
+                .setVariable("resistance_multiplier", resistance_multiplier)
+                .setVariable("burning_bonus", burning_bonus);
 
         double final_damage = expression.evaluate();
         double new_gauge = Double.parseDouble(Utils.splitTextAndNumber(getConfig().getString("damage-gauge-unit", "1A"))[0]);
         String new_decay_rate = Utils.splitTextAndNumber(getConfig().getString("damage-gauge-unit", "1A"))[1];
         damage(final_damage, damager, entity, getConfig().getString("damage-element"), false, new_gauge, new_decay_rate, "BURNING_REACTION", 20, false, damage_cause);
 
+        spawnParticle(entity, getConfig().getStringList("particle"));
+        playSound(entity, getConfig().getStringList("sound"));
     }
 }

@@ -23,7 +23,7 @@ public class ConfigLoader {
     private static final HashMap<String, DoubleStatRegister> doubleStats = new HashMap<>();
     private static final HashMap<String, BooleanStatRegister> booleanStats = new HashMap<>();
 
-    public static void loadConfig() {
+    public static void loadConfig(boolean register_stats) {
         FileConfiguration config = MythicCore.getInstance().getConfig();
 
         defaultElement = config.getString("General.default-element");
@@ -44,13 +44,15 @@ public class ConfigLoader {
         }
 
         //This part will load all stats from the config and then register them to MMOItems
-        registerDoubleStats(config.getConfigurationSection("Stats.DOUBLE_STAT"));
-        registerBooleanStats(config.getConfigurationSection("Stats.BOOLEAN_STAT"));
+        if (register_stats) {
+            registerDoubleStats(config.getConfigurationSection("Stats.DOUBLE_STAT"));
+            registerBooleanStats(config.getConfigurationSection("Stats.BOOLEAN_STAT"));
+        }
     }
 
     public static void reloadConfig() {
         MythicCore.getInstance().reloadConfig();
-        loadConfig();
+        loadConfig(false);
     }
 
     public static boolean isReactionEnable(String reaction_id) {

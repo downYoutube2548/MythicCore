@@ -27,12 +27,12 @@ import java.util.*;
  * so I modified some code
  */
 public class ASTDamageIndicators extends GameIndicators {
-    private final boolean splitHolograms;
-    private final String format;
-    private final String crit_format;
-    private final boolean enable;
-    private final @Nullable CustomFont font;
-    private final @Nullable CustomFont fontCrit;
+    public final boolean splitHolograms;
+    public final String format;
+    public final String crit_format;
+    public final boolean enable;
+    public final @Nullable CustomFont font;
+    public final @Nullable CustomFont fontCrit;
 
     public ASTDamageIndicators(ConfigurationSection config) {
         super(config);
@@ -46,36 +46,6 @@ public class ASTDamageIndicators extends GameIndicators {
         } else {
             this.font = null;
             this.fontCrit = null;
-        }
-    }
-
-    @EventHandler(
-            priority = EventPriority.MONITOR,
-            ignoreCancelled = true
-    )
-    public void a(AttackEvent event) {
-
-        if (!this.enable) { return; }
-
-        Entity entity = event.getEntity();
-
-        if (!(entity instanceof Player) || !UtilityMethods.isVanished((Player)entity)) {
-            List<String> holos = new ArrayList<>();
-            Map<IndicatorType, Double> mappedDamage = this.mapDamage(event.getDamage());
-            mappedDamage.forEach((type, val) -> {
-                if (!(val < 0.02) && type.element != null) {
-                    holos.add(computeFormat(val, type.crit, (type.crit) ? crit_format : format, type.element));
-                }
-            });
-            if (this.splitHolograms) {
-
-                for (String holo : holos) {
-                    this.displayIndicator(entity, holo, this.getDirection(event.toBukkit()), io.lumine.mythic.lib.api.event.IndicatorDisplayEvent.IndicatorType.DAMAGE);
-                }
-            } else {
-                String joined = String.join(" ", holos);
-                this.displayIndicator(entity, joined, this.getDirection(event.toBukkit()), io.lumine.mythic.lib.api.event.IndicatorDisplayEvent.IndicatorType.DAMAGE);
-            }
         }
     }
 
@@ -93,7 +63,7 @@ public class ASTDamageIndicators extends GameIndicators {
         return new Vector(Math.cos(a), 0.0, Math.sin(a));
     }
 
-    private @NotNull Map<IndicatorType, Double> mapDamage(DamageMetadata damageMetadata) {
+    public @NotNull Map<IndicatorType, Double> mapDamage(DamageMetadata damageMetadata) {
         Map<IndicatorType, Double> mapped = new HashMap<>();
 
         for (DamagePacket packet : damageMetadata.getPackets()) {

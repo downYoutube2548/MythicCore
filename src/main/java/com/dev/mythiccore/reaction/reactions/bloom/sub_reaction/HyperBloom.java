@@ -24,6 +24,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Comparator;
 import java.util.Objects;
 
 public class HyperBloom extends DendroCoreReaction {
@@ -34,16 +35,16 @@ public class HyperBloom extends DendroCoreReaction {
     @Override
     public void trigger(DendroCore dendro_core, LivingEntity entity, @Nullable Entity damager, StatProvider stats, EntityDamageEvent.DamageCause damage_cause) {
 
-        LivingEntity target_entity = null;
-
         int check_radius = getConfig().getInt("check-radius");
-        for (Entity e : dendro_core.getDendroCore().getNearbyEntities(check_radius, check_radius, check_radius)) {
-            if (e instanceof LivingEntity livingEntity) {
-                if (e == damager) continue;
-                if (ConfigLoader.aoeDamageFilterEnable() && damager != null && !Combat.getLastMobType(damager).equals(Combat.getMobType(e))) continue;
-                target_entity = livingEntity;
-            }
-        }
+        Location dendroCoreLocation = dendro_core.getDendroCore().getLocation();
+
+        LivingEntity target_entity = dendro_core.getDendroCore().getNearbyEntities(check_radius, check_radius, check_radius).stream()
+                .filter(e -> e instanceof LivingEntity)
+                .filter(e -> !e.equals(damager))
+                .filter(e -> !(ConfigLoader.aoeDamageFilterEnable() && damager != null && !Combat.getLastMobType(damager).equals(Combat.getMobType(e))))
+                .map(e -> (LivingEntity) e)
+                .min(Comparator.comparingDouble(e -> e.getLocation().distanceSquared(dendroCoreLocation)))
+                .orElse(null);
 
         if (target_entity == null) return;
 
@@ -59,6 +60,7 @@ public class HyperBloom extends DendroCoreReaction {
 
             if (!finalTarget_entity.isValid()) {
                 task.cancel();
+                dendro_core.getDendroCore().remove();
                 return;
             }
 
@@ -70,6 +72,7 @@ public class HyperBloom extends DendroCoreReaction {
 
             if (!dendro_core.getDendroCore().isValid()) {
                 task.cancel();
+                dendro_core.getDendroCore().remove();
                 return;
             }
 
@@ -79,12 +82,14 @@ public class HyperBloom extends DendroCoreReaction {
 
                 int attacker_level = 1;
                 double elemental_mastery = 0;
+                double hyperbloom_bonus = 0;
 
                 if (damager != null) {
                     if (damager instanceof Player player) {
                         PlayerData playerData = PlayerData.get(player);
 
                         elemental_mastery = stats.getStat("AST_ELEMENTAL_MASTERY");
+                        hyperbloom_bonus = stats.getStat("AST_HYPERBLOOM_BONUS");
                         attacker_level = playerData.getLevel();
                     } else {
                         ActiveMob mythicMob = MythicBukkit.inst().getMobManager().getActiveMob(damager.getUniqueId()).orElse(null);
@@ -97,11 +102,12 @@ public class HyperBloom extends DendroCoreReaction {
                 String formula = getConfig().getString("damage-formula");
                 assert formula != null;
                 Expression expression = new ExpressionBuilder(formula)
-                        .variables("attacker_level", "elemental_mastery", "resistance_multiplier", "level_multiplier")
+                        .variables("attacker_level", "elemental_mastery", "resistance_multiplier", "level_multiplier", "hyperbloom_bonus")
                         .build()
                         .setVariable("attacker_level", attacker_level)
                         .setVariable("elemental_mastery", elemental_mastery)
-                        .setVariable("resistance_multiplier", resistance_multiplier);
+                        .setVariable("resistance_multiplier", resistance_multiplier)
+                        .setVariable("hyperbloom_bonus", hyperbloom_bonus);
 
                 double final_damage = expression.evaluate();
 
@@ -129,7 +135,9 @@ public class HyperBloom extends DendroCoreReaction {
 
                 } catch (NumberFormatException ignored) {}
 
-                dendro_core.getDendroCore().remove();
+                finally {
+                    dendro_core.getDendroCore().remove();
+                }
 
             }
 

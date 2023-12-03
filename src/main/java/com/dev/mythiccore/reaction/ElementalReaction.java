@@ -134,7 +134,7 @@ public abstract class ElementalReaction {
                 double speed = Double.parseDouble(raw_particle[1]);
                 int count = Integer.parseInt(raw_particle[2]);
 
-                entity.getWorld().spawnParticle(Particle.valueOf(particle), entity.getLocation(), count, 0, 0, 0, speed);
+                entity.getWorld().spawnParticle(Particle.valueOf(particle), entity.getLocation().add(0, 0.5, 0), count, 0, 0, 0, speed);
             }
 
         } catch (NumberFormatException ignored) {}

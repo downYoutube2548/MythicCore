@@ -24,12 +24,14 @@ public class Aggravate extends TriggerAuraReaction {
     public void trigger(DamagePacket damage, double gauge_unit, String decay_rate, LivingEntity entity, @Nullable Entity damager, StatProvider stats, EntityDamageEvent.DamageCause damage_cause) {
         int attacker_level = 1;
         double elemental_mastery = 0;
+        double aggravate_bonus = 0;
 
         if (damager != null) {
             if (damager instanceof Player player) {
                 PlayerData playerData = PlayerData.get(player);
 
                 elemental_mastery = stats.getStat("AST_ELEMENTAL_MASTERY");
+                aggravate_bonus = stats.getStat("AST_AGGRAVATE_BONUS");
                 attacker_level = playerData.getLevel();
             } else {
                 ActiveMob mythicMob = MythicBukkit.inst().getMobManager().getActiveMob(damager.getUniqueId()).orElse(null);
@@ -40,11 +42,12 @@ public class Aggravate extends TriggerAuraReaction {
         String formula = getConfig().getString("damage-formula");
         assert formula != null;
         Expression expression = new ExpressionBuilder(formula)
-                .variables("raw_damage", "attacker_level", "elemental_mastery", "level_multiplier")
+                .variables("raw_damage", "attacker_level", "elemental_mastery", "aggravate_bonus")
                 .build()
                 .setVariable("raw_damage", damage.getValue())
                 .setVariable("attacker_level", attacker_level)
-                .setVariable("elemental_mastery", elemental_mastery);
+                .setVariable("elemental_mastery", elemental_mastery)
+                .setVariable("aggravate_bonus", aggravate_bonus);
 
         damage.setValue(expression.evaluate());
 

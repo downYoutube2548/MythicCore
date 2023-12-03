@@ -83,12 +83,14 @@ public class DendroCore {
 
         int attacker_level = 1;
         double elemental_mastery = 0;
+        double bloom_bonus = 0;
 
         if (owner != null) {
             if (owner instanceof Player player) {
                 PlayerData playerData = PlayerData.get(player);
 
                 elemental_mastery = stat_provider.getStat("AST_ELEMENTAL_MASTERY");
+                bloom_bonus = stat_provider.getStat("AST_BLOOM_BONUS");
                 attacker_level = playerData.getLevel();
             } else {
                 ActiveMob mythicMob = MythicBukkit.inst().getMobManager().getActiveMob(owner.getUniqueId()).orElse(null);
@@ -106,11 +108,12 @@ public class DendroCore {
                 String formula = instance.getConfig().getString("dendro-core-explode-damage");
                 assert formula != null;
                 Expression expression = new ExpressionBuilder(formula)
-                        .variables("attacker_level", "elemental_mastery", "resistance_multiplier", "level_multiplier")
+                        .variables("attacker_level", "elemental_mastery", "resistance_multiplier", "bloom_bonus")
                         .build()
                         .setVariable("attacker_level", attacker_level)
                         .setVariable("elemental_mastery", elemental_mastery)
-                        .setVariable("resistance_multiplier", resistance_multiplier);
+                        .setVariable("resistance_multiplier", resistance_multiplier)
+                        .setVariable("bloom_bonus", bloom_bonus);
 
                 double final_damage = expression.evaluate();
 

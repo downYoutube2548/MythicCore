@@ -36,12 +36,14 @@ public class Burgeon extends DendroCoreReaction {
 
                 int attacker_level = 1;
                 double elemental_mastery = 0;
+                double burgeon_bonus = 0;
 
                 if (damager != null) {
                     if (damager instanceof Player player) {
                         PlayerData playerData = PlayerData.get(player);
 
                         elemental_mastery = stats.getStat("AST_ELEMENTAL_MASTERY");
+                        burgeon_bonus = stats.getStat("AST_BURGEON_BONUS");
                         attacker_level = playerData.getLevel();
                     } else {
                         ActiveMob mythicMob = MythicBukkit.inst().getMobManager().getActiveMob(damager.getUniqueId()).orElse(null);
@@ -54,11 +56,12 @@ public class Burgeon extends DendroCoreReaction {
                 String formula = getConfig().getString("damage-formula");
                 assert formula != null;
                 Expression expression = new ExpressionBuilder(formula)
-                        .variables("attacker_level", "elemental_mastery", "resistance_multiplier", "level_multiplier")
+                        .variables("attacker_level", "elemental_mastery", "resistance_multiplier", "level_multiplier", "burgeon_bonus")
                         .build()
                         .setVariable("attacker_level", attacker_level)
                         .setVariable("elemental_mastery", elemental_mastery)
-                        .setVariable("resistance_multiplier", resistance_multiplier);
+                        .setVariable("resistance_multiplier", resistance_multiplier)
+                        .setVariable("burgeon_bonus", burgeon_bonus);
 
                 double final_damage = expression.evaluate();
 
@@ -86,7 +89,9 @@ public class Burgeon extends DendroCoreReaction {
 
                 } catch (NumberFormatException ignored) {}
 
-                dendro_core.getDendroCore().remove();
+                finally {
+                    dendro_core.getDendroCore().remove();
+                }
 
             }
         }
