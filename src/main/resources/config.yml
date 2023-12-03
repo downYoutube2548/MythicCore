@@ -10,6 +10,7 @@ General:
     F: 50
     S: 110
     V: 90
+    Q: 200
   default-gauge-unit: 1A
   aura-whitelist:
     - PYRO
@@ -40,12 +41,17 @@ Special-Aura:
 Reaction-Priority:
   PYRO:
     - REVERSE_OVERLOADED
+    - FROZEN_MELT
     - REVERSE_MELT
     - VAPORIZE
+    - QUICKEN_BURNING
     - BURNING
   ELECTRO:
     - OVERLOADED
+    - QUICKEN
+    - AGGRAVATE
     - ELECTRO_CHARGED
+    - FROZEN_SUPER_CONDUCT
     - SUPER_CONDUCT
   CRYO:
     - MELT
@@ -54,14 +60,18 @@ Reaction-Priority:
   HYDRO:
     - REVERSE_VAPORIZE
     - ELECTRO_CHARGED
+    - QUICKEN_BLOOM
     - REVERSE_BLOOM
     - REVERSE_FROZEN
   DENDRO:
+    - REVERSE_QUICKEN
+    - SPREAD
     - BLOOM
     - BURNING
   ANEMO:
     - SWIRL_PYRO
     - SWIRL_HYDRO
+    - SWIRL_FROZEN
     - SWIRL_CRYO
     - SWIRL_ELECTRO
 
@@ -82,7 +92,7 @@ Elemental-Reaction:
     aura-element: HYDRO
     trigger-element: PYRO
     gauge-unit-tax: 0.625
-    damage-formula: "raw_damage * 1.75 * (1 + 2.78 * (elemental_mastery / (elemental_mastery + 1200)))"
+    damage-formula: "raw_damage * 1.75 * (1 + ((2.78 * elemental_mastery) / (elemental_mastery + 1200)))"
   REVERSE_VAPORIZE:
     enable: true
     display: "#f4b65dVaporize"
@@ -101,6 +111,7 @@ Elemental-Reaction:
     enable: true
     display: "#f4b65dMelt"
     aura-element: CRYO
+    special-aura: FROZEN
     trigger-element: PYRO
     gauge-unit-tax: 2.5
     damage-formula: "raw_damage * 3 * (1 + 2.78 * (elemental_mastery / (elemental_mastery + 1200)))"
@@ -108,6 +119,7 @@ Elemental-Reaction:
     enable: true
     display: "#bab3feSuperconduct"
     aura-element: CRYO
+    special-aura: FROZEN
     trigger-element: ELECTRO
     gauge-unit-tax: 1.25
     aoe-radius: 1.5
@@ -141,9 +153,10 @@ Elemental-Reaction:
     enable: true
     display: "&6Burning"
     first-aura-element: PYRO
+    special-aura: QUICKEN
     second-aura-element: DENDRO
     frequency: 5
-    gauge-unit-tax: 0
+    gauge-unit-tax: 0.1
     damage-element: PYRO
     damage-gauge-unit: 1A
     damage-formula: "0.3 * (16.12 * (attacker_level + 16) - 257.23) * (1 + (16 * (elemental_mastery / (elemental_mastery + 2000)))) * resistance_multiplier"
@@ -160,21 +173,25 @@ Elemental-Reaction:
       - HYDRO
       - CRYO
       - ELECTRO
+      - FROZEN
+    aura-overriding:
+      FROZEN: CRYO
     swirl-radius: 3
     damage-formula: "0.7 * (16.12 * (attacker_level + 16) - 257.23) * (1 + (16 * (elemental_mastery / (elemental_mastery + 2000)))) * resistance_multiplier"
   BLOOM:
     enable: true
-    display: ""
+    display: "#29bf3eBloom"
     gauge-unit-tax: 0.625
     aura-element: HYDRO
+    special-aura: QUICKEN
     trigger-element: DENDRO
     damage-element: DENDRO
-    dendro-core-spawn-radius: 1.5
+    dendro-core-spawn-radius: 2
     dendro-core-tick-explode: 100
     dendro-core-explode-damage: "2.0 * (16.12 * (attacker_level + 16) - 257.23) * (1 + (16 * (elemental_mastery / (elemental_mastery + 2000)))) * resistance_multiplier"
     dendro-core-explode-radius: 3
     maximum-dendro-core-per-chunk: 5
-    dendro-core-trigger-radius: 3
+    dendro-core-trigger-radius: 4
     dendro-core:
       material: LIME_STAINED_GLASS
       model-data: 0
@@ -215,6 +232,29 @@ Elemental-Reaction:
           - FIREWORKS_SPARK:0.5:100
         damage-element: DENDRO
         damage-formula: "3.5 * (16.12 * (attacker_level + 16) - 257.23) * (1 + (16 * (elemental_mastery / (elemental_mastery + 2000)))) * resistance_multiplier"
+  QUICKEN:
+    enable: true
+    display: ""
+    aura-element: DENDRO
+    trigger-element: ELECTRO
+    quicken-aura-id: QUICKEN
+    quicken-aura-gauge-decay-rate: Q
+    gauge-unit-tax: 1
+  SPREAD:
+    enable: true
+    display: "#29bf3eSpread"
+    aura-element: QUICKEN
+    trigger-element: DENDRO
+    gauge-unit-tax: 0
+    damage-formula: "raw_damage + (1.25 * (16.12 * (attacker_level + 16) - 257.23) * (1 + (5 * elemental_mastery / (1200 + elemental_mastery))))"
+  AGGRAVATE:
+    enable: true
+    display: "#d983ffAggravate"
+    aura-element: QUICKEN
+    trigger-element: ELECTRO
+    gauge-unit-tax: 0
+    damage-formula: "raw_damage + (1.15 * (16.12 * (attacker_level + 16) - 257.23) * (1 + (5 * elemental_mastery / (1200 + elemental_mastery))))"
+
 
 Damage-Calculation:
 

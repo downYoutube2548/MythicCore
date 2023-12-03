@@ -43,7 +43,7 @@ public class Burning extends DoubleAuraReaction {
         String formula = getConfig().getString("damage-formula");
         assert formula != null;
         Expression expression = new ExpressionBuilder(formula)
-                .variables("attacker_level", "elemental_mastery", "resistance_multiplier")
+                .variables("attacker_level", "elemental_mastery", "resistance_multiplier", "level_multiplier")
                 .build()
                 .setVariable("attacker_level", level)
                 .setVariable("elemental_mastery", stats.getStat("AST_ELEMENTAL_MASTERY"))

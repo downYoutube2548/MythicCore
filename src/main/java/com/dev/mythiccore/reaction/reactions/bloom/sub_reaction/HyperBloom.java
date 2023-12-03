@@ -68,6 +68,11 @@ public class HyperBloom extends DendroCoreReaction {
                 return;
             }
 
+            if (!dendro_core.getDendroCore().isValid()) {
+                task.cancel();
+                return;
+            }
+
             Vector direction = targetLocation.clone().subtract(startLocation).toVector();
             if (startLocation.distance(targetLocation) <= 1 || direction.isZero()) {
                 task.cancel();
@@ -92,7 +97,7 @@ public class HyperBloom extends DendroCoreReaction {
                 String formula = getConfig().getString("damage-formula");
                 assert formula != null;
                 Expression expression = new ExpressionBuilder(formula)
-                        .variables("attacker_level", "elemental_mastery", "resistance_multiplier")
+                        .variables("attacker_level", "elemental_mastery", "resistance_multiplier", "level_multiplier")
                         .build()
                         .setVariable("attacker_level", attacker_level)
                         .setVariable("elemental_mastery", elemental_mastery)

@@ -52,7 +52,7 @@ public class Swirl extends TriggerAuraReaction {
         String formula = getConfig().getString("damage-formula");
         assert formula != null;
         Expression expression = new ExpressionBuilder(formula)
-                .variables("attacker_level", "elemental_mastery", "resistance_multiplier")
+                .variables("attacker_level", "elemental_mastery", "resistance_multiplier", "level_multiplier")
                 .build()
                 .setVariable("attacker_level", level)
                 .setVariable("elemental_mastery", stats.getStat("AST_ELEMENTAL_MASTERY"))
@@ -79,7 +79,7 @@ public class Swirl extends TriggerAuraReaction {
             boolean mob_type_filter = damager != null && ConfigLoader.aoeDamageFilterEnable() && Combat.getLastMobType(damager) != Combat.getMobType(swirl_entity);
             if (swirl_entity == damager || swirl_entity.isInvulnerable() || swirl_entity.hasMetadata("NPC") || mob_type_filter || (swirl_entity instanceof Player player && (player.getGameMode().equals(GameMode.CREATIVE) || player.getGameMode().equals(GameMode.SPECTATOR)))) continue;
             if (swirl_entity instanceof LivingEntity swirled_living_entity && !swirled_living_entity.isInvulnerable()) {
-                damage(final_damage, damager, swirled_living_entity, this.aura, false, Double.parseDouble(Utils.splitTextAndNumber(swirled_aura_gauge)[0]), Utils.splitTextAndNumber(swirled_aura_gauge)[1], "SWIRL_"+this.aura, 0, false, damage_cause);
+                damage(final_damage, damager, swirled_living_entity, Objects.requireNonNull(getConfig().getConfigurationSection("aura-overriding")).getKeys(false).contains(this.aura) ? getConfig().getString("aura-overriding."+this.aura) : this.aura, false, Double.parseDouble(Utils.splitTextAndNumber(swirled_aura_gauge)[0]), Utils.splitTextAndNumber(swirled_aura_gauge)[1], "SWIRL_"+this.aura, 0, false, damage_cause);
             }
         }
 

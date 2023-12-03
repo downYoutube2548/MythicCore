@@ -1,9 +1,9 @@
 package com.dev.mythiccore.events;
 
-import com.dev.mythiccore.mechanics.apply.elemental_damage;
-import com.dev.mythiccore.mechanics.apply.elemental_shield;
-import com.dev.mythiccore.mechanics.apply.reduce_defense;
-import com.dev.mythiccore.mechanics.apply.reduce_resistance;
+import com.dev.mythiccore.mechanics.apply.ElementalDamage;
+import com.dev.mythiccore.mechanics.apply.ElementalShield;
+import com.dev.mythiccore.mechanics.apply.ReduceDefense;
+import com.dev.mythiccore.mechanics.apply.ReduceResistance;
 import com.dev.mythiccore.mechanics.modify.set_defense;
 import com.dev.mythiccore.mechanics.modify.set_elemental_damage;
 import com.dev.mythiccore.mechanics.modify.set_resistance;
@@ -16,16 +16,16 @@ public class MythicMechanicLoad implements Listener {
     @EventHandler
     public void onMythicMechanicLoad(MythicMechanicLoadEvent event) {
         if(event.getMechanicName().equalsIgnoreCase("elemental_damage")) {
-            event.register(new elemental_damage(event.getConfig()));
+            event.register(new ElementalDamage(event.getConfig()));
         }
         else if (event.getMechanicName().equalsIgnoreCase("reduce_defense"))	{
-            event.register(new reduce_defense(event.getConfig()));
+            event.register(new ReduceDefense(event.getConfig()));
         }
         else if (event.getMechanicName().equalsIgnoreCase("reduce_resistance"))	{
-            event.register(new reduce_resistance(event.getConfig()));
+            event.register(new ReduceResistance(event.getConfig()));
         }
         else if (event.getMechanicName().equalsIgnoreCase("elemental_shield"))	{
-            event.register(new elemental_shield(event.getConfig()));
+            event.register(new ElementalShield(event.getConfig()));
         }
         else if (event.getMechanicName().equalsIgnoreCase("set_elemental_damage"))	{
             event.register(new set_elemental_damage(event.getConfig()));

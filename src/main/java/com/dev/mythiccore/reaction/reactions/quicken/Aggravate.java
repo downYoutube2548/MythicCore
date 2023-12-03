@@ -1,4 +1,4 @@
-package com.dev.mythiccore.reaction.reactions;
+package com.dev.mythiccore.reaction.reactions.quicken;
 
 import com.dev.mythiccore.reaction.reaction_type.TriggerAuraReaction;
 import io.lumine.mythic.bukkit.MythicBukkit;
@@ -15,9 +15,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.jetbrains.annotations.Nullable;
 
-public class Melt extends TriggerAuraReaction {
-
-    public Melt(String id, ConfigurationSection config, String display, String aura, String trigger, double gauge_unit_tax) {
+public class Aggravate extends TriggerAuraReaction {
+    public Aggravate(String id, ConfigurationSection config, String display, String aura, String trigger, double gauge_unit_tax) {
         super(id, config, display, aura, trigger, gauge_unit_tax);
     }
 

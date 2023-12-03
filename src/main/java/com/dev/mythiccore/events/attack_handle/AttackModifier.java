@@ -2,7 +2,7 @@ package com.dev.mythiccore.events.attack_handle;
 
 import com.dev.mythiccore.library.ASTEntityStatProvider;
 import com.dev.mythiccore.utils.ConfigLoader;
-import de.tr7zw.changeme.nbtapi.NBTItem;
+import de.tr7zw.nbtapi.NBTItem;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import io.lumine.mythic.core.mobs.ActiveMob;
 import io.lumine.mythic.core.skills.variables.VariableRegistry;
@@ -52,11 +52,14 @@ public class AttackModifier implements Listener {
                 ItemStack item = event.getAttack() instanceof ProjectileAttackMetadata projectile ? (ItemStack) (projectile.getProjectile().getMetadata("ATTACK_WEAPON").get(0).value()) : attacker.getInventory().getItem(e.getAttacker().getActionHand().toBukkit());
                 if (item != null && !item.getType().equals(Material.AIR)) {
                     NBTItem nbt = new NBTItem(item);
+
                     byte disable_regular_damage = nbt.getByte("MMOITEMS_AST_DISABLE_REGULAR_DAMAGE");
                     if (disable_regular_damage == 1) {
                         event.getDamage().getPackets().get(0).setValue(0);
                         return;
                     }
+
+
                 }
 
             // if attacker is mob -> check if mob is disable to deal regular damage -> if yes then set regular damage to 0

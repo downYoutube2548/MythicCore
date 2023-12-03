@@ -10,12 +10,12 @@ import io.lumine.mythic.api.skills.SkillResult;
 import io.lumine.mythic.bukkit.BukkitAdapter;
 import org.bukkit.entity.Entity;
 
-public class reduce_resistance implements ITargetedEntitySkill {
+public class ReduceResistance implements ITargetedEntitySkill {
     private final String element;
     private final double amount;
     private final long duration;
 
-    public reduce_resistance(MythicLineConfig config) {
+    public ReduceResistance(MythicLineConfig config) {
         amount = config.getDouble(new String[] {"amount", "a"}, 0);
         duration = config.getLong(new String[] {"duration", "d", "t"}, 0);
         element = config.getString(new String[] {"element", "e"});

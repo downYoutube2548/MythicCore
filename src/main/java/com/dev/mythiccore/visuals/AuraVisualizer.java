@@ -3,10 +3,8 @@ package com.dev.mythiccore.visuals;
 import com.dev.mythiccore.MythicCore;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_19_R3.entity.CraftPlayer;
 import org.bukkit.entity.Display;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
 import org.bukkit.entity.TextDisplay;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.BoundingBox;
@@ -37,10 +35,6 @@ public class AuraVisualizer {
                 }
 
                 List<UUID> uuids = new ArrayList<>(MythicCore.getAuraManager().getMapEntityAura().keySet());
-                /*
-                uuids.addAll(MythicCore.getCooldownManager().getEntityCooldown().keySet());
-                uuids.addAll(MythicCore.getBuffManager().getMapBuffData().keySet());
-                 */
                 for (UUID uuid : uuids) {
                     Entity entity = Bukkit.getEntity(uuid);
                     if (entity == null || entity.isDead() || !entity.getLocation().getChunk().isLoaded()) {

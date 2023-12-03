@@ -9,7 +9,7 @@ import com.dev.mythiccore.listener.events.attack.MobAttackEvent;
 import com.dev.mythiccore.listener.events.attack.PlayerAttackEvent;
 import com.dev.mythiccore.utils.ConfigLoader;
 import com.dev.mythiccore.utils.Utils;
-import de.tr7zw.changeme.nbtapi.NBTItem;
+import de.tr7zw.nbtapi.NBTItem;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import io.lumine.mythic.core.mobs.ActiveMob;
 import io.lumine.mythic.core.skills.variables.VariableRegistry;

@@ -3,6 +3,7 @@ package com.dev.mythiccore.utils;
 import com.dev.mythiccore.MythicCore;
 import com.dev.mythiccore.buff.buffs.DefenseReduction;
 import com.dev.mythiccore.buff.buffs.ElementalResistanceReduction;
+import com.dev.mythiccore.enums.VictimType;
 import com.dev.mythiccore.library.ASTEntityStatProvider;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import io.lumine.mythic.core.mobs.ActiveMob;
@@ -236,6 +237,10 @@ public class StatCalculation {
     }
 
     public static double getLevelDifferentMultiplier(UUID victim) {
+        return getLevelDifferentMultiplier(1, victim);
+    }
+
+    public static double getLevelDifferentMultiplier(int attacker_level, UUID victim) {
         Entity entity = Bukkit.getEntity(victim);
         if (entity == null) return 0;
         if (!entity.isValid()) return 0;
@@ -249,7 +254,7 @@ public class StatCalculation {
             level = mythicMob != null ? (int) mythicMob.getLevel() : 1;
         }
 
-        return getLevelDifferentMultiplier(entity instanceof Player ? "player" : "mob", 1, level);
+        return getLevelDifferentMultiplier(entity instanceof Player ? VictimType.PLAYER : VictimType.MOB, attacker_level, level);
     }
 
     public static double getLevelDifferentMultiplier(StatProvider attacker, UUID victim) {
@@ -289,12 +294,12 @@ public class StatCalculation {
             victim_level = mythicMob != null ? (int) mythicMob.getLevel() : 1;
         }
 
-        return getLevelDifferentMultiplier(entity2 instanceof Player ? "player" : "mob", attacker_level, victim_level);
+        return getLevelDifferentMultiplier(entity2 instanceof Player ? VictimType.PLAYER : VictimType.MOB, attacker_level, victim_level);
     }
 
-    public static double getLevelDifferentMultiplier(String victimType, int attacker_level, int victim_level) {
+    public static double getLevelDifferentMultiplier(VictimType victimType, int attacker_level, int victim_level) {
 
-        String formula = victimType.equals("player") ? ConfigLoader.getDamageCalculation("level-multiplier.player") : ConfigLoader.getDamageCalculation("level-multiplier.mob");
+        String formula = victimType.equals(VictimType.PLAYER) ? ConfigLoader.getDamageCalculation("level-multiplier.player") : ConfigLoader.getDamageCalculation("level-multiplier.mob");
         Expression expression = new ExpressionBuilder(formula)
                 .variables("attacker_level", "victim_level")
                 .build()

@@ -32,7 +32,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 //This class will register the ElementDamage Skill to MythicMobs
-public class elemental_damage implements ITargetedEntitySkill {
+public class ElementalDamage implements ITargetedEntitySkill {
     private final String element;
     private final PlaceholderDouble amount;
     private final String gauge;
@@ -45,7 +45,7 @@ public class elemental_damage implements ITargetedEntitySkill {
      *
      * @param config The config of the skill.
      */
-    public elemental_damage(MythicLineConfig config) {
+    public ElementalDamage(MythicLineConfig config) {
         amount = config.getPlaceholderDouble(new String[] {"amount", "a"}, 0);
         element = config.getString(new String[] {"element", "e"}, ConfigLoader.getDefaultElement());
         gauge = config.getString(new String[] {"gauge_unit", "gu"}, ConfigLoader.getDefaultGauge());

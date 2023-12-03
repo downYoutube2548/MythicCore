@@ -106,7 +106,7 @@ public class DendroCore {
                 String formula = instance.getConfig().getString("dendro-core-explode-damage");
                 assert formula != null;
                 Expression expression = new ExpressionBuilder(formula)
-                        .variables("attacker_level", "elemental_mastery", "resistance_multiplier")
+                        .variables("attacker_level", "elemental_mastery", "resistance_multiplier", "level_multiplier")
                         .build()
                         .setVariable("attacker_level", attacker_level)
                         .setVariable("elemental_mastery", elemental_mastery)

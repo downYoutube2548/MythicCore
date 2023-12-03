@@ -4,7 +4,7 @@ import com.dev.mythiccore.MythicCore;
 import com.dev.mythiccore.events.attack_handle.TriggerReaction;
 import com.dev.mythiccore.utils.ConfigLoader;
 import com.dev.mythiccore.utils.Utils;
-import de.tr7zw.changeme.nbtapi.NBTItem;
+import de.tr7zw.nbtapi.NBTItem;
 import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.api.player.EquipmentSlot;
 import io.lumine.mythic.lib.damage.DamagePacket;

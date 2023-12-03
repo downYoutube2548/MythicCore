@@ -42,7 +42,7 @@ public class Vaporize extends TriggerAuraReaction {
         String formula = getConfig().getString("damage-formula");
         assert formula != null;
         Expression expression = new ExpressionBuilder(formula)
-                .variables("raw_damage", "attacker_level", "elemental_mastery")
+                .variables("raw_damage", "attacker_level", "elemental_mastery", "level_multiplier")
                 .build()
                 .setVariable("raw_damage", damage.getValue())
                 .setVariable("attacker_level", attacker_level)
