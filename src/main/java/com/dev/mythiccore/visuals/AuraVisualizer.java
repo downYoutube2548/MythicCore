@@ -2,6 +2,7 @@ package com.dev.mythiccore.visuals;
 
 import com.dev.mythiccore.MythicCore;
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.entity.Display;
 import org.bukkit.entity.Entity;
@@ -60,9 +61,10 @@ public class AuraVisualizer {
                         textDisplay.setBillboard(Display.Billboard.CENTER);
                         textDisplay.setText(MythicCore.getAuraManager().getAura(uuid).getAuraIcon()/* + " | " + MythicCore.getCooldownManager().getCooldown(uuid).getMapCooldown()*/);
                         textDisplay.setTransformation(new Transformation(textDisplay.getTransformation().getTranslation(), textDisplay.getTransformation().getLeftRotation(), new Vector3f(scale), textDisplay.getTransformation().getRightRotation()));
-                        textDisplay.setShadowed(true);
+                        textDisplay.setShadowed(false);
                         textDisplay.setSeeThrough(true);
                         textDisplay.setBrightness(new Display.Brightness(15, 15));
+                        textDisplay.setBackgroundColor(Color.fromARGB(0, 0, 0, 0));
                         textDisplay.setMetadata("AST_AURA_VISUALIZER", new FixedMetadataValue(MythicCore.getInstance(), true));
                         mapHologram.put(uuid, textDisplay);
 
