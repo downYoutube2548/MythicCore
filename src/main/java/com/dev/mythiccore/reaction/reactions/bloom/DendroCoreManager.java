@@ -1,7 +1,7 @@
 package com.dev.mythiccore.reaction.reactions.bloom;
 
 import com.dev.mythiccore.MythicCore;
-import com.dev.mythiccore.combat.Combat;
+import com.dev.mythiccore.enums.MobType;
 import io.lumine.mythic.lib.api.stat.provider.StatProvider;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
@@ -26,7 +26,7 @@ public class DendroCoreManager {
 
     public static final HashMap<Chunk, List<DendroCore>> dendroCoreInChunk = new HashMap<>();
 
-    public static void spawnDendroCore(Bloom instance, Location location, @Nullable LivingEntity owner, StatProvider statProvider, long life_time, EntityDamageEvent.DamageCause damage_cause, Combat.MobType mob_type) {
+    public static void spawnDendroCore(Bloom instance, Location location, @Nullable LivingEntity owner, StatProvider statProvider, long life_time, EntityDamageEvent.DamageCause damage_cause, MobType mob_type) {
 
         if (location.getWorld() == null) return;
         Entity entity = location.getWorld().spawnEntity(location, EntityType.ARMOR_STAND, false);

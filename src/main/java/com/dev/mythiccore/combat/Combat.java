@@ -1,6 +1,7 @@
 package com.dev.mythiccore.combat;
 
 import com.dev.mythiccore.MythicCore;
+import com.dev.mythiccore.enums.MobType;
 import com.dev.mythiccore.utils.ConfigLoader;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.*;
@@ -45,31 +46,16 @@ public class Combat implements Listener {
     }
     public static MobType getMobType(Entity entity) {
         if (entity instanceof Enemy) {
-            return MobType.ENEMY;
+            return com.dev.mythiccore.enums.MobType.ENEMY;
         } else if (entity instanceof Player) {
-            return MobType.PLAYER;
+            return com.dev.mythiccore.enums.MobType.PLAYER;
         } else {
-            return MobType.OTHER;
+            return com.dev.mythiccore.enums.MobType.OTHER;
         }
     }
 
     public static MobType getLastMobType(Entity entity) {
-        return lastCombat.getOrDefault(entity, MobType.NULL);
+        return lastCombat.getOrDefault(entity, com.dev.mythiccore.enums.MobType.NULL);
     }
 
-    public enum MobType {
-
-        NULL(-1),
-        ENEMY(0),
-        PLAYER(1),
-        OTHER(2);
-
-        final int id;
-        MobType(int id) {
-            this.id = id;
-        }
-        public int getId() {
-            return id;
-        }
-    }
 }

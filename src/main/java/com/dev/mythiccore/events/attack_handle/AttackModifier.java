@@ -3,6 +3,7 @@ package com.dev.mythiccore.events.attack_handle;
 import com.dev.mythiccore.library.ASTEntityStatProvider;
 import com.dev.mythiccore.utils.ConfigLoader;
 import de.tr7zw.nbtapi.NBTItem;
+import io.lumine.mythic.api.mobs.MythicMob;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import io.lumine.mythic.core.mobs.ActiveMob;
 import io.lumine.mythic.core.skills.variables.VariableRegistry;
@@ -12,9 +13,11 @@ import io.lumine.mythic.lib.damage.DamagePacket;
 import io.lumine.mythic.lib.damage.DamageType;
 import io.lumine.mythic.lib.damage.ProjectileAttackMetadata;
 import io.lumine.mythic.lib.element.Element;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -71,11 +74,14 @@ public class AttackModifier implements Listener {
                     } else {
                         if (event.toBukkit() instanceof EntityDamageByEntityEvent e) {
                             if (e.getDamager() instanceof LivingEntity livingEntity) attacker = livingEntity;
+                            else attacker = (LivingEntity) ((Projectile) e.getDamager()).getShooter();
                         }
                     }
 
                     if (attacker != null) {
                         ActiveMob attackerMythicMob = MythicBukkit.inst().getMobManager().getActiveMob(attacker.getUniqueId()).orElse(null);
+                        ActiveMob a = MythicBukkit.inst().getMobManager().getMythicMobInstance(attacker);
+
                         if (attackerMythicMob != null && attackerMythicMob.getVariables().has("AST_ELEMENTAL_DAMAGE_AMOUNT") && attackerMythicMob.getVariables().has("AST_ELEMENTAL_DAMAGE_ELEMENT") && attackerMythicMob.getVariables().has("AST_ELEMENTAL_DAMAGE_GAUGE_UNIT") && attackerMythicMob.getVariables().has("AST_ELEMENTAL_DAMAGE_COOLDOWN_SOURCE")) {
 
                             VariableRegistry variables = attackerMythicMob.getVariables();
@@ -103,6 +109,8 @@ public class AttackModifier implements Listener {
                              */
 
                             return;
+                        } else {
+
                         }
                     }
 

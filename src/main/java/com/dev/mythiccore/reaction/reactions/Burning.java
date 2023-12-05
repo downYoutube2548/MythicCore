@@ -1,6 +1,6 @@
 package com.dev.mythiccore.reaction.reactions;
 
-import com.dev.mythiccore.combat.Combat;
+import com.dev.mythiccore.enums.MobType;
 import com.dev.mythiccore.reaction.reaction_type.DoubleAuraReaction;
 import com.dev.mythiccore.utils.StatCalculation;
 import com.dev.mythiccore.utils.Utils;
@@ -24,7 +24,7 @@ public class Burning extends DoubleAuraReaction {
     }
 
     @Override
-    public void trigger(DamagePacket damage, double gauge_unit, String decay_rate, LivingEntity entity, @Nullable Entity damager, StatProvider stats, EntityDamageEvent.DamageCause damage_cause, Combat.MobType last_mob_type) {
+    public void trigger(DamagePacket damage, double gauge_unit, String decay_rate, LivingEntity entity, @Nullable Entity damager, StatProvider stats, EntityDamageEvent.DamageCause damage_cause, MobType last_mob_type) {
 
         int level = 1;
         double burning_bonus = 0;

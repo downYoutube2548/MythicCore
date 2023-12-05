@@ -1,6 +1,6 @@
 package com.dev.mythiccore.reaction.reaction_type;
 
-import com.dev.mythiccore.combat.Combat;
+import com.dev.mythiccore.enums.MobType;
 import com.dev.mythiccore.reaction.ElementalReaction;
 import io.lumine.mythic.lib.api.stat.provider.StatProvider;
 import io.lumine.mythic.lib.damage.DamagePacket;
@@ -25,7 +25,7 @@ public abstract class DoubleAuraReaction extends ElementalReaction {
         return reaction_frequency;
     }
 
-    public void t(DamagePacket damage, double gauge_unit, String decay_rate, LivingEntity entity, @Nullable Entity damager, StatProvider stats, EntityDamageEvent.DamageCause damage_cause, Combat.MobType last_mob_type) {
+    public void t(DamagePacket damage, double gauge_unit, String decay_rate, LivingEntity entity, @Nullable Entity damager, StatProvider stats, EntityDamageEvent.DamageCause damage_cause, MobType last_mob_type) {
 
         if (damage.getElement() == null) return;
         double final_gauge_unit = gauge_unit_tax;
@@ -35,5 +35,5 @@ public abstract class DoubleAuraReaction extends ElementalReaction {
         trigger(damage, gauge_unit, decay_rate, entity, damager, stats, damage_cause, last_mob_type);
     }
 
-    public abstract void trigger(DamagePacket damage, double gauge_unit, String decay_rate, LivingEntity entity, @Nullable Entity damager, StatProvider stats, EntityDamageEvent.DamageCause damage_cause, Combat.MobType last_mob_type);
+    public abstract void trigger(DamagePacket damage, double gauge_unit, String decay_rate, LivingEntity entity, @Nullable Entity damager, StatProvider stats, EntityDamageEvent.DamageCause damage_cause, MobType last_mob_type);
 }

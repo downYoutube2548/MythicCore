@@ -1,6 +1,7 @@
 package com.dev.mythiccore.reaction.reactions.bloom;
 
 import com.dev.mythiccore.combat.Combat;
+import com.dev.mythiccore.enums.MobType;
 import com.dev.mythiccore.utils.ConfigLoader;
 import com.dev.mythiccore.utils.StatCalculation;
 import io.lumine.mythic.bukkit.MythicBukkit;
@@ -32,9 +33,9 @@ public class DendroCore {
     private final Entity dendro_core;
     private final UUID uuid;
     private final EntityDamageEvent.DamageCause damage_cause;
-    private Combat.MobType mob_type;
+    private MobType mob_type;
 
-    public DendroCore(Bloom instance, @Nullable LivingEntity owner, StatProvider statProvider, long life_time, Entity dendro_core, EntityDamageEvent.DamageCause damage_cause, Combat.MobType mob_type) {
+    public DendroCore(Bloom instance, @Nullable LivingEntity owner, StatProvider statProvider, long life_time, Entity dendro_core, EntityDamageEvent.DamageCause damage_cause, MobType mob_type) {
         this.instance = instance;
         this.owner = owner;
         this.stat_provider = statProvider;
@@ -73,7 +74,7 @@ public class DendroCore {
         return instance;
     }
 
-    public void setMobType(Combat.MobType mob_type) {
+    public void setMobType(MobType mob_type) {
         this.mob_type = mob_type;
     }
 

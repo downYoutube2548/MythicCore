@@ -2,6 +2,7 @@ package com.dev.mythiccore.reaction.reactions;
 
 import com.dev.mythiccore.MythicCore;
 import com.dev.mythiccore.combat.Combat;
+import com.dev.mythiccore.enums.MobType;
 import com.dev.mythiccore.reaction.reaction_type.DoubleAuraReaction;
 import com.dev.mythiccore.utils.ConfigLoader;
 import com.dev.mythiccore.utils.StatCalculation;
@@ -33,7 +34,7 @@ public class ElectroCharged extends DoubleAuraReaction {
     }
 
     @Override
-    public void trigger(DamagePacket damage, double gauge_unit, String decay_rate, LivingEntity entity, @Nullable Entity damager, StatProvider stats, EntityDamageEvent.DamageCause damage_cause, Combat.MobType last_mob_type) {
+    public void trigger(DamagePacket damage, double gauge_unit, String decay_rate, LivingEntity entity, @Nullable Entity damager, StatProvider stats, EntityDamageEvent.DamageCause damage_cause, MobType last_mob_type) {
 
         BouncingDamage bouncingDamage = new BouncingDamage(damager, entity, stats, getConfig().getInt("maximum-bounces-target"), damage_cause, last_mob_type);
         bouncingDamage.start();
@@ -49,9 +50,9 @@ public class ElectroCharged extends DoubleAuraReaction {
         private final LivingEntity entity;
         private final EntityDamageEvent.DamageCause damage_cause;
         private LivingEntity current_entity;
-        private final Combat.MobType last_mob_type;
+        private final MobType last_mob_type;
 
-        public BouncingDamage(@Nullable Entity damager, LivingEntity entity, StatProvider stats, int maxBounces, EntityDamageEvent.DamageCause damage_cause, Combat.MobType last_mob_type) {
+        public BouncingDamage(@Nullable Entity damager, LivingEntity entity, StatProvider stats, int maxBounces, EntityDamageEvent.DamageCause damage_cause, MobType last_mob_type) {
             this.damager = damager;
             this.entity = entity;
             this.damagedEntities = new HashSet<>();

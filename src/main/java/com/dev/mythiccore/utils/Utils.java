@@ -6,6 +6,7 @@ import io.lumine.mythic.lib.UtilityMethods;
 import io.lumine.mythic.lib.api.event.IndicatorDisplayEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -26,6 +27,7 @@ public class Utils {
             String hexColor = s.substring(match.start(), match.end());
             s = s.replace(hexColor, net.md_5.bungee.api.ChatColor.of(hexColor).toString());
             match = pattern.matcher(s);
+            Player player;
         }
 
         return net.md_5.bungee.api.ChatColor.translateAlternateColorCodes('&', s);

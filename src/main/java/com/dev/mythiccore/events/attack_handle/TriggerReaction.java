@@ -2,6 +2,7 @@ package com.dev.mythiccore.events.attack_handle;
 
 import com.dev.mythiccore.MythicCore;
 import com.dev.mythiccore.combat.Combat;
+import com.dev.mythiccore.enums.MobType;
 import com.dev.mythiccore.library.ASTAttackMetadata;
 import com.dev.mythiccore.library.ASTProjectileAttackMetadata;
 import com.dev.mythiccore.library.AttackSource;
@@ -161,14 +162,14 @@ public class TriggerReaction implements Listener {
                             reactionTasks.get(entity).add(reaction);
                         }
 
-                        Combat.MobType last_mob_type = Combat.MobType.NULL;
+                        MobType last_mob_type = MobType.NULL;
                         if (damager != null) {
                             last_mob_type = Combat.getLastMobType(damager);
                         }
 
                         reaction_success = true;
 
-                        Combat.MobType finalLast_mob_type = last_mob_type;
+                        MobType finalLast_mob_type = last_mob_type;
                         Bukkit.getScheduler().runTaskTimerAsynchronously(MythicCore.getInstance(), (task) -> {
                             if (MythicCore.getAuraManager().getAura(entity.getUniqueId()).getMapAura().containsKey(rawReaction.getAura()) && MythicCore.getAuraManager().getAura(entity.getUniqueId()).getMapAura().containsKey(rawReaction.getTrigger())) {
 
