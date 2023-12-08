@@ -14,11 +14,22 @@ public abstract class DoubleAuraReaction extends ElementalReaction {
 
     private final long reaction_frequency;
     private final double gauge_unit_tax;
+    private final String aura1;
+    private final String aura2;
 
     public DoubleAuraReaction(String id, ConfigurationSection config, String display, String aura1, String aura2, long reaction_frequency, double gauge_unit_tax) {
-        super(id, config, display, aura1, aura2);
+        super(id, config, display);
         this.reaction_frequency = reaction_frequency;
         this.gauge_unit_tax = gauge_unit_tax;
+        this.aura1 = aura1;
+        this.aura2 = aura2;
+    }
+
+    public String getFirstAura() {
+        return this.aura1;
+    }
+    public String getSecondAura() {
+        return this.aura2;
     }
 
     public long getFrequency() {
@@ -28,12 +39,15 @@ public abstract class DoubleAuraReaction extends ElementalReaction {
     public void t(DamagePacket damage, double gauge_unit, String decay_rate, LivingEntity entity, @Nullable Entity damager, StatProvider stats, EntityDamageEvent.DamageCause damage_cause, MobType last_mob_type) {
 
         if (damage.getElement() == null) return;
-        double final_gauge_unit = gauge_unit_tax;
-        getAuraData(entity.getUniqueId()).reduceAura(getAura(), final_gauge_unit);
-        getAuraData(entity.getUniqueId()).reduceAura(getTrigger(), final_gauge_unit);
 
-        trigger(damage, gauge_unit, decay_rate, entity, damager, stats, damage_cause, last_mob_type);
+        boolean reduceGauge = trigger(damage, gauge_unit, decay_rate, entity, damager, stats, damage_cause, last_mob_type);
+
+        if (reduceGauge) {
+            double final_gauge_unit = gauge_unit_tax;
+            getAuraData(entity.getUniqueId()).reduceAura(aura1, final_gauge_unit);
+            getAuraData(entity.getUniqueId()).reduceAura(aura2, final_gauge_unit);
+        }
     }
 
-    public abstract void trigger(DamagePacket damage, double gauge_unit, String decay_rate, LivingEntity entity, @Nullable Entity damager, StatProvider stats, EntityDamageEvent.DamageCause damage_cause, MobType last_mob_type);
+    public abstract boolean trigger(DamagePacket damage, double gauge_unit, String decay_rate, LivingEntity entity, @Nullable Entity damager, StatProvider stats, EntityDamageEvent.DamageCause damage_cause, MobType last_mob_type);
 }

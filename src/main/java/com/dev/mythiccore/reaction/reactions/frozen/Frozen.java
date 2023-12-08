@@ -18,7 +18,7 @@ public class Frozen extends TriggerAuraReaction {
     }
 
     @Override
-    public void trigger(DamagePacket damage, double gauge_unit, String decay_rate, LivingEntity entity, @Nullable Entity damager, StatProvider stats, EntityDamageEvent.DamageCause damage_cause) {
+    public boolean trigger(DamagePacket damage, double gauge_unit, String decay_rate, LivingEntity entity, @Nullable Entity damager, StatProvider stats, EntityDamageEvent.DamageCause damage_cause) {
         getAuraData(entity.getUniqueId()).addAura(getConfig().getString("frozen-aura-id"), gauge_unit, getConfig().getString("frozen-aura-gauge-decay-rate"));
         if (entity instanceof Player player) {
             player.setFreezeTicks((int) (gauge_unit * ConfigLoader.getDecayRate(getConfig().getString("frozen-aura-gauge-decay-rate"))));
@@ -26,6 +26,8 @@ public class Frozen extends TriggerAuraReaction {
 
         spawnParticle(entity, getConfig().getStringList("particle"));
         playSound(entity, getConfig().getStringList("sound"));
+
+        return true;
     }
 
     public void trigger(LivingEntity entity, double gauge_unit) {

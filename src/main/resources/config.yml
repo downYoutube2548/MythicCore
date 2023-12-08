@@ -74,6 +74,8 @@ Reaction-Priority:
     - SWIRL_FROZEN
     - SWIRL_CRYO
     - SWIRL_ELECTRO
+  GEO:
+    - RESONANCE
 
 Elemental-Reaction:
   OVERLOADED:
@@ -254,7 +256,24 @@ Elemental-Reaction:
     trigger-element: ELECTRO
     gauge-unit-tax: 0
     damage-formula: "raw_damage + (1.15 * (16.12 * (attacker_level + 16) - 257.23) * (1 + (5 * elemental_mastery / (1200 + elemental_mastery)) + aggravate_bonus/100))"
-
+  RESONANCE:
+    enable: true
+    display: "#fdd171Resonance"
+    gauge-unit-tax: 0.15
+    trigger-element: GEO
+    resonance-radius: 4
+    delay-tick-per-block: 5
+    resonance-particle:
+      particle: END_ROD
+      radius: 1
+      points: 45
+      speed: 0.3
+      x-rotation: 0
+      y-rotation: 0
+    stop-on-resonate-other: false
+    resonance-limit: 4
+    resonance-cooldown: 20
+    damage-formula: "0.2 * (16.12 * (attacker_level + 16) - 257.23) * (1 + ((6 * elemental_mastery) / (elemental_mastery + 2000)) + (((8 / 1.44) * defense) / (defense + 1500)) + resonance_bonus) * resistance_multiplier"
 
 Damage-Calculation:
 
@@ -462,6 +481,12 @@ Stats:
         Name: HyperBloom Bonus
         Material: MAGENTA_STAINED_GLASS
         Lore: [ '&7Increase HyperBloom''s damage' ]
+    AST_RESONANCE_BONUS:
+      Name: Resonance Bonus
+      Icon:
+        Name: Resonance Bonus
+        Material: COBBLESTONE
+        Lore: [ '&7Increase Resonance''s damage' ]
 
 #    AST_HEALING_BONUS:
 #      Name: Healing Bonus

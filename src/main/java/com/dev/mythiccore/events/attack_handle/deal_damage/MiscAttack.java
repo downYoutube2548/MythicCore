@@ -17,7 +17,7 @@ import java.util.Arrays;
  */
 public class MiscAttack implements Listener {
 
-    @EventHandler(priority = EventPriority.NORMAL)
+    @EventHandler(priority = EventPriority.HIGH)
     public void onMiscAttack(MiscAttackEvent event) {
         try {
             LivingEntity victim = event.getEntity();

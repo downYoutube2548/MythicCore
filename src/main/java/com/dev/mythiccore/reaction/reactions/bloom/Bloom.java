@@ -18,7 +18,7 @@ public class Bloom extends TriggerAuraReaction {
     }
 
     @Override
-    public void trigger(DamagePacket damage, double gauge_unit, String decay_rate, LivingEntity entity, @Nullable Entity damager, StatProvider stats, EntityDamageEvent.DamageCause damage_cause) {
+    public boolean trigger(DamagePacket damage, double gauge_unit, String decay_rate, LivingEntity entity, @Nullable Entity damager, StatProvider stats, EntityDamageEvent.DamageCause damage_cause) {
 
         double random_radius = Utils.randomNumber(0.5, getConfig().getDouble("dendro-core-spawn-radius"));
 
@@ -35,5 +35,6 @@ public class Bloom extends TriggerAuraReaction {
         spawnParticle(entity, getConfig().getStringList("particle"));
         playSound(entity, getConfig().getStringList("sound"));
 
+        return true;
     }
 }

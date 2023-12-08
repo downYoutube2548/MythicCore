@@ -24,7 +24,7 @@ public class Burning extends DoubleAuraReaction {
     }
 
     @Override
-    public void trigger(DamagePacket damage, double gauge_unit, String decay_rate, LivingEntity entity, @Nullable Entity damager, StatProvider stats, EntityDamageEvent.DamageCause damage_cause, MobType last_mob_type) {
+    public boolean trigger(DamagePacket damage, double gauge_unit, String decay_rate, LivingEntity entity, @Nullable Entity damager, StatProvider stats, EntityDamageEvent.DamageCause damage_cause, MobType last_mob_type) {
 
         int level = 1;
         double burning_bonus = 0;
@@ -59,5 +59,7 @@ public class Burning extends DoubleAuraReaction {
 
         spawnParticle(entity, getConfig().getStringList("particle"));
         playSound(entity, getConfig().getStringList("sound"));
+
+        return true;
     }
 }

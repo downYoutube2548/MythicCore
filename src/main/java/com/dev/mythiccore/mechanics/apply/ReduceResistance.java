@@ -7,16 +7,17 @@ import io.lumine.mythic.api.config.MythicLineConfig;
 import io.lumine.mythic.api.skills.ITargetedEntitySkill;
 import io.lumine.mythic.api.skills.SkillMetadata;
 import io.lumine.mythic.api.skills.SkillResult;
+import io.lumine.mythic.api.skills.placeholders.PlaceholderDouble;
 import io.lumine.mythic.bukkit.BukkitAdapter;
 import org.bukkit.entity.Entity;
 
 public class ReduceResistance implements ITargetedEntitySkill {
     private final String element;
-    private final double amount;
+    private final PlaceholderDouble amount;
     private final long duration;
 
     public ReduceResistance(MythicLineConfig config) {
-        amount = config.getDouble(new String[] {"amount", "a"}, 0);
+        amount = config.getPlaceholderDouble(new String[] {"amount", "a"}, 0);
         duration = config.getLong(new String[] {"duration", "d", "t"}, 0);
         element = config.getString(new String[] {"element", "e"});
     }
@@ -27,7 +28,7 @@ public class ReduceResistance implements ITargetedEntitySkill {
 
         if (BukkitAdapter.adapt(abstractEntity) != null) {
             Entity bukkittarget = BukkitAdapter.adapt(abstractEntity);
-            MythicCore.getBuffManager().getBuff(bukkittarget.getUniqueId()).addBuff(new ElementalResistanceReduction(amount, duration, element));
+            MythicCore.getBuffManager().getBuff(bukkittarget.getUniqueId()).addBuff(new ElementalResistanceReduction(amount.get(skillMetadata), duration, element));
             return SkillResult.SUCCESS;
         }
         return SkillResult.ERROR;

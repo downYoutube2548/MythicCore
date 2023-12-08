@@ -18,7 +18,7 @@ import java.util.Random;
  */
 public class PlayerAttack implements Listener {
 
-    @EventHandler(priority = EventPriority.NORMAL)
+    @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerAttack(PlayerAttackEvent event) {
 
         LivingEntity victim = event.getEntity();

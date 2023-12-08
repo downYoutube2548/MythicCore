@@ -16,7 +16,7 @@ import org.bukkit.event.Listener;
  */
 public class MobAttack implements Listener {
 
-    @EventHandler(priority = EventPriority.NORMAL)
+    @EventHandler(priority = EventPriority.HIGH)
     public void onMobAttack(MobAttackEvent event) {
 
         try {

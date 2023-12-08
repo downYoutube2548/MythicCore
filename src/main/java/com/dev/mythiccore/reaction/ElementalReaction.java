@@ -33,27 +33,17 @@ import java.util.UUID;
 public abstract class ElementalReaction {
 
     private final String id;
-    private final String aura;
-    private final String trigger;
     private final String display;
     private final ConfigurationSection config;
 
-    public ElementalReaction(String id, ConfigurationSection config, String display, String aura, String trigger) {
+    public ElementalReaction(String id, ConfigurationSection config, String display) {
         this.id = id;
         this.display = display;
-        this.aura = aura;
-        this.trigger = trigger;
         this.config = config;
     }
 
     public String getId() {
         return this.id;
-    }
-    public String getAura() {
-        return this.aura;
-    }
-    public String getTrigger() {
-        return this.trigger;
     }
     public String getDisplay() {
         return Utils.colorize(this.display);

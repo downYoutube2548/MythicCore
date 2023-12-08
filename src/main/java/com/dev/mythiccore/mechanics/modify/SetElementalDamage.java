@@ -46,7 +46,7 @@ public class SetElementalDamage implements ITargetedEntitySkill {
             Entity bukkittarget = BukkitAdapter.adapt(abstractEntity);
             ActiveMob mythicMob = MythicBukkit.inst().getMobManager().getActiveMob(bukkittarget.getUniqueId()).orElse(null);
             if (mythicMob != null) {
-                mythicMob.getVariables().put("AST_ELEMENTAL_DAMAGE_AMOUNT", Variable.ofType(VariableType.FLOAT, amount.get()));
+                mythicMob.getVariables().put("AST_ELEMENTAL_DAMAGE_AMOUNT", Variable.ofType(VariableType.FLOAT, amount.get(skillMetadata)));
                 mythicMob.getVariables().put("AST_ELEMENTAL_DAMAGE_ELEMENT", Variable.ofType(VariableType.STRING, element));
                 mythicMob.getVariables().put("AST_ELEMENTAL_DAMAGE_GAUGE_UNIT", Variable.ofType(VariableType.STRING, gauge));
                 mythicMob.getVariables().put("AST_ELEMENTAL_DAMAGE_COOLDOWN_SOURCE", Variable.ofType(VariableType.STRING, cooldown_source));

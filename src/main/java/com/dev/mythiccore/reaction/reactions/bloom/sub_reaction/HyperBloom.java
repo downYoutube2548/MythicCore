@@ -6,6 +6,7 @@ import com.dev.mythiccore.reaction.reactions.bloom.DendroCore;
 import com.dev.mythiccore.reaction.reactions.bloom.DendroCoreReaction;
 import com.dev.mythiccore.utils.ConfigLoader;
 import com.dev.mythiccore.utils.StatCalculation;
+import com.dev.mythiccore.utils.Utils;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import io.lumine.mythic.core.mobs.ActiveMob;
 import io.lumine.mythic.lib.api.stat.provider.StatProvider;
@@ -25,7 +26,6 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Comparator;
-import java.util.Objects;
 
 public class HyperBloom extends DendroCoreReaction {
     public HyperBloom(String id, ConfigurationSection config, String display, String trigger) {
@@ -52,19 +52,18 @@ public class HyperBloom extends DendroCoreReaction {
         if (life_time >= 0) dendro_core.setLifeTime(life_time);
         long start_time = System.currentTimeMillis();
 
-        LivingEntity finalTarget_entity = target_entity;
         Bukkit.getScheduler().runTaskTimer(MythicCore.getInstance(), (task)->{
 
             Location startLocation = dendro_core.getDendroCore().getLocation();
-            Location targetLocation = finalTarget_entity.getLocation();
+            Location targetLocation = target_entity.getLocation();
 
-            if (!finalTarget_entity.isValid()) {
+            if (!target_entity.isValid()) {
                 task.cancel();
                 dendro_core.getDendroCore().remove();
                 return;
             }
 
-            if (finalTarget_entity.isDead()) {
+            if (target_entity.isDead()) {
                 task.cancel();
                 dendro_core.getDendroCore().remove();
                 return;
@@ -97,7 +96,7 @@ public class HyperBloom extends DendroCoreReaction {
                     }
                 }
 
-                double resistance_multiplier = StatCalculation.getResistanceMultiplier(finalTarget_entity.getUniqueId(), getConfig().getString("damage-element"));
+                double resistance_multiplier = StatCalculation.getResistanceMultiplier(target_entity.getUniqueId(), getConfig().getString("damage-element"));
 
                 String formula = getConfig().getString("damage-formula");
                 assert formula != null;
@@ -111,7 +110,7 @@ public class HyperBloom extends DendroCoreReaction {
 
                 double final_damage = expression.evaluate();
 
-                dendro_core.getInstance().damage(final_damage, damager, finalTarget_entity, getConfig().getString("damage-element"), false, false, damage_cause);
+                dendro_core.getInstance().damage(final_damage, damager, target_entity, getConfig().getString("damage-element"), false, false, damage_cause);
 
                 // visual
                 try {
@@ -121,7 +120,7 @@ public class HyperBloom extends DendroCoreReaction {
                         float volume = Float.parseFloat(raw_sound[1]);
                         float pitch = Float.parseFloat(raw_sound[2]);
 
-                        finalTarget_entity.getWorld().playSound(finalTarget_entity.getLocation(), Sound.valueOf(sound), volume, pitch);
+                        target_entity.getWorld().playSound(target_entity.getLocation(), Sound.valueOf(sound), volume, pitch);
                     }
 
                     for (String p : getConfig().getStringList("explode-particle")) {
@@ -130,7 +129,7 @@ public class HyperBloom extends DendroCoreReaction {
                         double speed = Double.parseDouble(raw_particle[1]);
                         int count = Integer.parseInt(raw_particle[2]);
 
-                        finalTarget_entity.getWorld().spawnParticle(Particle.valueOf(particle), finalTarget_entity.getLocation(), count, 0, 0, 0, speed);
+                        target_entity.getWorld().spawnParticle(Particle.valueOf(particle), target_entity.getLocation(), count, 0, 0, 0, speed);
                     }
 
                 } catch (NumberFormatException ignored) {}
@@ -155,41 +154,10 @@ public class HyperBloom extends DendroCoreReaction {
             Location newLocation = startLocation.clone().add(xOffset, yOffset, zOffset);
             Location d = new Location(startLocation.getWorld(), 0, 0, 0);
             d.setDirection(direction);
-            generateParticles(startLocation, d.getPitch(), -d.getYaw());
+            Utils.generateParticles(Particle.valueOf(getConfig().getString("launch-particle.particle")), getConfig().getDouble("launch-particle.radius"), getConfig().getInt("launch-particle.points"), getConfig().getDouble("launch-particle.speed"),startLocation, d.getPitch(), -d.getYaw());
             dendro_core.getDendroCore().teleport(newLocation);
 
 
         },0,1);
-    }
-
-    private void generateParticles(Location center, double xRotationAngle, double yRotationAngle) {
-
-        double radius = getConfig().getDouble("launch-particle.radius");
-        int points = getConfig().getInt("launch-particle.points");
-
-        double xRotationRadians = Math.toRadians(xRotationAngle);
-        double yRotationRadians = Math.toRadians(yRotationAngle);
-
-        for (int i = 0; i < points; i++) {
-            double x = radius * Math.cos(i);
-            double y = radius * Math.sin(i);
-            double z = 0;
-
-            // Apply X-axis rotation
-            Vector rotatedX = new Vector(x, y, z).rotateAroundX(xRotationRadians);
-
-            // Apply Y-axis rotation
-            Vector rotatedXY = rotatedX.clone().rotateAroundY(yRotationRadians);
-
-            Objects.requireNonNull(center.getWorld()).spawnParticle(
-                    Particle.valueOf(getConfig().getString("launch-particle.particle")), // particle
-                    center, // location
-                    0, // count
-                    rotatedXY.getX(), rotatedXY.getY(), rotatedXY.getZ(),
-                    getConfig().getDouble("launch-particle.speed"), // speed
-                    null, // Object: data
-                    true // force
-            );
-        }
     }
 }

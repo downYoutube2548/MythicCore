@@ -5,6 +5,7 @@ import io.lumine.mythic.api.config.MythicLineConfig;
 import io.lumine.mythic.api.skills.ITargetedEntitySkill;
 import io.lumine.mythic.api.skills.SkillMetadata;
 import io.lumine.mythic.api.skills.SkillResult;
+import io.lumine.mythic.api.skills.placeholders.PlaceholderDouble;
 import io.lumine.mythic.bukkit.BukkitAdapter;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import io.lumine.mythic.core.mobs.ActiveMob;
@@ -14,10 +15,10 @@ import org.bukkit.entity.Entity;
 
 public class SetDefense implements ITargetedEntitySkill {
 
-    private final double amount;
+    private final PlaceholderDouble amount;
 
     public SetDefense(MythicLineConfig config) {
-        amount = config.getDouble(new String[]{"amount", "a"}, 0);
+        amount = config.getPlaceholderDouble(new String[]{"amount", "a"}, 0);
     }
 
     @Override
@@ -26,7 +27,7 @@ public class SetDefense implements ITargetedEntitySkill {
             Entity bukkittarget = BukkitAdapter.adapt(abstractEntity);
             ActiveMob mythicMob = MythicBukkit.inst().getMobManager().getActiveMob(bukkittarget.getUniqueId()).orElse(null);
             if (mythicMob != null) {
-                mythicMob.getVariables().put("DEFENSE", Variable.ofType(VariableType.FLOAT, amount));
+                mythicMob.getVariables().put("DEFENSE", Variable.ofType(VariableType.FLOAT, amount.get(skillMetadata)));
                 return SkillResult.SUCCESS;
             }
             return SkillResult.MISSING_COMPATIBILITY;

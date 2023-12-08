@@ -34,11 +34,12 @@ public class ElectroCharged extends DoubleAuraReaction {
     }
 
     @Override
-    public void trigger(DamagePacket damage, double gauge_unit, String decay_rate, LivingEntity entity, @Nullable Entity damager, StatProvider stats, EntityDamageEvent.DamageCause damage_cause, MobType last_mob_type) {
+    public boolean trigger(DamagePacket damage, double gauge_unit, String decay_rate, LivingEntity entity, @Nullable Entity damager, StatProvider stats, EntityDamageEvent.DamageCause damage_cause, MobType last_mob_type) {
 
         BouncingDamage bouncingDamage = new BouncingDamage(damager, entity, stats, getConfig().getInt("maximum-bounces-target"), damage_cause, last_mob_type);
         bouncingDamage.start();
 
+        return true;
     }
 
 

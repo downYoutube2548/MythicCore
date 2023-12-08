@@ -91,5 +91,6 @@ public class ReactionManager {
         }
         if (ConfigLoader.isReactionEnable("SPREAD")) getReactionManager().registerElementalReaction(new Spread("SPREAD", ConfigLoader.getReactionConfig().getConfigurationSection("SPREAD"), ConfigLoader.getReactionDisplay("SPREAD"), ConfigLoader.getAuraElement("SPREAD"), ConfigLoader.getTriggerElement("SPREAD"), ConfigLoader.getGaugeUnitTax("SPREAD")));
         if (ConfigLoader.isReactionEnable("AGGRAVATE")) getReactionManager().registerElementalReaction(new Aggravate("AGGRAVATE", ConfigLoader.getReactionConfig().getConfigurationSection("AGGRAVATE"), ConfigLoader.getReactionDisplay("AGGRAVATE"), ConfigLoader.getAuraElement("AGGRAVATE"), ConfigLoader.getTriggerElement("AGGRAVATE"), ConfigLoader.getGaugeUnitTax("AGGRAVATE")));
+        if (ConfigLoader.isReactionEnable("RESONANCE")) getReactionManager().registerElementalReaction(new Resonance("RESONANCE", ConfigLoader.getReactionConfig().getConfigurationSection("RESONANCE"), ConfigLoader.getReactionDisplay("RESONANCE"), ConfigLoader.getTriggerElement("RESONANCE"), ConfigLoader.getGaugeUnitTax("RESONANCE")));
     }
 }

@@ -6,6 +6,7 @@ import io.lumine.mythic.api.config.MythicLineConfig;
 import io.lumine.mythic.api.skills.ITargetedEntitySkill;
 import io.lumine.mythic.api.skills.SkillMetadata;
 import io.lumine.mythic.api.skills.SkillResult;
+import io.lumine.mythic.api.skills.placeholders.PlaceholderDouble;
 import io.lumine.mythic.bukkit.BukkitAdapter;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import io.lumine.mythic.core.mobs.ActiveMob;
@@ -14,11 +15,11 @@ import io.lumine.mythic.core.skills.variables.VariableType;
 import org.bukkit.entity.Entity;
 
 public class SetResistance implements ITargetedEntitySkill {
-    private final double amount;
+    private final PlaceholderDouble amount;
     private final String element;
 
     public SetResistance(MythicLineConfig config) {
-        amount = config.getDouble(new String[]{"amount", "a"}, 0);
+        amount = config.getPlaceholderDouble(new String[]{"amount", "a"}, 0);
         element = config.getString(new String[]{"element", "e"}, ConfigLoader.getDefaultElement());
     }
 
@@ -28,7 +29,7 @@ public class SetResistance implements ITargetedEntitySkill {
             Entity bukkittarget = BukkitAdapter.adapt(abstractEntity);
             ActiveMob mythicMob = MythicBukkit.inst().getMobManager().getActiveMob(bukkittarget.getUniqueId()).orElse(null);
             if (mythicMob != null) {
-                mythicMob.getVariables().put("AST_"+element+"_RESISTANCE", Variable.ofType(VariableType.FLOAT, amount));
+                mythicMob.getVariables().put("AST_"+element+"_RESISTANCE", Variable.ofType(VariableType.FLOAT, amount.get(skillMetadata)));
                 return SkillResult.SUCCESS;
             }
             return SkillResult.MISSING_COMPATIBILITY;

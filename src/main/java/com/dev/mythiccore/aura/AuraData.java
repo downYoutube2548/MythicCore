@@ -1,13 +1,18 @@
 package com.dev.mythiccore.aura;
 
 import com.dev.mythiccore.MythicCore;
+import com.dev.mythiccore.events.attack_handle.TriggerReaction;
 import com.dev.mythiccore.listener.events.aura.AuraApplyEvent;
 import com.dev.mythiccore.listener.events.aura.AuraTerminatedEvent;
 import com.dev.mythiccore.utils.ConfigLoader;
 import com.dev.mythiccore.utils.Utils;
 import io.lumine.mythic.lib.MythicLib;
+import io.lumine.mythic.lib.damage.DamagePacket;
+import io.lumine.mythic.lib.damage.DamageType;
 import io.lumine.mythic.lib.element.Element;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.event.entity.EntityDamageEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -55,6 +60,13 @@ public class AuraData {
     public void reduceAura(String element, double gauge_unit) {
         if (!this.mapAura.containsKey(element)) return;
         reduceAura(element, (long)(Math.floor(gauge_unit * ConfigLoader.getDecayRate(this.mapAura.get(element).getDecayRate()))));
+    }
+
+    public void addAura(String aura, double gauge_unit, String decay_rate, boolean triggerReaction) {
+        addAura(aura, gauge_unit, decay_rate);
+        if (triggerReaction && Bukkit.getEntity(uuid) instanceof LivingEntity livingEntity) {
+            TriggerReaction.triggerReactions(new DamagePacket(0, Element.valueOf(aura), DamageType.SKILL), gauge_unit, decay_rate, livingEntity, null, s -> 0, EntityDamageEvent.DamageCause.CUSTOM);
+        }
     }
 
     public void addAura(String aura, double gauge_unit, String decay_rate) {

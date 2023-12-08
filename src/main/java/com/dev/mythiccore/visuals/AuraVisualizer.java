@@ -6,6 +6,7 @@ import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.entity.Display;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.entity.TextDisplay;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.BoundingBox;
@@ -37,7 +38,11 @@ public class AuraVisualizer {
 
                 List<UUID> uuids = new ArrayList<>(MythicCore.getAuraManager().getMapEntityAura().keySet());
                 for (UUID uuid : uuids) {
+
                     Entity entity = Bukkit.getEntity(uuid);
+
+                    if (entity instanceof Player) continue;
+
                     if (entity == null || entity.isDead() || !entity.getLocation().getChunk().isLoaded()) {
                         if (!mapHologram.containsKey(uuid)) continue;
 
@@ -59,7 +64,7 @@ public class AuraVisualizer {
                         TextDisplay textDisplay = entity.getWorld().spawn(spawnLocation, TextDisplay.class);
                         textDisplay.setPersistent(false);
                         textDisplay.setBillboard(Display.Billboard.CENTER);
-                        textDisplay.setText(MythicCore.getAuraManager().getAura(uuid).getAuraIcon()/* + " | " + MythicCore.getCooldownManager().getCooldown(uuid).getMapCooldown()*/);
+                        textDisplay.setText(MythicCore.getAuraManager().getAura(uuid).getAuraIcon() + "\n" + entity.getName()/* + " | " + MythicCore.getCooldownManager().getCooldown(uuid).getMapCooldown()*/);
                         textDisplay.setTransformation(new Transformation(textDisplay.getTransformation().getTranslation(), textDisplay.getTransformation().getLeftRotation(), new Vector3f(scale), textDisplay.getTransformation().getRightRotation()));
                         textDisplay.setShadowed(false);
                         textDisplay.setSeeThrough(true);
@@ -70,7 +75,7 @@ public class AuraVisualizer {
 
                     } else {
                         TextDisplay textDisplay = mapHologram.get(uuid);
-                        textDisplay.setText(MythicCore.getAuraManager().getAura(uuid).getAuraIcon()/*+MythicCore.getCooldownManager().getCooldown(uuid).getMapCooldown()+"\n"+MythicCore.getBuffManager().getBuff(uuid).getActivateBuffs()*/);
+                        textDisplay.setText(MythicCore.getAuraManager().getAura(uuid).getAuraIcon() + "\n" + entity.getName());
                         textDisplay.teleport(spawnLocation);
                     }
                 }

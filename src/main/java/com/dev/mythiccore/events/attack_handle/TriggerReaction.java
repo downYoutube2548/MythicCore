@@ -11,6 +11,7 @@ import com.dev.mythiccore.listener.events.attack.MobAttackEvent;
 import com.dev.mythiccore.listener.events.attack.PlayerAttackEvent;
 import com.dev.mythiccore.reaction.ElementalReaction;
 import com.dev.mythiccore.reaction.reaction_type.DoubleAuraReaction;
+import com.dev.mythiccore.reaction.reaction_type.SingleReaction;
 import com.dev.mythiccore.reaction.reaction_type.TriggerAuraReaction;
 import com.dev.mythiccore.utils.ConfigLoader;
 import com.dev.mythiccore.utils.Utils;
@@ -61,12 +62,13 @@ public class TriggerReaction implements Listener {
         for (DamagePacket packet : event.getDamage().getPackets()) {
             if (packet.getElement() == null) continue;
 
-            if (ConfigLoader.getAuraWhitelist().contains(packet.getElement().getId())) MythicCore.getAuraManager().getAura(event.getEntity().getUniqueId()).addAura(packet.getElement().getId(), gauge_unit, decay_rate);
             boolean reaction_respond = triggerReactions(packet, gauge_unit, decay_rate, event.getEntity(), event.getAttacker().getPlayer(), event.getAttack().getAttacker(), event.toBukkit().getCause());
 
             if ((gauge_unit > 0 && ConfigLoader.getAuraWhitelist().contains(packet.getElement().getId())) || reaction_respond) {
                 MythicCore.getCooldownManager().getCooldown(event.getAttacker().getPlayer().getUniqueId()).setCooldown(event.getEntity(), cooldown_source, internal_cooldown);
             }
+
+            if (ConfigLoader.getAuraWhitelist().contains(packet.getElement().getId())) MythicCore.getAuraManager().getAura(event.getEntity().getUniqueId()).addAura(packet.getElement().getId(), gauge_unit, decay_rate);
 
         }
 
@@ -102,12 +104,13 @@ public class TriggerReaction implements Listener {
         for (DamagePacket packet : event.getDamage().getPackets()) {
             if (packet.getElement() == null) continue;
 
-            if (ConfigLoader.getAuraWhitelist().contains(packet.getElement().getId())) MythicCore.getAuraManager().getAura(event.getEntity().getUniqueId()).addAura(packet.getElement().getId(), gauge_unit, decay_rate);
             boolean reaction_respond = triggerReactions(packet, gauge_unit, decay_rate, event.getEntity(), event.getDamager(), event.getAttack().getAttacker(), event.toBukkit().getCause());
 
             if ((gauge_unit > 0 && ConfigLoader.getAuraWhitelist().contains(packet.getElement().getId())) || reaction_respond) {
                 MythicCore.getCooldownManager().getCooldown(event.getDamager().getUniqueId()).setCooldown(event.getEntity(), cooldown_source, internal_cooldown);
             }
+
+            if (ConfigLoader.getAuraWhitelist().contains(packet.getElement().getId())) MythicCore.getAuraManager().getAura(event.getEntity().getUniqueId()).addAura(packet.getElement().getId(), gauge_unit, decay_rate);
 
         }
     }
@@ -117,8 +120,9 @@ public class TriggerReaction implements Listener {
         for (DamagePacket packet : event.getDamage().getPackets()) {
             if (packet.getElement() == null) continue;
 
-            if (ConfigLoader.getAuraWhitelist().contains(packet.getElement().getId())) MythicCore.getAuraManager().getAura(event.getEntity().getUniqueId()).addAura(packet.getElement().getId(), ConfigLoader.getDefaultGaugeUnit(), ConfigLoader.getDefaultDecayRate());
             triggerReactions(packet, ConfigLoader.getDefaultGaugeUnit(), ConfigLoader.getDefaultDecayRate(), event.getEntity(), null, s -> 0, event.toBukkit().getCause());
+
+            if (ConfigLoader.getAuraWhitelist().contains(packet.getElement().getId())) MythicCore.getAuraManager().getAura(event.getEntity().getUniqueId()).addAura(packet.getElement().getId(), ConfigLoader.getDefaultGaugeUnit(), ConfigLoader.getDefaultDecayRate());
         }
     }
 
@@ -132,15 +136,22 @@ public class TriggerReaction implements Listener {
             if (!MythicCore.getReactionManager().getElementalReactions().containsKey(reaction_id)) continue;
             ElementalReaction rawReaction = MythicCore.getReactionManager().getElementalReactions().get(reaction_id);
 
-            if (rawReaction instanceof TriggerAuraReaction reaction) {
-                if (MythicCore.getAuraManager().getAura(entity.getUniqueId()).getMapAura().containsKey(rawReaction.getAura()) && damage.getElement().getId().equals(rawReaction.getTrigger())) {
+            if (rawReaction instanceof SingleReaction reaction) {
+                if (MythicCore.getAuraManager().getAura(entity.getUniqueId()).getMapAura().containsKey(reaction.getTrigger()) && damage.getElement().getId().equals(reaction.getTrigger())) {
+                    if (!reaction.getDisplay().equals("")) Utils.displayIndicator(reaction.getDisplay(), entity);
+                    reaction.t(damage, gauge_unit, decay_rate, entity, damager, statProvider, damage_cause);
+                    reaction_success = true;
+                }
+            }
+            else if (rawReaction instanceof TriggerAuraReaction reaction) {
+                if (MythicCore.getAuraManager().getAura(entity.getUniqueId()).getMapAura().containsKey(reaction.getAura()) && damage.getElement().getId().equals(reaction.getTrigger())) {
                     if (!reaction.getDisplay().equals("")) Utils.displayIndicator(reaction.getDisplay(), entity);
                     reaction.t(damage, gauge_unit, decay_rate, entity, damager, statProvider, damage_cause);
                     reaction_success = true;
                 }
             } else if (rawReaction instanceof DoubleAuraReaction reaction) {
-                if (reaction.getAura().equals(damage.getElement().getId()) || reaction.getTrigger().equals(damage.getElement().getId())) {
-                    if (MythicCore.getAuraManager().getAura(entity.getUniqueId()).getMapAura().containsKey(rawReaction.getAura()) && MythicCore.getAuraManager().getAura(entity.getUniqueId()).getMapAura().containsKey(rawReaction.getTrigger())) {
+                if (reaction.getFirstAura().equals(damage.getElement().getId()) || reaction.getSecondAura().equals(damage.getElement().getId())) {
+                    if (MythicCore.getAuraManager().getAura(entity.getUniqueId()).getMapAura().containsKey(reaction.getFirstAura()) && MythicCore.getAuraManager().getAura(entity.getUniqueId()).getMapAura().containsKey(reaction.getSecondAura())) {
 
                         if (!statProviderMap.containsKey(entity)) {
                             statProviderMap.put(entity, new HashMap<>(Map.of(reaction, statProvider)));
@@ -171,7 +182,7 @@ public class TriggerReaction implements Listener {
 
                         MobType finalLast_mob_type = last_mob_type;
                         Bukkit.getScheduler().runTaskTimerAsynchronously(MythicCore.getInstance(), (task) -> {
-                            if (MythicCore.getAuraManager().getAura(entity.getUniqueId()).getMapAura().containsKey(rawReaction.getAura()) && MythicCore.getAuraManager().getAura(entity.getUniqueId()).getMapAura().containsKey(rawReaction.getTrigger())) {
+                            if (MythicCore.getAuraManager().getAura(entity.getUniqueId()).getMapAura().containsKey(reaction.getFirstAura()) && MythicCore.getAuraManager().getAura(entity.getUniqueId()).getMapAura().containsKey(reaction.getSecondAura())) {
 
                                 Bukkit.getScheduler().runTask(MythicCore.getInstance(), () -> reaction.t(damage, gauge_unit, decay_rate, entity, damager, statProviderMap.get(entity).get(reaction), damage_cause, finalLast_mob_type));
 

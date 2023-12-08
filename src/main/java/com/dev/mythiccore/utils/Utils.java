@@ -6,13 +6,15 @@ import io.lumine.mythic.lib.UtilityMethods;
 import io.lumine.mythic.lib.api.event.IndicatorDisplayEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
+import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import java.text.DecimalFormat;
+import java.util.Objects;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -94,5 +96,33 @@ public class Utils {
         }
         Random random = new Random();
         return min + (max - min) * random.nextDouble();
+    }
+
+    public static void generateParticles(Particle particle, double radius, int points, double speed, Location center, double xRotationAngle, double yRotationAngle) {
+
+        double xRotationRadians = Math.toRadians(xRotationAngle);
+        double yRotationRadians = Math.toRadians(yRotationAngle);
+
+        for (int i = 0; i < points; i++) {
+            double x = radius * Math.cos(i);
+            double y = radius * Math.sin(i);
+            double z = 0;
+
+            // Apply X-axis rotation
+            Vector rotatedX = new Vector(x, y, z).rotateAroundX(xRotationRadians);
+
+            // Apply Y-axis rotation
+            Vector rotatedXY = rotatedX.clone().rotateAroundY(yRotationRadians);
+
+            Objects.requireNonNull(center.getWorld()).spawnParticle(
+                    particle, // particle
+                    center, // location
+                    0, // count
+                    rotatedXY.getX(), rotatedXY.getY(), rotatedXY.getZ(),
+                    speed, // speed
+                    null, // Object: data
+                    true // force
+            );
+        }
     }
 }

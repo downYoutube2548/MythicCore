@@ -21,7 +21,7 @@ public class Spread extends TriggerAuraReaction {
     }
 
     @Override
-    public void trigger(DamagePacket damage, double gauge_unit, String decay_rate, LivingEntity entity, @Nullable Entity damager, StatProvider stats, EntityDamageEvent.DamageCause damage_cause) {
+    public boolean trigger(DamagePacket damage, double gauge_unit, String decay_rate, LivingEntity entity, @Nullable Entity damager, StatProvider stats, EntityDamageEvent.DamageCause damage_cause) {
         int attacker_level = 1;
         double elemental_mastery = 0;
         double spread_bonus = 0;
@@ -53,5 +53,7 @@ public class Spread extends TriggerAuraReaction {
 
         spawnParticle(entity, getConfig().getStringList("particle"));
         playSound(entity, getConfig().getStringList("sound"));
+
+        return true;
     }
 }

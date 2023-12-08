@@ -321,10 +321,10 @@ public class StatCalculation {
             PlayerData playerData = PlayerData.get(player);
             PlayerStats playerStats = playerData.getStats();
 
-            elemental_resistance = playerStats.getStat("AST_"+element+"_RESISTANCE");
+            elemental_resistance = playerStats.getStat("AST_"+element+"_RESISTANCE") + playerStats.getStat("AST_ALL_ELEMENTAL_RESISTANCE");
         } else {
             ActiveMob mythicMob = MythicBukkit.inst().getMobManager().getActiveMob(uuid).orElse(null);
-            elemental_resistance = (mythicMob != null) ? mythicMob.getVariables().getFloat("AST_"+element+"_RESISTANCE") : 0;
+            elemental_resistance = (mythicMob != null) ? mythicMob.getVariables().getFloat("AST_"+element+"_RESISTANCE") + mythicMob.getVariables().getFloat("AST_ALL_ELEMENTAL_RESISTANCE") : 0;
         }
 
         return getResistance(elemental_resistance, er == null ? 0 : er.getAmount());

@@ -1,5 +1,6 @@
 package com.dev.mythiccore;
 
+import com.dev.mythiccore.api.PlaceholderHook;
 import com.dev.mythiccore.aura.Aura;
 import com.dev.mythiccore.buff.Buff;
 import com.dev.mythiccore.combat.Combat;
@@ -24,14 +25,10 @@ import com.dev.mythiccore.stats.InternalCooldownStat;
 import com.dev.mythiccore.utils.ConfigLoader;
 import com.dev.mythiccore.visuals.AuraVisualizer;
 import com.dev.mythiccore.visuals.DamageIndicatorEvent;
+import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import net.Indyuce.mmoitems.MMOItems;
-import net.Indyuce.mmoitems.api.item.mmoitem.MMOItem;
-import net.Indyuce.mmoitems.stat.data.GemstoneData;
-import net.Indyuce.mmoitems.stat.type.GemStoneStat;
-import net.Indyuce.mmoitems.stat.type.ItemStat;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.TextDisplay;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
@@ -60,6 +57,7 @@ public final class MythicCore extends JavaPlugin {
     private static Buff buff;
     private static InternalCooldown cooldown;
     private static ReactionManager reactionManager;
+    private PlaceholderExpansion placeholderExpansion;
 
     @Override
     public void onEnable() {
@@ -109,13 +107,20 @@ public final class MythicCore extends JavaPlugin {
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mi reload all");
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mmocore reload");
 
+        placeholderExpansion = new PlaceholderHook();
+        placeholderExpansion.register();
+
     }
 
     @Override
     public void onDisable() {
+
+        placeholderExpansion.unregister();
+
         for (TextDisplay textDisplay : AuraVisualizer.mapHologram.values()) {
             textDisplay.remove();
         }
+
         for (List<DendroCore> dendroCores : DendroCoreManager.dendroCoreInChunk.values()) {
             for (DendroCore dendroCore : dendroCores) {
                 dendroCore.getDendroCore().remove();
