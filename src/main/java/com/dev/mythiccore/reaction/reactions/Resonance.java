@@ -3,7 +3,6 @@ package com.dev.mythiccore.reaction.reactions;
 import com.dev.mythiccore.MythicCore;
 import com.dev.mythiccore.combat.Combat;
 import com.dev.mythiccore.reaction.reaction_type.SingleReaction;
-import com.dev.mythiccore.reaction.reaction_type.TriggerAuraReaction;
 import com.dev.mythiccore.utils.ConfigLoader;
 import com.dev.mythiccore.utils.StatCalculation;
 import com.dev.mythiccore.utils.Utils;
