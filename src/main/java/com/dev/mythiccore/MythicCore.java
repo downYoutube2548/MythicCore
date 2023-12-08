@@ -136,23 +136,4 @@ public final class MythicCore extends JavaPlugin {
     public static InternalCooldown getCooldownManager() { return cooldown; }
     public static ReactionManager getReactionManager() { return reactionManager; }
 
-    //What the hell is this?
-//    private static File loadResource(Plugin plugin, String resource) {
-//        File folder = plugin.getDataFolder();
-//        if (!folder.exists())
-//            folder.mkdir();
-//        File resourceFile = new File(folder, resource);
-//        try {
-//            //if (!resourceFile.exists()) {
-//            resourceFile.createNewFile();
-//            try (InputStream in = plugin.getResource(resource);
-//                 OutputStream out = new FileOutputStream(resourceFile)) {
-//                ByteStreams.copy(in, out);
-//            }
-//            //}
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return resourceFile;
-//    }
 }
