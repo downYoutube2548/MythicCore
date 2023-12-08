@@ -4,7 +4,7 @@ import com.dev.mythiccore.api.PlaceholderHook;
 import com.dev.mythiccore.aura.Aura;
 import com.dev.mythiccore.buff.Buff;
 import com.dev.mythiccore.combat.Combat;
-import com.dev.mythiccore.commands.core;
+import com.dev.mythiccore.commands.CoreCommand;
 import com.dev.mythiccore.cooldown.InternalCooldown;
 import com.dev.mythiccore.events.ChunkUnload;
 import com.dev.mythiccore.events.MythicMechanicLoad;
@@ -78,7 +78,7 @@ public final class MythicCore extends JavaPlugin {
         AuraVisualizer.start();
         DendroCoreManager.dendroCoreTick();
 
-        Objects.requireNonNull(Bukkit.getPluginCommand("mythiccore")).setExecutor(new core());
+        Objects.requireNonNull(Bukkit.getPluginCommand("mythiccore")).setExecutor(new CoreCommand());
 
         //Register EventListener
         Bukkit.getPluginManager().registerEvents(new MythicMechanicLoad(), this);

@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
-public class core implements CommandExecutor, TabExecutor {
+public class CoreCommand implements CommandExecutor, TabExecutor {
 
     public static Entity entity;
 
