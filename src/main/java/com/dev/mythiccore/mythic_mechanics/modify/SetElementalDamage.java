@@ -1,4 +1,4 @@
-package com.dev.mythiccore.mechanics.modify;
+package com.dev.mythiccore.mythic_mechanics.modify;
 
 import com.dev.mythiccore.utils.ConfigLoader;
 import io.lumine.mythic.api.adapters.AbstractEntity;
@@ -23,11 +23,13 @@ public class SetElementalDamage implements ITargetedEntitySkill {
     private final String gauge;
     private final String cooldown_source;
     private final long internal_cooldown;
+    private final String damage_calculation;
 
     public SetElementalDamage(MythicLineConfig config) {
         amount = config.getPlaceholderDouble(new String[] {"amount", "a"}, 0);
         element = config.getString(new String[] {"element", "e"}, ConfigLoader.getDefaultElement());
         gauge = config.getString(new String[] {"gauge_unit", "gu"}, ConfigLoader.getDefaultGauge());
+        damage_calculation = config.getString(new String[] {"dc", "formula", "f"}, ConfigLoader.getDefaultDamageCalculation());
         UUID uuid = UUID.randomUUID();
 
         if (config.getLong(new String[]{"icd", "internal_cooldown"}, -1) < 0) {
@@ -51,6 +53,7 @@ public class SetElementalDamage implements ITargetedEntitySkill {
                 mythicMob.getVariables().put("AST_ELEMENTAL_DAMAGE_GAUGE_UNIT", Variable.ofType(VariableType.STRING, gauge));
                 mythicMob.getVariables().put("AST_ELEMENTAL_DAMAGE_COOLDOWN_SOURCE", Variable.ofType(VariableType.STRING, cooldown_source));
                 mythicMob.getVariables().put("AST_ELEMENTAL_DAMAGE_INTERNAL_COOLDOWN", Variable.ofType(VariableType.INTEGER, internal_cooldown));
+                mythicMob.getVariables().put("AST_ELEMENTAL_DAMAGE_FORMULA", Variable.ofType(VariableType.STRING, damage_calculation));
                 return SkillResult.SUCCESS;
             }
             return SkillResult.MISSING_COMPATIBILITY;

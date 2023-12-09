@@ -1,9 +1,9 @@
 package com.dev.mythiccore.reaction.reactions.bloom;
 
 import com.dev.mythiccore.MythicCore;
+import com.dev.mythiccore.enums.AttackSource;
 import com.dev.mythiccore.library.ASTAttackMetadata;
 import com.dev.mythiccore.library.ASTProjectileAttackMetadata;
-import com.dev.mythiccore.library.AttackSource;
 import com.dev.mythiccore.listener.events.attack.MiscAttackEvent;
 import com.dev.mythiccore.listener.events.attack.MobAttackEvent;
 import com.dev.mythiccore.listener.events.attack.PlayerAttackEvent;

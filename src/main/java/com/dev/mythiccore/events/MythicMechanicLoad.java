@@ -1,12 +1,12 @@
 package com.dev.mythiccore.events;
 
-import com.dev.mythiccore.mechanics.apply.ElementalDamage;
-import com.dev.mythiccore.mechanics.apply.ElementalShield;
-import com.dev.mythiccore.mechanics.apply.ReduceDefense;
-import com.dev.mythiccore.mechanics.apply.ReduceResistance;
-import com.dev.mythiccore.mechanics.modify.SetDefense;
-import com.dev.mythiccore.mechanics.modify.SetElementalDamage;
-import com.dev.mythiccore.mechanics.modify.SetResistance;
+import com.dev.mythiccore.mythic_mechanics.apply.ElementalDamage;
+import com.dev.mythiccore.mythic_mechanics.apply.ElementalShield;
+import com.dev.mythiccore.mythic_mechanics.apply.ReduceDefense;
+import com.dev.mythiccore.mythic_mechanics.apply.ReduceResistance;
+import com.dev.mythiccore.mythic_mechanics.modify.SetDefense;
+import com.dev.mythiccore.mythic_mechanics.modify.SetElementalDamage;
+import com.dev.mythiccore.mythic_mechanics.modify.SetResistance;
 import io.lumine.mythic.bukkit.events.MythicMechanicLoadEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

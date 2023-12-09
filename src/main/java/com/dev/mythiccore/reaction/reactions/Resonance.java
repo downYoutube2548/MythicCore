@@ -54,22 +54,7 @@ public class Resonance extends SingleReaction {
             }
         }
 
-        double resistance_multiplier = StatCalculation.getResistanceMultiplier(entity.getUniqueId(), getConfig().getString("damage-element"));
-
         Utils.generateParticles(Particle.valueOf(getConfig().getString("resonance-particle.particle")), getConfig().getDouble("resonance-particle.radius"), getConfig().getInt("resonance-particle.points"), getConfig().getDouble("resonance-particle.speed"), entity.getLocation(), getConfig().getDouble("resonance-particle.x-rotation"), getConfig().getDouble("resonance-particle.y-rotation"));
-
-        String formula = getConfig().getString("damage-formula");
-        assert formula != null;
-        Expression expression = new ExpressionBuilder(formula)
-                .variables("attacker_level", "elemental_mastery", "resistance_multiplier", "resonance_bonus", "defense")
-                .build()
-                .setVariable("attacker_level", level)
-                .setVariable("elemental_mastery", stats.getStat("AST_ELEMENTAL_MASTERY"))
-                .setVariable("resistance_multiplier", resistance_multiplier)
-                .setVariable("resonance_bonus", resonance_bonus)
-                .setVariable("defense", defense);
-
-        double final_damage = expression.evaluate();
         //damage(final_damage, damager, entity, this.getTrigger(), false, false, damage_cause);
 
         double resonance_radius = getConfig().getDouble("resonance-radius");
@@ -82,6 +67,21 @@ public class Resonance extends SingleReaction {
 
         int i = 0;
         for (LivingEntity living_entity : entities) {
+
+            double resistance_multiplier = StatCalculation.getResistanceMultiplier(living_entity.getUniqueId(), getConfig().getString("damage-element"));
+
+            String formula = getConfig().getString("damage-formula");
+            assert formula != null;
+            Expression expression = new ExpressionBuilder(formula)
+                    .variables("attacker_level", "elemental_mastery", "resistance_multiplier", "resonance_bonus", "defense")
+                    .build()
+                    .setVariable("attacker_level", level)
+                    .setVariable("elemental_mastery", stats.getStat("AST_ELEMENTAL_MASTERY"))
+                    .setVariable("resistance_multiplier", resistance_multiplier)
+                    .setVariable("resonance_bonus", resonance_bonus)
+                    .setVariable("defense", defense);
+
+            double final_damage = expression.evaluate();
 
             if (i >= getConfig().getInt("resonance-limit")) break;
 

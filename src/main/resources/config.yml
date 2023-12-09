@@ -2,6 +2,7 @@ General:
   default-element: PHYSICAL
   disable-vanilla-damage: true
   aoe-damage-filter: true
+  default-damage-calculation: scale-from-attack
 
   decay-rate:
     A: 200
@@ -85,7 +86,7 @@ Elemental-Reaction:
     trigger-element: ELECTRO
     gauge-unit-tax: 1.25
     damage-element: PYRO
-    damage-formula: "2 * (16.12 * (attacker_level + 16) - 257.23) * (1 + (16 * (elemental_mastery / (elemental_mastery + 2000)) ) + overloaded_bonus/100) * resistance_multiplier"
+    damage-formula: "2 * (16.12 * (attacker_level + 16) - 257.23) * (1 + (16 * (elemental_mastery / (elemental_mastery + 2000)))) * (1 + overloaded_bonus/100) * resistance_multiplier"
     aoe-radius: 1.5
     knockback-multiplier: 1.5
   VAPORIZE:
@@ -94,21 +95,21 @@ Elemental-Reaction:
     aura-element: HYDRO
     trigger-element: PYRO
     gauge-unit-tax: 0.625
-    damage-formula: "raw_damage * 1.75 * (1 + ((2.78 * elemental_mastery) / (elemental_mastery + 1200)) + vaporize_bonus/100)"
+    damage-formula: "raw_damage * 1.75 * (1 + ((2.78 * elemental_mastery) / (elemental_mastery + 1200))) * (1 + vaporize_bonus/100)"
   REVERSE_VAPORIZE:
     enable: true
     display: "#f4b65dVaporize"
     aura-element: PYRO
     trigger-element: HYDRO
     gauge-unit-tax: 2.5
-    damage-formula: "raw_damage * 3 * (1 + ((2.78 * elemental_mastery) / (elemental_mastery + 1200)) + vaporize_bonus/100)"
+    damage-formula: "raw_damage * 3 * (1 + ((2.78 * elemental_mastery) / (elemental_mastery + 1200))) * (1 + vaporize_bonus/100)"
   MELT:
     enable: true
     display: "#f4b65dMelt"
     aura-element: PYRO
     trigger-element: CRYO
     gauge-unit-tax: 0.625
-    damage-formula: "raw_damage * 1.75 * (1 + ((2.78 * elemental_mastery) / (elemental_mastery + 1200)) + melt_bonus/100)"
+    damage-formula: "raw_damage * 1.75 * (1 + ((2.78 * elemental_mastery) / (elemental_mastery + 1200))) * (1 + melt_bonus/100)"
   REVERSE_MELT:
     enable: true
     display: "#f4b65dMelt"
@@ -116,7 +117,7 @@ Elemental-Reaction:
     special-aura: FROZEN
     trigger-element: PYRO
     gauge-unit-tax: 2.5
-    damage-formula: "raw_damage * 3 * (1 + ((2.78 * elemental_mastery) / (elemental_mastery + 1200)) + melt_bonus/100)"
+    damage-formula: "raw_damage * 3 * (1 + ((2.78 * elemental_mastery) / (elemental_mastery + 1200))) * (1 + melt_bonus/100)"
   SUPER_CONDUCT:
     enable: true
     display: "#bab3feSuperconduct"
@@ -129,7 +130,7 @@ Elemental-Reaction:
     resistance-reduction-element: PHYSICAL
     resistance-reduction: 40
     resistance-reduction-duration: 240
-    damage-formula: "0.5 * (16.12 * (attacker_level + 16) - 257.23) * (1 + ((16 * elemental_mastery) / (elemental_mastery + 2000)) + super_conduct_bonus/100) * resistance_multiplier"
+    damage-formula: "0.5 * (16.12 * (attacker_level + 16) - 257.23) * (1 + ((16 * elemental_mastery) / (elemental_mastery + 2000))) * (1 + super_conduct_bonus/100) * resistance_multiplier"
   ELECTRO_CHARGED:
     enable: true
     display: "#f19bfbElectro-Charged"
@@ -141,7 +142,7 @@ Elemental-Reaction:
     check-radius: 3
     bounce-required-aura: HYDRO
     damage-element: ELECTRO
-    damage-formula: "1.2 * (16.12 * (attacker_level + 16) - 257.23) * (1 + ((16 * elemental_mastery) / (elemental_mastery + 2000)) + electro_charged_bonus/100) * resistance_multiplier"
+    damage-formula: "1.2 * (16.12 * (attacker_level + 16) - 257.23) * (1 + ((16 * elemental_mastery) / (elemental_mastery + 2000))) * (1 + electro_charged_bonus/100) * resistance_multiplier"
   FROZEN:
     enable: true
     display: ""
@@ -161,7 +162,7 @@ Elemental-Reaction:
     gauge-unit-tax: 0.1
     damage-element: PYRO
     damage-gauge-unit: 1A
-    damage-formula: "0.3 * (16.12 * (attacker_level + 16) - 257.23) * (1 + ((16 * elemental_mastery) / (elemental_mastery + 2000)) + burning_bonus/100) * resistance_multiplier"
+    damage-formula: "0.3 * (16.12 * (attacker_level + 16) - 257.23) * (1 + ((16 * elemental_mastery) / (elemental_mastery + 2000))) * (1 + burning_bonus/100) * resistance_multiplier"
   SWIRL:
     enable: true
     display: "#69facdSwirl"
@@ -179,7 +180,7 @@ Elemental-Reaction:
     aura-overriding:
       FROZEN: CRYO
     swirl-radius: 3
-    damage-formula: "0.7 * (16.12 * (attacker_level + 16) - 257.23) * (1 + ((16 * elemental_mastery) / (elemental_mastery + 2000)) + swirl_bonus/100) * resistance_multiplier"
+    damage-formula: "0.7 * (16.12 * (attacker_level + 16) - 257.23) * (1 + ((16 * elemental_mastery) / (elemental_mastery + 2000))) * (1 + swirl_bonus/100) * resistance_multiplier"
   BLOOM:
     enable: true
     display: "#29bf3eBloom"
@@ -190,7 +191,7 @@ Elemental-Reaction:
     damage-element: DENDRO
     dendro-core-spawn-radius: 2
     dendro-core-tick-explode: 100
-    dendro-core-explode-damage: "2.0 * (16.12 * (attacker_level + 16) - 257.23) * (1 + ((16 * elemental_mastery) / (elemental_mastery + 2000)) + bloom_bonus/100) * resistance_multiplier"
+    dendro-core-explode-damage: "2.0 * (16.12 * (attacker_level + 16) - 257.23) * (1 + ((16 * elemental_mastery) / (elemental_mastery + 2000))) * (1 + bloom_bonus/100) * resistance_multiplier"
     dendro-core-explode-radius: 3
     maximum-dendro-core-per-chunk: 5
     dendro-core-trigger-radius: 4
@@ -221,7 +222,7 @@ Elemental-Reaction:
         explode-particle:
           - FLASH:0:0
         damage-element: DENDRO
-        damage-formula: "4.0 * (16.12 * (attacker_level + 16) - 257.23) * (1 + ((16 * elemental_mastery) / (elemental_mastery + 2000)) + hyperbloom_bonus/100) * resistance_multiplier"
+        damage-formula: "4.0 * (16.12 * (attacker_level + 16) - 257.23) * (1 + ((16 * elemental_mastery) / (elemental_mastery + 2000))) * (1 + hyperbloom_bonus/100) * resistance_multiplier"
       BURGEON:
         enable: true
         display: "#ff9902Burgeon"
@@ -233,7 +234,7 @@ Elemental-Reaction:
           - FLASH:0:0
           - FIREWORKS_SPARK:0.5:100
         damage-element: DENDRO
-        damage-formula: "3.5 * (16.12 * (attacker_level + 16) - 257.23) * (1 + ((16 * elemental_mastery) / (elemental_mastery + 2000)) + burgeon_bonus/100) * resistance_multiplier"
+        damage-formula: "3.5 * (16.12 * (attacker_level + 16) - 257.23) * (1 + ((16 * elemental_mastery) / (elemental_mastery + 2000))) * (1 + burgeon_bonus/100) * resistance_multiplier"
   QUICKEN:
     enable: true
     display: ""
@@ -248,14 +249,14 @@ Elemental-Reaction:
     aura-element: QUICKEN
     trigger-element: DENDRO
     gauge-unit-tax: 0
-    damage-formula: "raw_damage + (1.25 * (16.12 * (attacker_level + 16) - 257.23) * (1 + (5 * elemental_mastery / (1200 + elemental_mastery)) + spread_bonus/100))"
+    damage-formula: "raw_damage + (1.25 * (16.12 * (attacker_level + 16) - 257.23) * (1 + (5 * elemental_mastery / (1200 + elemental_mastery))) * (1 + spread_bonus/100))"
   AGGRAVATE:
     enable: true
     display: "#d983ffAggravate"
     aura-element: QUICKEN
     trigger-element: ELECTRO
     gauge-unit-tax: 0
-    damage-formula: "raw_damage + (1.15 * (16.12 * (attacker_level + 16) - 257.23) * (1 + (5 * elemental_mastery / (1200 + elemental_mastery)) + aggravate_bonus/100))"
+    damage-formula: "raw_damage + (1.15 * (16.12 * (attacker_level + 16) - 257.23) * (1 + (5 * elemental_mastery / (1200 + elemental_mastery))) * (1 + aggravate_bonus/100))"
   RESONANCE:
     enable: true
     display: "#fdd171Resonance"
@@ -273,13 +274,11 @@ Elemental-Reaction:
     stop-on-resonate-other: false
     resonance-limit: 4
     resonance-cooldown: 20
-    damage-formula: "0.2 * (16.12 * (attacker_level + 16) - 257.23) * (1 + ((6 * elemental_mastery) / (elemental_mastery + 2000)) + (((8 / 1.44) * defense) / (defense + 1500)) + resonance_bonus) * resistance_multiplier"
+    damage-formula: "0.2 * (16.12 * (attacker_level + 16) - 257.23) * (1 + ((6 * elemental_mastery) / (elemental_mastery + 2000)) + (((8 / 1.44) * defense) / (defense + 1500))) * (1 + resonance_bonus/100) * resistance_multiplier"
 
 Damage-Calculation:
 
   final-damage: "total_damage * defense_multiplier * resistance_multiplier * level_multiplier"
-
-  total-damage: "((damage * (1+(attack_buff_percent/100))) + attack_buff) * (1 + ((elemental_damage_bonus + all_elemental_damage_bonus) / 100))"
   defense-multiplier: "1 - (((1 - (attacker_ignore_defense / 100)) * victim_defense) / (victim_defense + (5 * attacker_level)+500))"
   resistance-multiplier:
     resistance<0: "1 - (elemental_resistance/2/100)"
@@ -288,9 +287,13 @@ Damage-Calculation:
   level-multiplier:
     player: "2 - (2/(1+1.075^(attacker_level - victim_level)))"
     mob: "3 - (3/(1+1.025^(attacker_level - victim_level)))"
-
-  #total-resistance: "pure_resistance - (resistance_reduction/100 * ((pure_resistance^2)^0.5))"
   total-resistance: "pure_resistance - resistance_reduction"
+
+  damage-calculation-formula:
+    scale-from-attack: "((damage * (1+(attack_buff_percent/100))) + attack_buff) * (1 + talent_percent/100) * (1 + ((elemental_damage_bonus + all_elemental_damage_bonus) / 100))"
+    scale-from-hp: "damage * (1 + talent_percent/100) * (1 + ((elemental_damage_bonus + all_elemental_damage_bonus) / 100))"
+    scale-from-defense: "((damage * (1+(defense_buff_percent/100))) + defense_buff) * (1 + talent_percent/100) * (1 + ((elemental_damage_bonus + all_elemental_damage_bonus) / 100))"
+    scale-from-elemental-mastery: "damage * (1 + talent_percent/100) * (1 + ((elemental_damage_bonus + all_elemental_damage_bonus) / 100))"
 
 # don't forget to disable damage-indicator in MythicLib config.yml if you enable this
 Indicators:
@@ -358,17 +361,6 @@ Stats:
         Material: NETHERITE_SWORD
         Lore: [ '&7Increase critical damage' ]
 
-    AST_ELEMENTAL_RESISTANCE:
-      Name: Elemental Resistance
-      Icon:
-        Name: "%element% Resistance (%)"
-        Lore: [ '&7Resistance to %element% damage' ]
-    AST_ELEMENTAL_DAMAGE_BONUS:
-      Name: Elemental Damage Bonus
-      Icon:
-        Name: "%element% Damage Bonus (%)"
-        Lore: [ '&7Increase %element% damage' ]
-
     AST_ALL_ELEMENTAL_RESISTANCE:
       Name: Elemental Resistance
       Icon:
@@ -401,13 +393,25 @@ Stats:
       Icon:
         Name: Attack Damage Buff
         Material: NETHERITE_AXE
-        Lore: [ '&7Reduce all defense' ]
+        Lore: [ '&7Increase attack damage' ]
     AST_ATTACK_DAMAGE_BUFF_PERCENT:
       Name: Attack Damage Buff (%)
       Icon:
         Name: Attack Damage Buff (%)
         Material: NETHERITE_AXE
-        Lore: [ '&7Reduce all defense' ]
+        Lore: [ '&7Increase attack damage (%)' ]
+    AST_DEFENSE_BUFF:
+      Name: Defense Buff
+      Icon:
+        Name: Defense Buff
+        Material: SHIELD
+        Lore: [ '&7Increase defense' ]
+    AST_DEFENSE_BUFF_PERCENT:
+      Name: Defense Buff (%)
+      Icon:
+        Name: Defense Buff (%)
+        Material: SHIELD
+        Lore: [ '&7Increase defense (%)' ]
 
     AST_VAPORIZE_BONUS:
       Name: Vaporize Bonus

@@ -1,4 +1,4 @@
-package com.dev.mythiccore.mechanics.apply;
+package com.dev.mythiccore.mythic_mechanics.apply;
 
 import com.dev.mythiccore.MythicCore;
 import com.dev.mythiccore.buff.buffs.DefenseReduction;

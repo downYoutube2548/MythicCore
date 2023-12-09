@@ -23,12 +23,12 @@ import java.util.UUID;
 
 public class StatCalculation {
 
-    public static double getFinalDamage(UUID victim, DamagePacket damage_packet) {
+    public static double getFinalDamage(UUID victim, String damage_formula, DamagePacket damage_packet) {
         String formula = ConfigLoader.getDamageCalculation("final-damage");
         Expression expression = new ExpressionBuilder(formula)
                 .variables("total_damage", "defense_multiplier", "resistance_multiplier", "level_multiplier")
                 .build()
-                .setVariable("total_damage", getTotalDamage(damage_packet.getValue(), 0, 0, 0, 0))
+                .setVariable("total_damage", getTotalDamage(damage_formula, damage_packet.getValue(), 0, 0, 0, 0, 0, 0, 0))
                 .setVariable("defense_multiplier", getDefenseMultiplier(victim))
                 .setVariable("resistance_multiplier", damage_packet.getElement() != null ? getResistanceMultiplier(victim, damage_packet.getElement().getId()) : 1)
                 .setVariable("level_multiplier", getLevelDifferentMultiplier(victim));
@@ -36,12 +36,12 @@ public class StatCalculation {
         return expression.evaluate();
     }
 
-    public static double getFinalDamage(StatProvider attacker, UUID victim, DamagePacket damage_packet, boolean crit) {
+    public static double getFinalDamage(StatProvider attacker, UUID victim, String damage_formula, DamagePacket damage_packet, boolean crit) {
         String formula = ConfigLoader.getDamageCalculation("final-damage");
         Expression expression = new ExpressionBuilder(formula)
                 .variables("total_damage", "defense_multiplier", "resistance_multiplier", "level_multiplier")
                 .build()
-                .setVariable("total_damage", getTotalDamage(attacker, damage_packet, crit))
+                .setVariable("total_damage", getTotalDamage(attacker, damage_formula, damage_packet, crit))
                 .setVariable("defense_multiplier", getDefenseMultiplier(attacker, victim))
                 .setVariable("resistance_multiplier", damage_packet.getElement() != null ? getResistanceMultiplier(victim, damage_packet.getElement().getId()) : 1)
                 .setVariable("level_multiplier", getLevelDifferentMultiplier(attacker, victim));
@@ -49,12 +49,12 @@ public class StatCalculation {
         return expression.evaluate();
     }
 
-    public static double getFinalDamage(UUID attacker, UUID victim, DamagePacket damage_packet, boolean crit) {
+    public static double getFinalDamage(UUID attacker, UUID victim, String damage_formula, DamagePacket damage_packet, boolean crit) {
         String formula = ConfigLoader.getDamageCalculation("final-damage");
         Expression expression = new ExpressionBuilder(formula)
                 .variables("total_damage", "defense_multiplier", "resistance_multiplier", "level_multiplier")
                 .build()
-                .setVariable("total_damage", getTotalDamage(attacker, damage_packet, crit))
+                .setVariable("total_damage", getTotalDamage(attacker, damage_formula, damage_packet, crit))
                 .setVariable("defense_multiplier", getDefenseMultiplier(attacker, victim))
                 .setVariable("resistance_multiplier", damage_packet.getElement() != null ? getResistanceMultiplier(victim, damage_packet.getElement().getId()) : 1)
                 .setVariable("level_multiplier", getLevelDifferentMultiplier(attacker, victim));
@@ -62,10 +62,13 @@ public class StatCalculation {
         return expression.evaluate();
     }
 
-    public static double getTotalDamage(StatProvider attacker, DamagePacket damage_packet, boolean crit) {
+    public static double getTotalDamage(StatProvider attacker, String damage_formula, DamagePacket damage_packet, boolean crit) {
         double damage_amount = damage_packet.getValue();
         double attack_buff_percent = 0;
         double attack_buff = 0;
+        double defense_buff = 0;
+        double defense_buff_percent = 0;
+        double elemental_mastery = 0;
         double elemental_damage_bonus = 0;
         double all_elemental_damage_bonus = 0;
 
@@ -74,13 +77,16 @@ public class StatCalculation {
             damage_amount = crit ? damage_packet.getValue() * (1 + (playerStats.getStat("AST_CRITICAL_DAMAGE")/100)) : damage_packet.getValue();
             attack_buff = playerStats.getStat("AST_ATTACK_DAMAGE_BUFF");
             attack_buff_percent = playerStats.getStat("AST_ATTACK_DAMAGE_BUFF_PERCENT");
-            elemental_damage_bonus = (damage_packet.getElement() == null) ? 0 : playerStats.getStat("AST_"+damage_packet.getElement()+"_DAMAGE_BONUS");
+            defense_buff = playerStats.getStat("AST_DEFENSE_BUFF");
+            defense_buff_percent = playerStats.getStat("AST_DEFENSE_BUFF_PERCENT");
+            elemental_mastery = playerStats.getStat("AST_ELEMENTAL_MASTERY");
+            elemental_damage_bonus = (damage_packet.getElement() == null) ? 0 : playerStats.getStat("AST_"+damage_packet.getElement().getId()+"_DAMAGE_BONUS");
             all_elemental_damage_bonus = playerStats.getStat("AST_ALL_ELEMENTAL_DAMAGE_BONUS");
         }
-        return getTotalDamage(damage_amount, attack_buff_percent, attack_buff, elemental_damage_bonus, all_elemental_damage_bonus);
+        return getTotalDamage(damage_formula, damage_amount, attack_buff_percent, attack_buff, defense_buff, defense_buff_percent, elemental_mastery, elemental_damage_bonus, all_elemental_damage_bonus);
     }
 
-    public static double getTotalDamage(UUID uuid, DamagePacket damage_packet, boolean crit) {
+    public static double getTotalDamage(UUID uuid, String damage_formula, DamagePacket damage_packet, boolean crit) {
         Entity entity = Bukkit.getEntity(uuid);
         if (entity == null) return 0;
         if (!entity.isValid()) return 0;
@@ -88,6 +94,9 @@ public class StatCalculation {
         double damage_amount = damage_packet.getValue();
         double attack_buff_percent = 0;
         double attack_buff = 0;
+        double defense_buff = 0;
+        double defense_buff_percent = 0;
+        double elemental_mastery = 0;
         double elemental_damage_bonus = 0;
         double all_elemental_damage_bonus = 0;
 
@@ -98,22 +107,28 @@ public class StatCalculation {
             damage_amount = crit ? damage_packet.getValue() * (1 + (playerStats.getStat("AST_CRITICAL_DAMAGE")/100)) : damage_packet.getValue();
             attack_buff = playerStats.getStat("AST_ATTACK_DAMAGE_BUFF");
             attack_buff_percent = playerStats.getStat("AST_ATTACK_DAMAGE_BUFF_PERCENT");
-            elemental_damage_bonus = (damage_packet.getElement() == null) ? 0 : playerStats.getStat("AST_"+damage_packet.getElement()+"_DAMAGE_BONUS");
+            defense_buff = playerStats.getStat("AST_DEFENSE_BUFF");
+            defense_buff_percent = playerStats.getStat("AST_DEFENSE_BUFF_PERCENT");
+            elemental_mastery = playerStats.getStat("AST_ELEMENTAL_MASTERY");
+            elemental_damage_bonus = (damage_packet.getElement() == null) ? 0 : playerStats.getStat("AST_"+damage_packet.getElement().getId()+"_DAMAGE_BONUS");
             all_elemental_damage_bonus = playerStats.getStat("AST_ALL_ELEMENTAL_DAMAGE_BONUS");
         }
-        return getTotalDamage(damage_amount, attack_buff_percent, attack_buff, elemental_damage_bonus, all_elemental_damage_bonus);
+        return getTotalDamage(damage_formula, damage_amount, attack_buff_percent, attack_buff, defense_buff, defense_buff_percent, elemental_mastery, elemental_damage_bonus, all_elemental_damage_bonus);
     }
 
-    public static double getTotalDamage(double damage_amount, double attack_buff_percent, double attack_buff, double elemental_damage_bonus, double all_elemental_damage_bonus) {
+    public static double getTotalDamage(String damage_formula, double damage_amount, double attack_buff_percent, double attack_buff, double defense_buff, double defense_buff_percent, double elemental_mastery, double elemental_damage_bonus, double all_elemental_damage_bonus) {
 
 
-        String formula = ConfigLoader.getDamageCalculation("total-damage");
+        String formula = ConfigLoader.getDamageCalculation("damage-calculation-formula."+damage_formula);
         Expression expression = new ExpressionBuilder(formula)
-                .variables("damage", "attack_buff_percent", "attack_buff", "elemental_damage_bonus", "all_elemental_damage_bonus")
+                .variables("damage", "attack_buff_percent", "attack_buff", "defense_buff", "defense_buff_percent", "elemental_mastery", "elemental_damage_bonus", "all_elemental_damage_bonus")
                 .build()
                 .setVariable("damage", damage_amount)
                 .setVariable("attack_buff_percent", attack_buff_percent)
                 .setVariable("attack_buff", attack_buff)
+                .setVariable("defense_buff", defense_buff)
+                .setVariable("defense_buff_percent", defense_buff_percent)
+                .setVariable("elemental_mastery", elemental_mastery)
                 .setVariable("elemental_damage_bonus", elemental_damage_bonus)
                 .setVariable("all_elemental_damage_bonus", all_elemental_damage_bonus);
 

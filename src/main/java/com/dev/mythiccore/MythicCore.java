@@ -20,8 +20,10 @@ import com.dev.mythiccore.reaction.reactions.bloom.DendroCore;
 import com.dev.mythiccore.reaction.reactions.bloom.DendroCoreManager;
 import com.dev.mythiccore.reaction.reactions.bloom.DendroCoreTrigger;
 import com.dev.mythiccore.reaction.reactions.frozen.FreezeEffect;
+import com.dev.mythiccore.stats.DamageFormulaStat;
 import com.dev.mythiccore.stats.GaugeUnitStat;
 import com.dev.mythiccore.stats.InternalCooldownStat;
+import com.dev.mythiccore.stats.elemental_stat.ASTElements;
 import com.dev.mythiccore.utils.ConfigLoader;
 import com.dev.mythiccore.visuals.AuraVisualizer;
 import com.dev.mythiccore.visuals.DamageIndicatorEvent;
@@ -52,6 +54,7 @@ public final class MythicCore extends JavaPlugin {
     //  7. More...
 
 
+    public static ASTElements elementStat;
     private static MythicCore instance;
     private static Aura aura;
     private static Buff buff;
@@ -67,6 +70,8 @@ public final class MythicCore extends JavaPlugin {
         buff = new Buff();
         cooldown = new InternalCooldown();
         reactionManager = new ReactionManager();
+        elementStat = new ASTElements();
+
 //        loadResource(this, "config.yml");
         getConfig().options().copyDefaults();
         saveDefaultConfig();
@@ -98,8 +103,10 @@ public final class MythicCore extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new DendroCoreTrigger(), this);
         Bukkit.getPluginManager().registerEvents(new ChunkUnload(), this);
 
+        MMOItems.plugin.getStats().register(elementStat);
         MMOItems.plugin.getStats().register(new GaugeUnitStat());
         MMOItems.plugin.getStats().register(new InternalCooldownStat());
+        MMOItems.plugin.getStats().register(new DamageFormulaStat());
 
         ReactionManager.registerDefaultReactions();
 

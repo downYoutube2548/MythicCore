@@ -1,4 +1,4 @@
-package com.dev.mythiccore.library;
+package com.dev.mythiccore.enums;
 
 public enum AttackSource {
 

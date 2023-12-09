@@ -1,6 +1,7 @@
 package com.dev.mythiccore.events.attack_handle.deal_damage;
 
 import com.dev.mythiccore.listener.events.attack.MiscAttackEvent;
+import com.dev.mythiccore.utils.ConfigLoader;
 import com.dev.mythiccore.utils.StatCalculation;
 import io.lumine.mythic.lib.damage.DamagePacket;
 import io.lumine.mythic.lib.damage.DamageType;
@@ -27,7 +28,7 @@ public class MiscAttack implements Listener {
                     continue;
                 }
 
-                packet.setValue(StatCalculation.getFinalDamage(victim.getUniqueId(), packet));
+                packet.setValue(StatCalculation.getFinalDamage(victim.getUniqueId(), ConfigLoader.getDefaultDamageCalculation(), packet));
             }
         } catch (NullPointerException ignored) {}
     }

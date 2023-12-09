@@ -2,6 +2,7 @@ package com.dev.mythiccore.utils;
 
 import com.dev.mythiccore.MythicCore;
 import com.dev.mythiccore.stats.BooleanStatRegister;
+import com.dev.mythiccore.stats.DoubleStatInternal;
 import com.dev.mythiccore.stats.DoubleStatRegister;
 import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.element.Element;
@@ -11,7 +12,10 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 public class ConfigLoader {
 
@@ -92,6 +96,10 @@ public class ConfigLoader {
         return MythicCore.getInstance().getConfig().getString("Special-Aura."+aura_id+".color");
     }
 
+    public static String getDefaultDamageCalculation() {
+        return MythicCore.getInstance().getConfig().getString("General.default-damage-calculation");
+    }
+
     public static String getDamageCalculation(String section) {
         return MythicCore.getInstance().getConfig().getString("Damage-Calculation."+section);
     }
@@ -135,43 +143,22 @@ public class ConfigLoader {
         if (stats != null) {
 
             for (Element element : MythicLib.plugin.getElements().getAll()) {
+                DoubleStatInternal doubleStat1 = new DoubleStatInternal("AST_"+element.getId()+"_PERCENT", Material.STONE, element.getName()+" Percent", new String[]{});
+                DoubleStatInternal doubleStat2 = new DoubleStatInternal("AST_"+element.getId()+"_DAMAGE_BONUS", Material.STONE, element.getName()+" Damage Bonus", new String[]{});
+                DoubleStatInternal doubleStat3 = new DoubleStatInternal("AST_"+element.getId()+"_RESISTANCE", Material.STONE, element.getName()+" Resistance", new String[]{});
+                MMOItems.plugin.getStats().register(doubleStat1);
+                MMOItems.plugin.getStats().register(doubleStat2);
+                MMOItems.plugin.getStats().register(doubleStat3);
 
-                for (String stat : stats.getKeys(false)) {
-                    ConfigurationSection section = stats.getConfigurationSection(stat);
-                    if (section != null) {
-                        switch (section.getName()) {
-                            case "AST_ELEMENTAL_RESISTANCE", "AST_ELEMENTAL_DAMAGE_BONUS" -> {
-
-
-                                List<String> lore = section.getStringList("Icon.Lore");
-                                List<String> replacedLore = new ArrayList<>();
-
-                                for (String s : lore) {
-                                    replacedLore.add(s.replace("%element%", element.getName()));
-                                }
-
-                                DoubleStatRegister doubleStat = new DoubleStatRegister(section.getName().replace("ELEMENTAL", element.getId()), element.getIcon(), section.getString("Icon.Name", "").replace("%element%", element.getName()), replacedLore.toArray(new String[0]));
-                                MMOItems.plugin.getStats().register(doubleStat);
-                                doubleStats.put(doubleStat.id, doubleStat);
-
-                            }
-                        }
-                    }
-                }
             }
 
             for (String stat : stats.getKeys(false)) {
                 ConfigurationSection section = stats.getConfigurationSection(stat);
                 if (section != null) {
-                    switch (section.getName()) {
-                        case "AST_ELEMENTAL_RESISTANCE", "AST_ELEMENTAL_DAMAGE_BONUS" -> {
-                        }
-                        default -> {
-                            DoubleStatRegister doubleStat = new DoubleStatRegister(section.getName(), Material.getMaterial(section.getString("Icon.Material", "STONE")), section.getString("Icon.Name"), section.getStringList("Icon.Lore").toArray(new String[0]));
-                            MMOItems.plugin.getStats().register(doubleStat);
-                            doubleStats.put(doubleStat.id, doubleStat);
-                        }
-                    }
+                    DoubleStatRegister doubleStat = new DoubleStatRegister(section.getName(), Material.getMaterial(section.getString("Icon.Material", "STONE")), section.getString("Icon.Name"), section.getStringList("Icon.Lore").toArray(new String[0]));
+                    MMOItems.plugin.getStats().register(doubleStat);
+                    doubleStats.put(doubleStat.id, doubleStat);
+
                 }
             }
         }

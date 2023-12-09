@@ -8,6 +8,7 @@ import com.dev.mythiccore.utils.Utils;
 import de.tr7zw.nbtapi.NBTItem;
 import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.api.player.EquipmentSlot;
+import io.lumine.mythic.lib.api.stat.StatInstance;
 import io.lumine.mythic.lib.damage.DamagePacket;
 import io.lumine.mythic.lib.damage.DamageType;
 import io.lumine.mythic.lib.element.Element;
@@ -15,8 +16,6 @@ import io.lumine.mythic.lib.player.PlayerMetadata;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Particle;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -24,7 +23,6 @@ import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -106,7 +104,12 @@ public class CoreCommand implements CommandExecutor, TabExecutor {
                     }
                 } else if (args[0].equals("test")) {
 
-                    generateRotatedCircle(player.getLocation(), 5, 360, Double.parseDouble(args[1]), Double.parseDouble(args[2]));
+                    PlayerData playerData = PlayerData.get(player);
+                    for (StatInstance statInstance : playerData.getStats().getMap().getInstances()) {
+                        if (statInstance.getTotal() > 0) {
+                            player.sendMessage(ChatColor.LIGHT_PURPLE+statInstance.getStat()+": "+ChatColor.RED+statInstance.getBase()+" "+statInstance.getTotal());
+                        }
+                    }
 
                     /*
                     double radius = 5;
@@ -195,33 +198,6 @@ public class CoreCommand implements CommandExecutor, TabExecutor {
             }
         }
         return matches;
-    }
-
-    public static void generateRotatedCircle(Location center, int radius, int numPoints, double xRotationAngle, double yRotationAngle) {
-        double xRotationRadians = Math.toRadians(xRotationAngle);
-        double yRotationRadians = Math.toRadians(yRotationAngle);
-
-        for (int i = 0; i < numPoints; i++) {
-            double x = radius * Math.cos(i);
-            double y = radius * Math.sin(i);
-            double z = 0;
-
-            // Apply X-axis rotation
-            Vector rotatedX = new Vector(x, y, z).rotateAroundX(xRotationRadians);
-
-            // Apply Y-axis rotation
-            Vector rotatedXY = rotatedX.clone().rotateAroundY(yRotationRadians);
-
-            Objects.requireNonNull(center.getWorld()).spawnParticle(
-                    Particle.END_ROD, // particle
-                    center, // location
-                    0, // count
-                    rotatedXY.getX(), rotatedXY.getY(), rotatedXY.getZ(),
-                    0.1, // speed
-                    null, // Object: data
-                    true // force
-            );
-        }
     }
 
 }

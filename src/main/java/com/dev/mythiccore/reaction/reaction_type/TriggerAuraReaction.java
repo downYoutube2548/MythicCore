@@ -33,7 +33,6 @@ public abstract class TriggerAuraReaction extends ElementalReaction {
     public void t(DamagePacket damage, double gauge_unit, String decay_rate, LivingEntity entity, @Nullable Entity damager, StatProvider stats, EntityDamageEvent.DamageCause damage_cause) {
 
         if (damage.getElement() == null) return;
-        getAuraData(entity.getUniqueId()).removeAura(getTrigger());
 
         boolean reduceGauge = trigger(damage, gauge_unit, decay_rate, entity, damager, stats, damage_cause);
 

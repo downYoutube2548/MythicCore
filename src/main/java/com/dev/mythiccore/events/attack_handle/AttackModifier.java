@@ -59,8 +59,6 @@ public class AttackModifier implements Listener {
                         event.getDamage().getPackets().get(0).setValue(0);
                         return;
                     }
-
-
                 }
 
             // if attacker is mob -> check if mob is disable to deal regular damage -> if yes then set regular damage to 0
@@ -78,7 +76,6 @@ public class AttackModifier implements Listener {
 
                     if (attacker != null) {
                         ActiveMob attackerMythicMob = MythicBukkit.inst().getMobManager().getActiveMob(attacker.getUniqueId()).orElse(null);
-                        ActiveMob a = MythicBukkit.inst().getMobManager().getMythicMobInstance(attacker);
 
                         if (attackerMythicMob != null && attackerMythicMob.getVariables().has("AST_ELEMENTAL_DAMAGE_AMOUNT") && attackerMythicMob.getVariables().has("AST_ELEMENTAL_DAMAGE_ELEMENT") && attackerMythicMob.getVariables().has("AST_ELEMENTAL_DAMAGE_GAUGE_UNIT") && attackerMythicMob.getVariables().has("AST_ELEMENTAL_DAMAGE_COOLDOWN_SOURCE")) {
 
@@ -87,28 +84,11 @@ public class AttackModifier implements Listener {
                             Element element = Element.valueOf(variables.getString("AST_ELEMENTAL_DAMAGE_ELEMENT"));
                             if (element == null) return;
 
-                            /*
-                            String cooldown_source = variables.getString("AST_ELEMENTAL_DAMAGE_COOLDOWN_SOURCE");
-                            if (MythicCore.getCooldownManager().getCooldown(attacker.getUniqueId()).getCooldown(event.getEntity(), cooldown_source) > 0) return;
-                            MythicCore.getCooldownManager().getCooldown(attacker.getUniqueId()).setCooldown(event.getEntity(), cooldown_source, ConfigLoader.getInternalCooldown(cooldown_source));
-
-                             */
-
                             event.getDamage().getPackets().get(0).setTypes(new DamageType[]{DamageType.SKILL});
                             event.getDamage().getPackets().get(0).setElement(element);
                             event.getDamage().getPackets().get(0).setValue(damage_amount);
 
-                            /*
-                            double gauge_unit = Double.parseDouble(Utils.splitTextAndNumber(variables.getString("AST_ELEMENTAL_DAMAGE_GAUGE_UNIT"))[0]);
-                            String decay_rate = Utils.splitTextAndNumber(variables.getString("AST_ELEMENTAL_DAMAGE_GAUGE_UNIT"))[1];
-                            MythicCore.getAuraManager().getAura(event.getEntity().getUniqueId()).addAura(element.getId(), gauge_unit, decay_rate);
-                            TriggerReaction.triggerReactions(event.getDamage().getPackets().get(0), gauge_unit, decay_rate, event.getEntity(), attacker, event.toBukkit().getCause());
-
-                             */
-
                             return;
-                        } else {
-
                         }
                     }
 

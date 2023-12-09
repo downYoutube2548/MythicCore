@@ -42,14 +42,12 @@ public class PlayerAttackEvent extends Event implements Cancellable {
         return this.attack.getTarget();
     }
 
-    @Override
     public boolean isCancelled() {
-        return false;
+        return this.event.isCancelled();
     }
 
-    @Override
-    public void setCancelled(boolean b) {
-
+    public void setCancelled(boolean value) {
+        this.event.setCancelled(value);
     }
 
     @NotNull
