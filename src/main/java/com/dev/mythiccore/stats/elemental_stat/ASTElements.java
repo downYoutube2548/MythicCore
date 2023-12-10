@@ -30,7 +30,7 @@ import java.util.Optional;
 
 public class ASTElements extends ItemStat<ASTRandomElementStatData, ASTElementStatData> implements Previewable<ASTRandomElementStatData, ASTElementStatData> {
     public ASTElements() {
-        super("AST_ELEMENT", Material.ENDER_EYE, "Elements (MythicCore)", new String[]{"The elements of your item."}, new String[]{"slashing", "piercing", "blunt", "catalyst", "range", "tool", "armor", "gem_stone"});
+        super("AST_ELEMENT", Material.MAGMA_CREAM, "Elements (MythicCore)", new String[]{"The elements of your item."}, new String[]{"slashing", "piercing", "blunt", "catalyst", "range", "tool", "armor", "gem_stone"});
     }
 
     public ASTRandomElementStatData whenInitialized(Object object) {
