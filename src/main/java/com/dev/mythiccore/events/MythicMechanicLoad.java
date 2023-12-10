@@ -1,6 +1,9 @@
 package com.dev.mythiccore.events;
 
-import com.dev.mythiccore.mythic_mechanics.apply.*;
+import com.dev.mythiccore.mythic_mechanics.apply.ElementalDamage;
+import com.dev.mythiccore.mythic_mechanics.apply.ElementalShield;
+import com.dev.mythiccore.mythic_mechanics.apply.ReduceDefense;
+import com.dev.mythiccore.mythic_mechanics.apply.ReduceResistance;
 import com.dev.mythiccore.mythic_mechanics.modify.SetDefense;
 import com.dev.mythiccore.mythic_mechanics.modify.SetElementalDamage;
 import com.dev.mythiccore.mythic_mechanics.modify.SetResistance;
