@@ -27,7 +27,7 @@ public class ConfigLoader {
     private static final HashMap<String, DoubleStatRegister> doubleStats = new HashMap<>();
     private static final HashMap<String, BooleanStatRegister> booleanStats = new HashMap<>();
 
-    public static void loadConfig(boolean register_stats) {
+    public static void loadConfig() {
         FileConfiguration config = MythicCore.getInstance().getConfig();
 
         defaultElement = config.getString("General.default-element");
@@ -46,17 +46,11 @@ public class ConfigLoader {
             }
             reactionPriority.put(element, priority);
         }
-
-        //This part will load all stats from the config and then register them to MMOItems
-        if (register_stats) {
-            registerDoubleStats(config.getConfigurationSection("Stats.DOUBLE_STAT"));
-            registerBooleanStats(config.getConfigurationSection("Stats.BOOLEAN_STAT"));
-        }
     }
 
     public static void reloadConfig() {
         MythicCore.getInstance().reloadConfig();
-        loadConfig(false);
+        loadConfig();
     }
 
     public static boolean isReactionEnable(String reaction_id) {
@@ -121,7 +115,7 @@ public class ConfigLoader {
     }
     public static Map<String, String> getElementalModifier() { return elementalModifier; }
     public static List<String> getAuraWhitelist() { return auraWhitelist; }
-    private static void registerBooleanStats(ConfigurationSection stats) {
+    public static void registerBooleanStats(ConfigurationSection stats) {
         if (stats != null) {
             for (String stat : stats.getKeys(false)) {
                 ConfigurationSection section = stats.getConfigurationSection(stat);
@@ -138,7 +132,7 @@ public class ConfigLoader {
         return prefix ? Utils.colorize(MythicCore.getInstance().getConfig().getString("message.prefix")+MythicCore.getInstance().getConfig().getString("message."+path)) : Utils.colorize(MythicCore.getInstance().getConfig().getString(path));
     }
 
-    private static void registerDoubleStats(ConfigurationSection stats) {
+    public static void registerDoubleStats(ConfigurationSection stats) {
 
         if (stats != null) {
 

@@ -88,12 +88,12 @@ public abstract class ElementalReaction {
 
             StatMap statMap = playerData.getMMOPlayerData().getStatMap();
             PlayerMetadata playerMetadata = new PlayerMetadata(statMap, EquipmentSlot.MAIN_HAND);
-            AttackMetadata attack = new ASTAttackMetadata(damage, target, playerMetadata, "0", ConfigLoader.getDefaultDamageCalculation(), AttackSource.REACTION);
+            AttackMetadata attack = new ASTAttackMetadata(damage, target, playerMetadata, "0", ConfigLoader.getDefaultDamageCalculation(), 100, AttackSource.REACTION);
 
             Bukkit.getScheduler().runTask(MythicCore.getInstance(), () -> DamageManager.registerAttack(attack, knockback, true, damage_cause));
 
         }  else {
-            AttackMetadata attack = new ASTAttackMetadata(damage, target, caster != null ? new ASTEntityStatProvider((LivingEntity) caster) : null, "0", ConfigLoader.getDefaultDamageCalculation(), AttackSource.REACTION);
+            AttackMetadata attack = new ASTAttackMetadata(damage, target, caster != null ? new ASTEntityStatProvider((LivingEntity) caster) : null, "0", ConfigLoader.getDefaultDamageCalculation(), 100, AttackSource.REACTION);
             Bukkit.getScheduler().runTask(MythicCore.getInstance(), () -> DamageManager.registerAttack(attack, knockback, true, damage_cause));
         }
     }
@@ -105,12 +105,12 @@ public abstract class ElementalReaction {
 
             StatMap statMap = playerData.getMMOPlayerData().getStatMap();
             PlayerMetadata playerMetadata = new PlayerMetadata(statMap, EquipmentSlot.MAIN_HAND);
-            AttackMetadata attack = new ASTAttackMetadata(damage, target, playerMetadata, cooldown_source, internal_cooldown, gauge_unit, decay_rate, ConfigLoader.getDefaultDamageCalculation(), AttackSource.SKILL);
+            AttackMetadata attack = new ASTAttackMetadata(damage, target, playerMetadata, cooldown_source, internal_cooldown, gauge_unit, decay_rate, ConfigLoader.getDefaultDamageCalculation(), 100, AttackSource.SKILL);
 
             Bukkit.getScheduler().runTask(MythicCore.getInstance(), () -> DamageManager.registerAttack(attack, knockback, true, damage_cause));
 
         }  else {
-            AttackMetadata attack = new ASTAttackMetadata(damage, target, caster != null ? new ASTEntityStatProvider((LivingEntity) caster) : null, cooldown_source, internal_cooldown, gauge_unit, decay_rate, ConfigLoader.getDefaultDamageCalculation(), AttackSource.SKILL);
+            AttackMetadata attack = new ASTAttackMetadata(damage, target, caster != null ? new ASTEntityStatProvider((LivingEntity) caster) : null, cooldown_source, internal_cooldown, gauge_unit, decay_rate, ConfigLoader.getDefaultDamageCalculation(), 100, AttackSource.SKILL);
             Bukkit.getScheduler().runTask(MythicCore.getInstance(), ()-> DamageManager.registerAttack(attack, knockback, true, damage_cause));
 
         }

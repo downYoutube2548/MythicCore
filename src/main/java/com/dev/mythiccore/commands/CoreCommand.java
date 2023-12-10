@@ -44,7 +44,7 @@ public class CoreCommand implements CommandExecutor, TabExecutor {
                     MythicCore.getReactionManager().clearReactionMap();
                     MythicCore.getReactionManager().clearDendroCoreReactionMap();
                     MythicCore.getInstance().reloadConfig();
-                    ConfigLoader.loadConfig(false);
+                    ConfigLoader.loadConfig();
                     ReactionManager.registerDefaultReactions();
                     sender.sendMessage(ConfigLoader.getMessage("reload-success", true));
                 }

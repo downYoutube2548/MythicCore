@@ -39,6 +39,7 @@ public class ElementalDamage implements ITargetedEntitySkill {
     private final String cooldown_source;
     private final long internal_cooldown;
     private final String damage_calculation;
+    private final PlaceholderDouble talent_percent;
 
     /**
      * This is constructor for the Skill
@@ -51,6 +52,7 @@ public class ElementalDamage implements ITargetedEntitySkill {
         element = config.getString(new String[] {"element", "e"}, ConfigLoader.getDefaultElement());
         gauge = config.getString(new String[] {"gauge_unit", "gu"}, ConfigLoader.getDefaultGauge());
         damage_calculation = config.getString(new String[] {"dc", "formula", "f"}, ConfigLoader.getDefaultDamageCalculation());
+        talent_percent = config.getPlaceholderDouble(new String[] {"p", "percent"}, 100);
         UUID uuid = UUID.randomUUID();
 
         if (config.getLong(new String[]{"icd", "internal_cooldown"}, -1) < 0) {
@@ -92,7 +94,7 @@ public class ElementalDamage implements ITargetedEntitySkill {
                     DamageMetadata damage = new DamageMetadata(amount.get(skillMetadata), element1, DamageType.SKILL);
                     StatMap statMap = playerData.getMMOPlayerData().getStatMap();
                     PlayerMetadata playerMetadata = new PlayerMetadata(statMap, EquipmentSlot.MAIN_HAND);
-                    AttackMetadata attack = new ASTAttackMetadata(damage, (LivingEntity) bukkittarget, playerMetadata, cooldown_source, internal_cooldown, gauge_unit, decay_rate, damage_calculation, AttackSource.SKILL);
+                    AttackMetadata attack = new ASTAttackMetadata(damage, (LivingEntity) bukkittarget, playerMetadata, cooldown_source, internal_cooldown, gauge_unit, decay_rate, damage_calculation, talent_percent.get(skillMetadata), AttackSource.SKILL);
 
                     Bukkit.getScheduler().runTask(MythicCore.getInstance(), () -> DamageManager.registerAttack(attack, true, false, EntityDamageEvent.DamageCause.ENTITY_ATTACK));
                 }
@@ -101,7 +103,7 @@ public class ElementalDamage implements ITargetedEntitySkill {
                 else {
 
                     DamageMetadata damage = new DamageMetadata(amount.get(skillMetadata), Objects.requireNonNull(Element.valueOf(element), ConfigLoader.getDefaultElement()), DamageType.SKILL);
-                    AttackMetadata attack = new ASTAttackMetadata(damage, (LivingEntity) bukkittarget, new ASTEntityStatProvider((LivingEntity) bukkitcaster), cooldown_source, internal_cooldown, gauge_unit, decay_rate, damage_calculation, AttackSource.SKILL);
+                    AttackMetadata attack = new ASTAttackMetadata(damage, (LivingEntity) bukkittarget, new ASTEntityStatProvider((LivingEntity) bukkitcaster), cooldown_source, internal_cooldown, gauge_unit, decay_rate, damage_calculation, talent_percent.get(skillMetadata), AttackSource.SKILL);
                     Bukkit.getScheduler().runTask(MythicCore.getInstance(), () -> DamageManager.registerAttack(attack, true, false, EntityDamageEvent.DamageCause.ENTITY_ATTACK));
                 }
             });

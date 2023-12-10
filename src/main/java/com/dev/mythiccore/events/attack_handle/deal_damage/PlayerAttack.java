@@ -26,14 +26,23 @@ public class PlayerAttack implements Listener {
     public void onPlayerAttack(PlayerAttackEvent event) {
 
         String damage_formula = ConfigLoader.getDefaultDamageCalculation();
+        double talent_percent = 100;
 
         if (event.getAttack() instanceof ASTAttackMetadata astAttack) {
             if (astAttack.getAttackSource().equals(AttackSource.REACTION)) return;
             damage_formula = astAttack.getDamageCalculation();
+
+            if (astAttack.getAttackSource().equals(AttackSource.SKILL)) {
+                talent_percent = astAttack.getTalentPercent();
+            }
         }
         if (event.getAttack() instanceof ASTProjectileAttackMetadata astAttack) {
             if (astAttack.getAttackSource().equals(AttackSource.REACTION)) return;
             damage_formula = astAttack.getDamageCalculation();
+
+            if (astAttack.getAttackSource().equals(AttackSource.SKILL)) {
+                talent_percent = astAttack.getTalentPercent();
+            }
         }
 
         LivingEntity victim = event.getEntity();
@@ -45,15 +54,20 @@ public class PlayerAttack implements Listener {
 
             // working only damage that have element (include physical damage)
             if (packet.getElement() == null) {
-                packet.setValue(0);
+                event.getDamage().getPackets().remove(packet);
                 continue;
+            }
+
+            if ((event.getAttack() instanceof ASTAttackMetadata astAttack && astAttack.getAttackSource().equals(AttackSource.NORMAL)) || (event.getAttack() instanceof ASTProjectileAttackMetadata astAttack2 && astAttack2.getAttackSource().equals(AttackSource.NORMAL))) {
+                talent_percent = event.getAttacker().getStat("AST_"+packet.getElement().getId()+"_PERCENT");
+                if (talent_percent == 0) talent_percent = 100;
             }
 
             PlayerMetadata attackerStats = event.getAttacker();
             double AttackerCRITRate = Math.max(Math.min(attackerStats.getStat("AST_CRITICAL_RATE"), 100), 0);
             boolean isCritical = new Random().nextDouble() < AttackerCRITRate / 100;
             if (isCritical) event.getDamage().registerElementalCriticalStrike(packet.getElement());
-            packet.setValue(StatCalculation.getFinalDamage(event.getAttacker(), victim.getUniqueId(), damage_formula, packet, isCritical));
+            packet.setValue(StatCalculation.getFinalDamage(event.getAttacker(), victim.getUniqueId(), damage_formula, talent_percent, packet, isCritical));
         }
     }
 }

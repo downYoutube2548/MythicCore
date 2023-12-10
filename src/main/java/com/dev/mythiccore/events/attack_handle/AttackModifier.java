@@ -12,6 +12,10 @@ import io.lumine.mythic.lib.damage.DamagePacket;
 import io.lumine.mythic.lib.damage.DamageType;
 import io.lumine.mythic.lib.damage.ProjectileAttackMetadata;
 import io.lumine.mythic.lib.element.Element;
+import me.clip.placeholderapi.PlaceholderAPI;
+import me.clip.placeholderapi.PlaceholderAPIPlugin;
+import net.Indyuce.mmocore.comp.placeholder.PlaceholderParser;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -46,19 +50,37 @@ public class AttackModifier implements Listener {
 
         // if damage doesn't have element
         if (event.getDamage().collectElements().size() == 0) {
-
             // if attacker is player -> check if player's weapon is disabled regular damage -> if yes then set regular damage to 0
             if (event instanceof PlayerAttackEvent e) {
                 Player attacker = e.getAttacker().getPlayer();
                 ItemStack item = event.getAttack() instanceof ProjectileAttackMetadata projectile ? (ItemStack) (projectile.getProjectile().getMetadata("ATTACK_WEAPON").get(0).value()) : attacker.getInventory().getItem(e.getAttacker().getActionHand().toBukkit());
                 if (item != null && !item.getType().equals(Material.AIR)) {
                     NBTItem nbt = new NBTItem(item);
+                    String damage_formula = ConfigLoader.getDefaultDamageCalculation();
+                    if (!nbt.getString("MMOITEMS_AST_DAMAGE_FORMULA").equals("")) {
+                        damage_formula = nbt.getString("MMOITEMS_AST_DAMAGE_FORMULA");
+                    }
 
+                    double damage = event.getDamage().getDamage();
+
+                    boolean stop = false;
                     byte disable_regular_damage = nbt.getByte("MMOITEMS_AST_DISABLE_REGULAR_DAMAGE");
                     if (disable_regular_damage == 1) {
-                        event.getDamage().getPackets().get(0).setValue(0);
-                        return;
+                        event.getDamage().getPackets().clear();
+                        stop = true;
                     }
+
+                    for (Element element : Element.values()) {
+                        if (e.getAttacker().getStat("AST_"+element.getId()+"_PERCENT") > 0) {
+                            double base = Double.parseDouble(PlaceholderAPI.setPlaceholders(attacker, ConfigLoader.getDamageCalculation("damage-calculation-formula." + damage_formula + ".base")));
+
+                            double attack_speed_multiplier = damage / e.getAttacker().getStat("ATTACK_DAMAGE");
+
+                            event.getDamage().add(base * attack_speed_multiplier, element, DamageType.PHYSICAL);
+                            stop = true;
+                        }
+                    }
+                    if (stop) return;
                 }
 
             // if attacker is mob -> check if mob is disable to deal regular damage -> if yes then set regular damage to 0
@@ -125,7 +147,7 @@ public class AttackModifier implements Listener {
                             NBTItem nbt = new NBTItem(item);
                             byte disable_regular_damage = nbt.getByte("MMOITEMS_AST_DISABLE_REGULAR_DAMAGE");
                             if (disable_regular_damage == 1) {
-                                packet.setValue(0);
+                                event.getDamage().getPackets().remove(packet);
                                 return;
                             }
                         }

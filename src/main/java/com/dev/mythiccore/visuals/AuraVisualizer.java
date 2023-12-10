@@ -1,6 +1,7 @@
 package com.dev.mythiccore.visuals;
 
 import com.dev.mythiccore.MythicCore;
+import com.dev.mythiccore.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -64,7 +65,7 @@ public class AuraVisualizer {
                         TextDisplay textDisplay = entity.getWorld().spawn(spawnLocation, TextDisplay.class);
                         textDisplay.setPersistent(false);
                         textDisplay.setBillboard(Display.Billboard.CENTER);
-                        textDisplay.setText(MythicCore.getAuraManager().getAura(uuid).getAuraIcon() + "\n" + entity.getName()/* + " | " + MythicCore.getCooldownManager().getCooldown(uuid).getMapCooldown()*/);
+                        textDisplay.setText(Utils.colorize(MythicCore.getInstance().getConfig().getString("General.aura-visualizer").replace("{aura}", MythicCore.getAuraManager().getAura(uuid).getAuraIcon()).replace("{name}", entity.getName()))/* + " | " + MythicCore.getCooldownManager().getCooldown(uuid).getMapCooldown()*/);
                         textDisplay.setTransformation(new Transformation(textDisplay.getTransformation().getTranslation(), textDisplay.getTransformation().getLeftRotation(), new Vector3f(scale), textDisplay.getTransformation().getRightRotation()));
                         textDisplay.setShadowed(false);
                         textDisplay.setSeeThrough(true);
@@ -75,7 +76,7 @@ public class AuraVisualizer {
 
                     } else {
                         TextDisplay textDisplay = mapHologram.get(uuid);
-                        textDisplay.setText(MythicCore.getAuraManager().getAura(uuid).getAuraIcon() + "\n" + entity.getName());
+                        textDisplay.setText(Utils.colorize(MythicCore.getInstance().getConfig().getString("General.aura-visualizer").replace("{aura}", MythicCore.getAuraManager().getAura(uuid).getAuraIcon()).replace("{name}", entity.getName())));
                         textDisplay.teleport(spawnLocation);
                     }
                 }

@@ -75,7 +75,7 @@ public final class MythicCore extends JavaPlugin {
 //        loadResource(this, "config.yml");
         getConfig().options().copyDefaults();
         saveDefaultConfig();
-        ConfigLoader.loadConfig(true);
+        ConfigLoader.loadConfig();
         aura.startTick();
         buff.startTick();
         cooldown.startTick();
@@ -103,10 +103,7 @@ public final class MythicCore extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new DendroCoreTrigger(), this);
         Bukkit.getPluginManager().registerEvents(new ChunkUnload(), this);
 
-        MMOItems.plugin.getStats().register(elementStat);
-        MMOItems.plugin.getStats().register(new GaugeUnitStat());
-        MMOItems.plugin.getStats().register(new InternalCooldownStat());
-        MMOItems.plugin.getStats().register(new DamageFormulaStat());
+        registerMMOItemStat();
 
         ReactionManager.registerDefaultReactions();
 
@@ -142,5 +139,13 @@ public final class MythicCore extends JavaPlugin {
     public static Buff getBuffManager() { return buff; }
     public static InternalCooldown getCooldownManager() { return cooldown; }
     public static ReactionManager getReactionManager() { return reactionManager; }
+    private void registerMMOItemStat() {
+        MMOItems.plugin.getStats().register(elementStat);
+        MMOItems.plugin.getStats().register(new GaugeUnitStat());
+        MMOItems.plugin.getStats().register(new InternalCooldownStat());
+        MMOItems.plugin.getStats().register(new DamageFormulaStat());
+        ConfigLoader.registerBooleanStats(getConfig().getConfigurationSection("Stats.BOOLEAN_STAT"));
+        ConfigLoader.registerDoubleStats(getConfig().getConfigurationSection("Stats.DOUBLE_STAT"));
+    }
 
 }

@@ -12,13 +12,14 @@ A Minecraft Plugin that modifies Minecraft combat mechanics by handle all types 
 Deal elemental damage or physical damage
 
 
-| Attribute         | Aliases  | Data Type    | Description                                  | Default   |
-|-------------------|----------|--------------|----------------------------------------------|-----------|
-| amount            | a        | Double       | จำนวนดาเมจ                                   | 0         | 
-| element           | e        | String       | ประเภทของธาตุ                                | (default) | 
-| gauge_unit        | gu       | String       | เกจของออร่าธาตุที่จะติด (Ex. 1A, 2.2B, 4C)   | (default) |
-| internal_cooldown | icd      | String, Long | คูลดาวน์การติดธาตุและการเกิดปฏิกิริยาธาตุ    | default   | 
-| formula           | dc, f    | String       | สูตรคำนวนดาเมจตาม config.yml ของ MythicCore  | (default) |
+| Attribute         | Aliases | Data Type    | Description                                 | Default   |
+|-------------------|---------|--------------|---------------------------------------------|-----------|
+| amount            | a       | Double       | จำนวนดาเมจ                                  | 0         | 
+| element           | e       | String       | ประเภทของธาตุ                               | (default) | 
+| gauge_unit        | gu      | String       | เกจของออร่าธาตุที่จะติด (Ex. 1A, 2.2B, 4C)  | (default) |
+| internal_cooldown | icd     | String, Long | คูลดาวน์การติดธาตุและการเกิดปฏิกิริยาธาตุ   | default   | 
+| formula           | dc, f   | String       | สูตรคำนวนดาเมจตาม config.yml ของ MythicCore | (default) |
+| percent           | p       | Double       | Talent (%)                                  | 100       |
 
 Examples:
 ```yml
@@ -84,6 +85,7 @@ Set mythic mob damage
 | gauge_unit        | gu      | String       | เกจของออร่าธาตุที่จะติด (Ex. 1A, 2.2B, 4C)  | (default) |
 | internal_cooldown | icd     | String, Long | คูลดาวน์การติดธาตุและการเกิดปฏิกิริยาธาตุ   | default   | 
 | formula           | dc, f   | String       | สูตรคำนวนดาเมจตาม config.yml ของ MythicCore | (default) |
+| percent           | p       | Double       | Talent (%)                                  | 100       |
 
 Examples:
 ```yml

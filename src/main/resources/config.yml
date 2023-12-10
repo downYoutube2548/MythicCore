@@ -3,6 +3,7 @@ General:
   disable-vanilla-damage: true
   aoe-damage-filter: true
   default-damage-calculation: scale-from-attack
+  aura-visualizer: "{aura}\n{name}"
 
   decay-rate:
     A: 200
@@ -290,10 +291,18 @@ Damage-Calculation:
   total-resistance: "pure_resistance - resistance_reduction"
 
   damage-calculation-formula:
-    scale-from-attack: "((damage * (1+(attack_buff_percent/100))) + attack_buff) * (1 + talent_percent/100) * (1 + ((elemental_damage_bonus + all_elemental_damage_bonus) / 100))"
-    scale-from-hp: "damage * (1 + talent_percent/100) * (1 + ((elemental_damage_bonus + all_elemental_damage_bonus) / 100))"
-    scale-from-defense: "((damage * (1+(defense_buff_percent/100))) + defense_buff) * (1 + talent_percent/100) * (1 + ((elemental_damage_bonus + all_elemental_damage_bonus) / 100))"
-    scale-from-elemental-mastery: "damage * (1 + talent_percent/100) * (1 + ((elemental_damage_bonus + all_elemental_damage_bonus) / 100))"
+    scale-from-attack:
+      base: "%mmocore_stat_ATTACK_DAMAGE%"
+      formula: "((damage * (1+(attack_buff_percent/100))) + attack_buff) * (1 + talent_percent/100) * (1 + ((elemental_damage_bonus + all_elemental_damage_bonus) / 100))"
+    scale-from-hp:
+      base: "%mmocore_stat_MAX_HEALTH%"
+      formula: "damage * (1 + talent_percent/100) * (1 + ((elemental_damage_bonus + all_elemental_damage_bonus) / 100))"
+    scale-from-defense:
+      base: "%mmocore_stat_DEFENSE%"
+      formula: "((damage * (1+(defense_buff_percent/100))) + defense_buff) * (1 + talent_percent/100) * (1 + ((elemental_damage_bonus + all_elemental_damage_bonus) / 100))"
+    scale-from-elemental-mastery:
+      base: "%mmocore_stat_AST_ELEMENTAL_MASTERY%"
+      formula: "damage * (1 + talent_percent/100) * (1 + ((elemental_damage_bonus + all_elemental_damage_bonus) / 100))"
 
 # don't forget to disable damage-indicator in MythicLib config.yml if you enable this
 Indicators:

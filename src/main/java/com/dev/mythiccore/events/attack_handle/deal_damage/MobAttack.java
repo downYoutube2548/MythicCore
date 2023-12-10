@@ -23,14 +23,23 @@ public class MobAttack implements Listener {
         try {
 
             String damage_formula = ConfigLoader.getDefaultDamageCalculation();
+            double talent_percent = 100;
 
             if (event.getAttack() instanceof ASTAttackMetadata astAttack) {
                 if (astAttack.getAttackSource().equals(AttackSource.REACTION)) return;
                 damage_formula = astAttack.getDamageCalculation();
+
+                if (astAttack.getAttackSource().equals(AttackSource.SKILL)) {
+                    talent_percent = astAttack.getTalentPercent();
+                }
             }
             if (event.getAttack() instanceof ASTProjectileAttackMetadata astAttack) {
                 if (astAttack.getAttackSource().equals(AttackSource.REACTION)) return;
                 damage_formula = astAttack.getDamageCalculation();
+
+                if (astAttack.getAttackSource().equals(AttackSource.SKILL)) {
+                    talent_percent = astAttack.getTalentPercent();
+                }
             }
 
             LivingEntity victim = event.getEntity();
@@ -39,11 +48,11 @@ public class MobAttack implements Listener {
 
                 // working only damage that have element (include physical damage)
                 if (packet.getElement() == null) {
-                    packet.setValue(0);
+                    event.getDamage().getPackets().remove(packet);
                     continue;
                 }
 
-                packet.setValue(StatCalculation.getFinalDamage(event.getAttack().getAttacker(), victim.getUniqueId(), damage_formula, packet, false));
+                packet.setValue(StatCalculation.getFinalDamage(event.getAttack().getAttacker(), victim.getUniqueId(), damage_formula, talent_percent, packet, false));
             }
         } catch (NullPointerException ignored) {}
     }
