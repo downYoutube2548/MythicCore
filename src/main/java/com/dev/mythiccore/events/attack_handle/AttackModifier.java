@@ -13,6 +13,7 @@ import io.lumine.mythic.lib.damage.DamageType;
 import io.lumine.mythic.lib.damage.ProjectileAttackMetadata;
 import io.lumine.mythic.lib.element.Element;
 import me.clip.placeholderapi.PlaceholderAPI;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -65,14 +66,14 @@ public class AttackModifier implements Listener {
                     if (disable_regular_damage == 1) {
                         event.getDamage().getPackets().clear();
                         stop = true;
+                    } else {
+                        event.getDamage().getPackets().get(0).setElement(defaultElement);
                     }
 
                     for (Element element : Element.values()) {
                         if (e.getAttacker().getStat("AST_"+element.getId()+"_PERCENT") > 0) {
                             double base = Double.parseDouble(PlaceholderAPI.setPlaceholders(attacker, ConfigLoader.getDamageCalculation("damage-calculation-formula." + damage_formula + ".base")));
-
                             double attack_speed_multiplier = damage / e.getAttacker().getStat("ATTACK_DAMAGE");
-
                             event.getDamage().add(base * attack_speed_multiplier, element, DamageType.PHYSICAL);
                             stop = true;
                         }
