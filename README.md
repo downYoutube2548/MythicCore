@@ -8,6 +8,21 @@ A Minecraft Plugin that modifies Minecraft combat mechanics by handle all types 
 
 ## MythicMobs Mechanics
 
+### snapshot
+Execute a Mythic Mob skills with Snapshot stats (Player Only)
+
+
+| Attribute | Aliases   | Data Type | Description          | Default |
+|-----------|-----------|-----------|----------------------|---------|
+| skill     | s, spell  | String    | Mythic Mob Skill ID  |         |
+
+Examples:
+```yml
+test:
+  Skills:
+  - snapshot{s=SKILL_ID}
+```
+
 ### elemental_damage
 Deal elemental damage or physical damage
 
