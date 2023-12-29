@@ -2,10 +2,8 @@ package com.dev.mythiccore.events.attack_handle;
 
 import com.dev.mythiccore.library.ASTEntityStatProvider;
 import com.dev.mythiccore.utils.ConfigLoader;
+import com.dev.mythiccore.utils.EntityStatManager;
 import de.tr7zw.nbtapi.NBTItem;
-import io.lumine.mythic.bukkit.MythicBukkit;
-import io.lumine.mythic.core.mobs.ActiveMob;
-import io.lumine.mythic.core.skills.variables.VariableRegistry;
 import io.lumine.mythic.lib.api.event.AttackEvent;
 import io.lumine.mythic.lib.api.event.PlayerAttackEvent;
 import io.lumine.mythic.lib.damage.DamagePacket;
@@ -95,13 +93,12 @@ public class AttackModifier implements Listener {
                     }
 
                     if (attacker != null) {
-                        ActiveMob attackerMythicMob = MythicBukkit.inst().getMobManager().getActiveMob(attacker.getUniqueId()).orElse(null);
+                        EntityStatManager entityStat = new EntityStatManager(attacker);
+                        if (entityStat.has( "AST_ELEMENTAL_DAMAGE_AMOUNT", Double.class) && entityStat.has("AST_ELEMENTAL_DAMAGE_ELEMENT", String.class) && entityStat.has("AST_ELEMENTAL_DAMAGE_GAUGE_UNIT", String.class) && entityStat.has("AST_ELEMENTAL_DAMAGE_COOLDOWN_SOURCE", String.class) && entityStat.has("AST_ELEMENTAL_DAMAGE_INTERNAL_COOLDOWN", Long.class) && entityStat.has("AST_ELEMENTAL_DAMAGE_FORMULA", String.class) && entityStat.has("AST_ELEMENTAL_DAMAGE_PERCENT", Double.class)) {
 
-                        if (attackerMythicMob != null && attackerMythicMob.getVariables().has("AST_ELEMENTAL_DAMAGE_AMOUNT") && attackerMythicMob.getVariables().has("AST_ELEMENTAL_DAMAGE_ELEMENT") && attackerMythicMob.getVariables().has("AST_ELEMENTAL_DAMAGE_GAUGE_UNIT") && attackerMythicMob.getVariables().has("AST_ELEMENTAL_DAMAGE_COOLDOWN_SOURCE")) {
-
-                            VariableRegistry variables = attackerMythicMob.getVariables();
-                            double damage_amount = variables.getFloat("AST_ELEMENTAL_DAMAGE_AMOUNT");
-                            Element element = Element.valueOf(variables.getString("AST_ELEMENTAL_DAMAGE_ELEMENT"));
+                            double damage_amount = entityStat.getDoubleStat("AST_ELEMENTAL_DAMAGE_AMOUNT");
+                            Bukkit.broadcastMessage(String.valueOf(damage_amount));
+                            Element element = Element.valueOf(entityStat.getStringStat("AST_ELEMENTAL_DAMAGE_ELEMENT"));
                             if (element == null) return;
 
                             event.getDamage().getPackets().get(0).setTypes(new DamageType[]{DamageType.SKILL});

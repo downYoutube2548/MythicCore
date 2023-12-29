@@ -8,15 +8,12 @@ import com.dev.mythiccore.listener.events.attack.MiscAttackEvent;
 import com.dev.mythiccore.listener.events.attack.MobAttackEvent;
 import com.dev.mythiccore.listener.events.attack.PlayerAttackEvent;
 import com.dev.mythiccore.utils.ConfigLoader;
+import com.dev.mythiccore.utils.EntityStatManager;
 import com.dev.mythiccore.utils.Utils;
 import de.tr7zw.nbtapi.NBTItem;
-import io.lumine.mythic.bukkit.MythicBukkit;
-import io.lumine.mythic.core.mobs.ActiveMob;
-import io.lumine.mythic.core.skills.variables.VariableRegistry;
 import io.lumine.mythic.lib.api.event.AttackEvent;
 import io.lumine.mythic.lib.api.stat.provider.EntityStatProvider;
 import io.lumine.mythic.lib.damage.AttackMetadata;
-import io.lumine.mythic.lib.damage.DamagePacket;
 import io.lumine.mythic.lib.damage.ProjectileAttackMetadata;
 import io.lumine.mythic.lib.player.PlayerMetadata;
 import org.bukkit.Bukkit;
@@ -41,7 +38,6 @@ public class AttackEventListener implements Listener {
     public void registerEvents(AttackEvent event) {
 
         if (event.getAttack() instanceof ASTAttackMetadata astAttack) {
-
             if (astAttack.getAttacker() instanceof ASTEntityStatProvider) {
                 Bukkit.getPluginManager().callEvent(new MobAttackEvent((EntityDamageByEntityEvent) event.toBukkit(), astAttack));
             } else if (astAttack.getAttacker() instanceof PlayerMetadata) {
@@ -49,15 +45,16 @@ public class AttackEventListener implements Listener {
             }
 
         } else {
-
             if (event.getAttack().getAttacker() instanceof EntityStatProvider) {
                 // mob attack
 
+                //Bukkit.broadcastMessage(ChatColor.RED+"AttackEventListener.MobAttackNormal");
                 LivingEntity real_attacker;
                 if (((EntityDamageByEntityEvent) event.toBukkit()).getDamager() instanceof LivingEntity attacker) {
                     real_attacker = attacker;
                 } else {
                     real_attacker = (LivingEntity) ((Projectile) ((EntityDamageByEntityEvent) event.toBukkit()).getDamager()).getShooter();
+                    //if (real_attacker != null) Bukkit.broadcastMessage(ChatColor.RED+real_attacker.getName());
                 }
                 if (real_attacker == null) return;
 
@@ -68,18 +65,18 @@ public class AttackEventListener implements Listener {
                 String damage_calculation = ConfigLoader.getDefaultDamageCalculation();
                 double talent_percent = 100;
 
-                ActiveMob mythicMob = MythicBukkit.inst().getMobManager().getActiveMob(real_attacker.getUniqueId()).orElse(null);
-                if (mythicMob != null && mythicMob.getVariables().has("AST_ELEMENTAL_DAMAGE_AMOUNT") && mythicMob.getVariables().has("AST_ELEMENTAL_DAMAGE_ELEMENT") && mythicMob.getVariables().has("AST_ELEMENTAL_DAMAGE_GAUGE_UNIT") && mythicMob.getVariables().has("AST_ELEMENTAL_DAMAGE_COOLDOWN_SOURCE") && mythicMob.getVariables().has("AST_ELEMENTAL_DAMAGE_INTERNAL_COOLDOWN") && mythicMob.getVariables().has("AST_ELEMENTAL_DAMAGE_FORMULA") && mythicMob.getVariables().has("AST_ELEMENTAL_DAMAGE_PERCENT")) {
-                    VariableRegistry variables = mythicMob.getVariables();
-                    gauge_unit = Double.parseDouble(Utils.splitTextAndNumber(variables.getString("AST_ELEMENTAL_DAMAGE_GAUGE_UNIT"))[0]);
-                    decay_rate = Utils.splitTextAndNumber(variables.getString("AST_ELEMENTAL_DAMAGE_GAUGE_UNIT"))[1];
-                    cooldown_source = variables.getString("AST_ELEMENTAL_DAMAGE_COOLDOWN_SOURCE");
-                    internal_cooldown = variables.getInt("AST_ELEMENTAL_DAMAGE_INTERNAL_COOLDOWN");
-                    damage_calculation = variables.getString("AST_ELEMENTAL_DAMAGE_FORMULA");
-                    talent_percent = variables.getFloat("AST_ELEMENTAL_DAMAGE_PERCENT");
+
+                EntityStatManager entityStat = new EntityStatManager(real_attacker);
+                if (entityStat.has( "AST_ELEMENTAL_DAMAGE_AMOUNT", Double.class) && entityStat.has("AST_ELEMENTAL_DAMAGE_ELEMENT", String.class) && entityStat.has("AST_ELEMENTAL_DAMAGE_GAUGE_UNIT", String.class) && entityStat.has("AST_ELEMENTAL_DAMAGE_COOLDOWN_SOURCE", String.class) && entityStat.has("AST_ELEMENTAL_DAMAGE_INTERNAL_COOLDOWN", Long.class) && entityStat.has("AST_ELEMENTAL_DAMAGE_FORMULA", String.class) && entityStat.has("AST_ELEMENTAL_DAMAGE_PERCENT", Double.class)) {
+                    gauge_unit = Double.parseDouble(Utils.splitTextAndNumber(entityStat.getStringStat("AST_ELEMENTAL_DAMAGE_GAUGE_UNIT"))[0]);
+                    decay_rate = Utils.splitTextAndNumber(entityStat.getStringStat("AST_ELEMENTAL_DAMAGE_GAUGE_UNIT"))[1];
+                    cooldown_source = entityStat.getStringStat("AST_ELEMENTAL_DAMAGE_COOLDOWN_SOURCE");
+                    internal_cooldown = entityStat.getLongStat("AST_ELEMENTAL_DAMAGE_INTERNAL_COOLDOWN");
+                    damage_calculation = entityStat.getStringStat("AST_ELEMENTAL_DAMAGE_FORMULA");
+                    talent_percent = entityStat.getDoubleStat("AST_ELEMENTAL_DAMAGE_PERCENT");
                 }
 
-                AttackMetadata astAttack = (event.getAttack() instanceof ProjectileAttackMetadata) ? new ASTProjectileAttackMetadata((ProjectileAttackMetadata) event.getAttack(), cooldown_source, internal_cooldown, gauge_unit, decay_rate, damage_calculation, talent_percent, AttackSource.NORMAL) : new ASTAttackMetadata(event.getAttack(), cooldown_source, internal_cooldown, gauge_unit, decay_rate, damage_calculation, talent_percent, AttackSource.NORMAL);
+                AttackMetadata astAttack = (event.getAttack() instanceof ProjectileAttackMetadata) ? new ASTProjectileAttackMetadata(event.getDamage(), event.getEntity(), new ASTEntityStatProvider(real_attacker), ((ProjectileAttackMetadata) event.getAttack()).getProjectile(), cooldown_source, internal_cooldown, gauge_unit, decay_rate, damage_calculation, talent_percent, AttackSource.NORMAL) : new ASTAttackMetadata(event.getAttack().getDamage(), event.getAttack().getTarget(), new ASTEntityStatProvider(real_attacker), cooldown_source, internal_cooldown, gauge_unit, decay_rate, damage_calculation, talent_percent, AttackSource.NORMAL);
                 Bukkit.getPluginManager().callEvent(new MobAttackEvent((EntityDamageByEntityEvent) event.toBukkit(), astAttack));
 
             } else if (event.getAttack().getAttacker() instanceof PlayerMetadata playerMetadata) {

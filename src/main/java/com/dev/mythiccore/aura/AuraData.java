@@ -57,6 +57,24 @@ public class AuraData {
         return sb.toString();
     }
 
+    public String getAuraGaugeBar() {
+        StringBuilder sb = new StringBuilder();
+        for (String auraID : mapAura.keySet()) {
+
+            String auraIcon;
+            Element element = MythicLib.plugin.getElements().get(auraID);
+            double progress = mapAura.get(auraID).getDuration() / (mapAura.get(auraID).getGaugeUnit() * ConfigLoader.getDecayRate(mapAura.get(auraID).getDecayRate())) * 100;
+            if (element != null) {
+                auraIcon = element.getColor()+element.getLoreIcon()+" "+Utils.progressBar(progress, 20, '▌', mapAura.get(auraID).getGaugeUnit())+element.getColor()+" "+mapAura.get(auraID).getDecayRate()+"\n";
+            } else {
+                auraIcon = ConfigLoader.getSpecialAuraColor(auraID)+ConfigLoader.getSpecialAuraIcon(auraID)+" "+Utils.progressBar(progress, 20, '▌', mapAura.get(auraID).getGaugeUnit())+ConfigLoader.getSpecialAuraColor(auraID)+" "+mapAura.get(auraID).getDecayRate()+"\n";
+            }
+
+            sb.append(Utils.colorize(auraIcon+"&r"));
+        }
+        return sb.toString();
+    }
+
     public void reduceAura(String element, double gauge_unit) {
         if (!this.mapAura.containsKey(element)) return;
         reduceAura(element, (long)(Math.floor(gauge_unit * ConfigLoader.getDecayRate(this.mapAura.get(element).getDecayRate()))));

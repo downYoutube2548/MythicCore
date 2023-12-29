@@ -14,6 +14,7 @@ import com.dev.mythiccore.events.attack_handle.*;
 import com.dev.mythiccore.events.attack_handle.deal_damage.MiscAttack;
 import com.dev.mythiccore.events.attack_handle.deal_damage.MobAttack;
 import com.dev.mythiccore.events.attack_handle.deal_damage.PlayerAttack;
+import com.dev.mythiccore.events.hp_bar.HpBar;
 import com.dev.mythiccore.listener.AttackEventListener;
 import com.dev.mythiccore.reaction.ReactionManager;
 import com.dev.mythiccore.reaction.reactions.bloom.DendroCore;
@@ -102,6 +103,7 @@ public final class MythicCore extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new ShieldRefutation(), this);
         Bukkit.getPluginManager().registerEvents(new DendroCoreTrigger(), this);
         Bukkit.getPluginManager().registerEvents(new ChunkUnload(), this);
+        Bukkit.getPluginManager().registerEvents(new HpBar(), this);
 
         registerMMOItemStat();
 

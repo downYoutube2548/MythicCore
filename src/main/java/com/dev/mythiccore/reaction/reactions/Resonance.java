@@ -4,6 +4,7 @@ import com.dev.mythiccore.MythicCore;
 import com.dev.mythiccore.combat.Combat;
 import com.dev.mythiccore.reaction.reaction_type.SingleReaction;
 import com.dev.mythiccore.utils.ConfigLoader;
+import com.dev.mythiccore.utils.EntityStatManager;
 import com.dev.mythiccore.utils.StatCalculation;
 import com.dev.mythiccore.utils.Utils;
 import io.lumine.mythic.bukkit.MythicBukkit;
@@ -46,10 +47,13 @@ public class Resonance extends SingleReaction {
                 resonance_bonus = stats.getStat("AST_RESONANCE_BONUS");
                 defense = stats.getStat("DEFENSE");
             } else {
+
+                EntityStatManager entityStat = new EntityStatManager(damager);
+                defense = entityStat.getDoubleStat("DEFENSE");
+
                 ActiveMob mythicMob = MythicBukkit.inst().getMobManager().getActiveMob(damager.getUniqueId()).orElse(null);
                 if (mythicMob != null) {
                     level = (int) mythicMob.getLevel();
-                    defense = mythicMob.getVariables().getFloat("DEFENSE");
                 }
             }
         }
@@ -86,7 +90,7 @@ public class Resonance extends SingleReaction {
             if (i >= getConfig().getInt("resonance-limit")) break;
 
             double distance = entity.getLocation().distance(living_entity.getLocation());
-            Bukkit.getScheduler().runTaskLater(MythicCore.getInstance(), ()-> damage(final_damage, damager, living_entity, this.getTrigger(), false, 0, ConfigLoader.getDefaultDecayRate(), "RESONANCE_REACTION", 0, false, damage_cause), (long) (getConfig().getDouble("delay-tick-per-block") * distance));
+            Bukkit.getScheduler().runTaskLater(MythicCore.getInstance(), ()-> damage(final_damage, damager, living_entity, this.getTrigger(), false, (getAuraData(living_entity.getUniqueId()).getMapAura().containsKey(getTrigger())) ? 1 : 0, ConfigLoader.getDefaultDecayRate(), "RESONANCE_REACTION", 0, false, damage_cause), (long) (getConfig().getDouble("delay-tick-per-block") * distance));
 
             i++;
             if (getAuraData(living_entity.getUniqueId()).getMapAura().containsKey(this.getTrigger()) && getConfig().getBoolean("stop-on-resonate-other")) break;

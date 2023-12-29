@@ -81,6 +81,8 @@ public class TriggerReaction implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void mobAttack(MobAttackEvent event) {
 
+        //Bukkit.broadcastMessage(ChatColor.YELLOW+"TriggerReaction.MobAttackEvent.Damager = "+event.getDamager().getName());
+
         double gauge_unit;
         String decay_rate;
         String cooldown_source;

@@ -96,9 +96,12 @@ public class CoreCommand implements CommandExecutor, TabExecutor {
                 } else if (args[0].equals("remove-entity")) {
                     if (args.length >= 2) {
                         int radius = Integer.parseInt(args[1]);
-                        for (Entity entity : player.getNearbyEntities(radius, radius, radius)) {
-                            entity.remove();
-                        }
+                        try {
+                            for (Entity entity : player.getNearbyEntities(radius, radius, radius)) {
+                                if (entity.hasMetadata("NPC")) continue;
+                                entity.remove();
+                            }
+                        } catch (UnsupportedOperationException ignored) {}
                     } else {
                         sender.sendMessage(ConfigLoader.getMessage("syntax-error", true));
                     }

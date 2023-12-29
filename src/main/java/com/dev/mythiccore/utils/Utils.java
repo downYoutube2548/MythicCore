@@ -29,7 +29,6 @@ public class Utils {
             String hexColor = s.substring(match.start(), match.end());
             s = s.replace(hexColor, net.md_5.bungee.api.ChatColor.of(hexColor).toString());
             match = pattern.matcher(s);
-            Player player;
         }
 
         return net.md_5.bungee.api.ChatColor.translateAlternateColorCodes('&', s);

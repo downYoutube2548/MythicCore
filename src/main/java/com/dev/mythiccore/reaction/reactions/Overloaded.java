@@ -47,9 +47,11 @@ public class Overloaded extends TriggerAuraReaction {
             } else {
                 ActiveMob mythicMob = MythicBukkit.inst().getMobManager().getActiveMob(damager.getUniqueId()).orElse(null);
                 attacker_level = (mythicMob != null) ? (int) mythicMob.getLevel() : 1;
+                //if (mythicMob == null) Bukkit.broadcastMessage("Damager is not a MythicMob");
             }
         }
 
+        //if (damager != null) Bukkit.broadcastMessage("Damager: "+damager.getName());
 
         double aoe_radius = getConfig().getDouble("aoe-radius");
         List<Entity> aoe_entities = new ArrayList<>(entity.getNearbyEntities(aoe_radius, aoe_radius, aoe_radius));
@@ -72,6 +74,11 @@ public class Overloaded extends TriggerAuraReaction {
                         .setVariable("overloaded_bonus", overloaded_bonus);
                 double final_damage = expression.evaluate();
 
+//                Bukkit.broadcastMessage("Level: "+attacker_level);
+//                Bukkit.broadcastMessage("EM: "+elemental_mastery);
+//                Bukkit.broadcastMessage("Resis: "+resistance_multiplier);
+//                Bukkit.broadcastMessage("Bonus: "+overloaded_bonus);
+//                Bukkit.broadcastMessage("Overloaded: "+final_damage);
                 damage(final_damage, damager, aoe_living_entity, getConfig().getString("damage-element"), false, true, damage_cause);
 
                 if (damager != null) {

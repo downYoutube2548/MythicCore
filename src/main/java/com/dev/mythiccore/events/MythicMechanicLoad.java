@@ -1,9 +1,6 @@
 package com.dev.mythiccore.events;
 
-import com.dev.mythiccore.mythic_mechanics.apply.ElementalDamage;
-import com.dev.mythiccore.mythic_mechanics.apply.ElementalShield;
-import com.dev.mythiccore.mythic_mechanics.apply.ReduceDefense;
-import com.dev.mythiccore.mythic_mechanics.apply.ReduceResistance;
+import com.dev.mythiccore.mythic_mechanics.apply.*;
 import com.dev.mythiccore.mythic_mechanics.modify.SetDefense;
 import com.dev.mythiccore.mythic_mechanics.modify.SetElementalDamage;
 import com.dev.mythiccore.mythic_mechanics.modify.SetResistance;
@@ -35,6 +32,9 @@ public class MythicMechanicLoad implements Listener {
         }
         else if (event.getMechanicName().equalsIgnoreCase("set_resistance"))	{
             event.register(new SetResistance(event.getConfig()));
+        }
+        else if (event.getMechanicName().equalsIgnoreCase("snapshot"))	{
+            event.register(new Snapshot(event.getConfig()));
         }
     }
 }

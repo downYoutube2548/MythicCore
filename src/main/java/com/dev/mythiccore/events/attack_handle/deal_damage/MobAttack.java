@@ -44,6 +44,8 @@ public class MobAttack implements Listener {
 
             LivingEntity victim = event.getEntity();
 
+
+
             for (DamagePacket packet : event.getDamage().getPackets()) {
 
                 // working only damage that have element (include physical damage)
@@ -52,7 +54,9 @@ public class MobAttack implements Listener {
                     continue;
                 }
 
-                packet.setValue(StatCalculation.getFinalDamage(event.getAttack().getAttacker(), victim.getUniqueId(), damage_formula, talent_percent, packet, false));
+                double damage = StatCalculation.getFinalDamage(event.getAttack().getAttacker(), victim.getUniqueId(), damage_formula, talent_percent, packet, false);
+                //Bukkit.broadcastMessage(damage+"");
+                packet.setValue(damage);
             }
         } catch (NullPointerException ignored) {}
     }

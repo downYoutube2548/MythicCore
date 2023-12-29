@@ -37,6 +37,7 @@ public class StatCalculation {
     }
 
     public static double getFinalDamage(StatProvider attacker, UUID victim, String damage_formula, double talent_percent, DamagePacket damage_packet, boolean crit) {
+
         String formula = ConfigLoader.getDamageCalculation("final-damage");
         Expression expression = new ExpressionBuilder(formula)
                 .variables("total_damage", "defense_multiplier", "resistance_multiplier", "level_multiplier")
@@ -117,7 +118,6 @@ public class StatCalculation {
     }
 
     public static double getTotalDamage(String damage_formula, double damage_amount, double talent_percent, double attack_buff_percent, double attack_buff, double defense_buff, double defense_buff_percent, double elemental_mastery, double elemental_damage_bonus, double all_elemental_damage_bonus) {
-
 
         String formula = ConfigLoader.getDamageCalculation("damage-calculation-formula."+damage_formula+".formula");
         Expression expression = new ExpressionBuilder(formula)
@@ -339,8 +339,8 @@ public class StatCalculation {
 
             elemental_resistance = playerStats.getStat("AST_"+element+"_RESISTANCE") + playerStats.getStat("AST_ALL_ELEMENTAL_RESISTANCE");
         } else {
-            ActiveMob mythicMob = MythicBukkit.inst().getMobManager().getActiveMob(uuid).orElse(null);
-            elemental_resistance = (mythicMob != null) ? mythicMob.getVariables().getFloat("AST_"+element+"_RESISTANCE") + mythicMob.getVariables().getFloat("AST_ALL_ELEMENTAL_RESISTANCE") : 0;
+            EntityStatManager entityStat = new EntityStatManager(entity);
+            elemental_resistance = entityStat.getDoubleStat("AST_"+element+"_RESISTANCE") + entityStat.getDoubleStat("AST_ALL_ELEMENTAL_RESISTANCE");
         }
 
         return getResistance(elemental_resistance, er == null ? 0 : er.getAmount());
@@ -372,8 +372,8 @@ public class StatCalculation {
 
             defense = playerStats.getStat("DEFENSE");
         } else {
-            ActiveMob mythicMob = MythicBukkit.inst().getMobManager().getActiveMob(uuid).orElse(null);
-            defense = (mythicMob != null) ? mythicMob.getVariables().getFloat("DEFENSE") : 0;
+            EntityStatManager entityStat = new EntityStatManager(entity);
+            defense = entityStat.getDoubleStat("DEFENSE");
         }
 
         return defense - (dr == null ? 0 : dr.getAmount()/100 * defense);

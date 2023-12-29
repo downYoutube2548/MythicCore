@@ -1,6 +1,7 @@
 package com.dev.mythiccore.api;
 
 import com.dev.mythiccore.MythicCore;
+import com.dev.mythiccore.events.hp_bar.HpBar;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
@@ -29,6 +30,11 @@ public class PlaceholderHook extends PlaceholderExpansion {
         if (params.equalsIgnoreCase("auras")) {
             if (player.isOnline()) {
                 return MythicCore.getAuraManager().getAura(player.getUniqueId()).getAuraIcon();
+            }
+        }
+        if (params.equalsIgnoreCase("health_bar")) {
+            if (player.isOnline()) {
+                return HpBar.getHpBar(player.getUniqueId());
             }
         }
 

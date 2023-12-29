@@ -1,6 +1,7 @@
 package com.dev.mythiccore.mythic_mechanics.modify;
 
 import com.dev.mythiccore.utils.ConfigLoader;
+import com.dev.mythiccore.utils.EntityStatManager;
 import io.lumine.mythic.api.adapters.AbstractEntity;
 import io.lumine.mythic.api.config.MythicLineConfig;
 import io.lumine.mythic.api.skills.ITargetedEntitySkill;
@@ -8,10 +9,6 @@ import io.lumine.mythic.api.skills.SkillMetadata;
 import io.lumine.mythic.api.skills.SkillResult;
 import io.lumine.mythic.api.skills.placeholders.PlaceholderDouble;
 import io.lumine.mythic.bukkit.BukkitAdapter;
-import io.lumine.mythic.bukkit.MythicBukkit;
-import io.lumine.mythic.core.mobs.ActiveMob;
-import io.lumine.mythic.core.skills.variables.Variable;
-import io.lumine.mythic.core.skills.variables.VariableType;
 import org.bukkit.entity.Entity;
 
 import java.util.UUID;
@@ -25,11 +22,14 @@ public class SetElementalDamage implements ITargetedEntitySkill {
     private final long internal_cooldown;
     private final String damage_calculation;
 
+    private final PlaceholderDouble talent_percent;
+
     public SetElementalDamage(MythicLineConfig config) {
         amount = config.getPlaceholderDouble(new String[] {"amount", "a"}, 0);
         element = config.getString(new String[] {"element", "e"}, ConfigLoader.getDefaultElement());
         gauge = config.getString(new String[] {"gauge_unit", "gu"}, ConfigLoader.getDefaultGauge());
         damage_calculation = config.getString(new String[] {"dc", "formula", "f"}, ConfigLoader.getDefaultDamageCalculation());
+        talent_percent = config.getPlaceholderDouble(new String[] {"p", "percent"}, 100);
         UUID uuid = UUID.randomUUID();
 
         if (config.getLong(new String[]{"icd", "internal_cooldown"}, -1) < 0) {
@@ -46,17 +46,18 @@ public class SetElementalDamage implements ITargetedEntitySkill {
 
         if (BukkitAdapter.adapt(abstractEntity) != null) {
             Entity bukkittarget = BukkitAdapter.adapt(abstractEntity);
-            ActiveMob mythicMob = MythicBukkit.inst().getMobManager().getActiveMob(bukkittarget.getUniqueId()).orElse(null);
-            if (mythicMob != null) {
-                mythicMob.getVariables().put("AST_ELEMENTAL_DAMAGE_AMOUNT", Variable.ofType(VariableType.FLOAT, amount.get(skillMetadata)));
-                mythicMob.getVariables().put("AST_ELEMENTAL_DAMAGE_ELEMENT", Variable.ofType(VariableType.STRING, element));
-                mythicMob.getVariables().put("AST_ELEMENTAL_DAMAGE_GAUGE_UNIT", Variable.ofType(VariableType.STRING, gauge));
-                mythicMob.getVariables().put("AST_ELEMENTAL_DAMAGE_COOLDOWN_SOURCE", Variable.ofType(VariableType.STRING, cooldown_source));
-                mythicMob.getVariables().put("AST_ELEMENTAL_DAMAGE_INTERNAL_COOLDOWN", Variable.ofType(VariableType.INTEGER, internal_cooldown));
-                mythicMob.getVariables().put("AST_ELEMENTAL_DAMAGE_FORMULA", Variable.ofType(VariableType.STRING, damage_calculation));
-                return SkillResult.SUCCESS;
-            }
-            return SkillResult.MISSING_COMPATIBILITY;
+
+            EntityStatManager entityStat = new EntityStatManager(bukkittarget);
+
+            entityStat.set("AST_ELEMENTAL_DAMAGE_AMOUNT", amount.get(skillMetadata));
+            entityStat.set("AST_ELEMENTAL_DAMAGE_ELEMENT", element);
+            entityStat.set("AST_ELEMENTAL_DAMAGE_GAUGE_UNIT", gauge);
+            entityStat.set("AST_ELEMENTAL_DAMAGE_COOLDOWN_SOURCE", cooldown_source);
+            entityStat.set("AST_ELEMENTAL_DAMAGE_INTERNAL_COOLDOWN", internal_cooldown);
+            entityStat.set("AST_ELEMENTAL_DAMAGE_FORMULA", damage_calculation);
+            entityStat.set("AST_ELEMENTAL_DAMAGE_PERCENT", talent_percent.get(skillMetadata));
+
+            return SkillResult.SUCCESS;
         }
         return SkillResult.ERROR;
     }

@@ -89,10 +89,8 @@ public class ElementalDamage implements ITargetedEntitySkill {
 
                     //This part will damage the player
 
-                    PlayerData playerData = PlayerData.get(bukkitcaster.getUniqueId());
-
                     DamageMetadata damage = new DamageMetadata(amount.get(skillMetadata), element1, DamageType.SKILL);
-                    StatMap statMap = playerData.getMMOPlayerData().getStatMap();
+                    StatMap statMap = ((StatMap) skillMetadata.getMetadata("SNAPSHOT_STATS").orElse(PlayerData.get(bukkitcaster.getUniqueId()).getMMOPlayerData().getStatMap()));
                     PlayerMetadata playerMetadata = new PlayerMetadata(statMap, EquipmentSlot.MAIN_HAND);
                     AttackMetadata attack = new ASTAttackMetadata(damage, (LivingEntity) bukkittarget, playerMetadata, cooldown_source, internal_cooldown, gauge_unit, decay_rate, damage_calculation, talent_percent.get(skillMetadata), AttackSource.SKILL);
 
