@@ -40,10 +40,15 @@ Examples:
 test:
   Skills:
   - snapshot{s=test2} @target
+  - snapshot{s=test3;some_damage=<caster.damage>} @EIR{r=5}
 
 test2:
   Skills:
   - elemental_damage{a=<snapshot.damage>;element=ELECTRO} @snapshot
+  
+test3:
+  Skills:
+  - elemental_damage{a=<snapshot.some_damage>;element=CRYO} @snapshot # deal <caster.damage> Damage to Entities in radius 10
 ```
 
 <br />
