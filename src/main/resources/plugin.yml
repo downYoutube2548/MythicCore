@@ -3,7 +3,7 @@ version: '${project.version}'
 main: com.dev.mythiccore.MythicCore
 api-version: 1.20
 depend: [MMOCore, MMOItems, MythicLib, MythicMobs]
-softdepend: [PlaceholderAPI, HolographicDisplays]
+softdepend: [PlaceholderAPI, HolographicDisplays, ItemsAdder]
 authors: [downYoutube2548, Teenkung123]
 commands:
   mythiccore:
