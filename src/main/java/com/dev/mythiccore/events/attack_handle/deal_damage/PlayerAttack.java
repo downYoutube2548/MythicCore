@@ -9,6 +9,8 @@ import com.dev.mythiccore.utils.StatCalculation;
 import io.lumine.mythic.lib.damage.DamagePacket;
 import io.lumine.mythic.lib.damage.DamageType;
 import io.lumine.mythic.lib.player.PlayerMetadata;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -68,7 +70,8 @@ public class PlayerAttack implements Listener {
             boolean isCritical = new Random().nextDouble() < AttackerCRITRate / 100;
             if (isCritical) event.getDamage().registerElementalCriticalStrike(packet.getElement());
 
-            packet.setValue(StatCalculation.getFinalDamage(event.getAttacker(), victim.getUniqueId(), damage_formula, talent_percent, packet, isCritical));
+            double damage = StatCalculation.getFinalDamage(event.getAttacker(), victim.getUniqueId(), damage_formula, talent_percent, packet, isCritical);
+            packet.setValue(damage);
         }
     }
 }

@@ -97,7 +97,6 @@ public class AttackModifier implements Listener {
                         if (entityStat.has( "AST_ELEMENTAL_DAMAGE_AMOUNT", Double.class) && entityStat.has("AST_ELEMENTAL_DAMAGE_ELEMENT", String.class) && entityStat.has("AST_ELEMENTAL_DAMAGE_GAUGE_UNIT", String.class) && entityStat.has("AST_ELEMENTAL_DAMAGE_COOLDOWN_SOURCE", String.class) && entityStat.has("AST_ELEMENTAL_DAMAGE_INTERNAL_COOLDOWN", Long.class) && entityStat.has("AST_ELEMENTAL_DAMAGE_FORMULA", String.class) && entityStat.has("AST_ELEMENTAL_DAMAGE_PERCENT", Double.class)) {
 
                             double damage_amount = entityStat.getDoubleStat("AST_ELEMENTAL_DAMAGE_AMOUNT");
-                            Bukkit.broadcastMessage(String.valueOf(damage_amount));
                             Element element = Element.valueOf(entityStat.getStringStat("AST_ELEMENTAL_DAMAGE_ELEMENT"));
                             if (element == null) return;
 

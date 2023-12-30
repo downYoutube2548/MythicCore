@@ -7,7 +7,7 @@ import com.dev.mythiccore.combat.Combat;
 import com.dev.mythiccore.commands.CoreCommand;
 import com.dev.mythiccore.cooldown.InternalCooldown;
 import com.dev.mythiccore.events.ChunkUnload;
-import com.dev.mythiccore.events.MythicMechanicLoad;
+import com.dev.mythiccore.events.MythicLoad;
 import com.dev.mythiccore.events.PlayerDeath;
 import com.dev.mythiccore.events.ProjectileLaunch;
 import com.dev.mythiccore.events.attack_handle.*;
@@ -16,6 +16,8 @@ import com.dev.mythiccore.events.attack_handle.deal_damage.MobAttack;
 import com.dev.mythiccore.events.attack_handle.deal_damage.PlayerAttack;
 import com.dev.mythiccore.events.hp_bar.HpBar;
 import com.dev.mythiccore.listener.AttackEventListener;
+import com.dev.mythiccore.mythic.placeholders.SnapshotPlaceholder;
+import com.dev.mythiccore.mythic.targeters.SnapshotTargeter;
 import com.dev.mythiccore.reaction.ReactionManager;
 import com.dev.mythiccore.reaction.reactions.bloom.DendroCore;
 import com.dev.mythiccore.reaction.reactions.bloom.DendroCoreManager;
@@ -28,6 +30,8 @@ import com.dev.mythiccore.stats.elemental_stat.ASTElements;
 import com.dev.mythiccore.utils.ConfigLoader;
 import com.dev.mythiccore.visuals.AuraVisualizer;
 import com.dev.mythiccore.visuals.DamageIndicatorEvent;
+import io.lumine.mythic.bukkit.MythicBukkit;
+import io.lumine.mythic.core.skills.placeholders.types.EntityPlaceholder;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import net.Indyuce.mmoitems.MMOItems;
 import org.bukkit.Bukkit;
@@ -81,13 +85,14 @@ public final class MythicCore extends JavaPlugin {
         buff.startTick();
         cooldown.startTick();
         FreezeEffect.effectApplier();
-        AuraVisualizer.start();
+
+        if (getServer().getPluginManager().isPluginEnabled("ItemsAdder")) AuraVisualizer.start();
         DendroCoreManager.dendroCoreTick();
 
         Objects.requireNonNull(Bukkit.getPluginCommand("mythiccore")).setExecutor(new CoreCommand());
 
         //Register EventListener
-        Bukkit.getPluginManager().registerEvents(new MythicMechanicLoad(), this);
+        Bukkit.getPluginManager().registerEvents(new MythicLoad(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerAttack(), this);
         Bukkit.getPluginManager().registerEvents(new MobAttack(), this);
         Bukkit.getPluginManager().registerEvents(new MiscAttack(), this);

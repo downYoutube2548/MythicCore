@@ -1,4 +1,4 @@
-package com.dev.mythiccore.mythic_mechanics.apply;
+package com.dev.mythiccore.mythic.mechanics.apply;
 
 import com.dev.mythiccore.MythicCore;
 import io.lumine.mythic.api.adapters.AbstractEntity;

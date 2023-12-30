@@ -1,14 +1,18 @@
 package com.dev.mythiccore.events;
 
-import com.dev.mythiccore.mythic_mechanics.apply.*;
-import com.dev.mythiccore.mythic_mechanics.modify.SetDefense;
-import com.dev.mythiccore.mythic_mechanics.modify.SetElementalDamage;
-import com.dev.mythiccore.mythic_mechanics.modify.SetResistance;
+import com.dev.mythiccore.mythic.mechanics.apply.*;
+import com.dev.mythiccore.mythic.mechanics.modify.SetDefense;
+import com.dev.mythiccore.mythic.mechanics.modify.SetElementalDamage;
+import com.dev.mythiccore.mythic.mechanics.modify.SetResistance;
+import com.dev.mythiccore.mythic.placeholders.SnapshotPlaceholder;
+import com.dev.mythiccore.mythic.targeters.SnapshotTargeter;
 import io.lumine.mythic.bukkit.events.MythicMechanicLoadEvent;
+import io.lumine.mythic.bukkit.events.MythicReloadedEvent;
+import io.lumine.mythic.bukkit.events.MythicTargeterLoadEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-public class MythicMechanicLoad implements Listener {
+public class MythicLoad implements Listener {
 
     @EventHandler
     public void onMythicMechanicLoad(MythicMechanicLoadEvent event) {
@@ -36,5 +40,17 @@ public class MythicMechanicLoad implements Listener {
         else if (event.getMechanicName().equalsIgnoreCase("snapshot"))	{
             event.register(new Snapshot(event.getConfig()));
         }
+    }
+
+    @EventHandler
+    public void onTargeterLoad(MythicTargeterLoadEvent event) {
+        if(event.getTargeterName().equalsIgnoreCase("snapshot")) {
+            event.register(new SnapshotTargeter(event.getContainer().getManager(), event.getConfig()));
+        }
+    }
+
+    @EventHandler
+    public void mythicReload(MythicReloadedEvent event) {
+        SnapshotPlaceholder.register();
     }
 }

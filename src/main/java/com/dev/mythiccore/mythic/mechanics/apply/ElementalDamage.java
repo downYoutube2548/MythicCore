@@ -1,4 +1,4 @@
-package com.dev.mythiccore.mythic_mechanics.apply;
+package com.dev.mythiccore.mythic.mechanics.apply;
 
 import com.dev.mythiccore.MythicCore;
 import com.dev.mythiccore.enums.AttackSource;
@@ -15,7 +15,6 @@ import io.lumine.mythic.api.skills.SkillResult;
 import io.lumine.mythic.api.skills.placeholders.PlaceholderDouble;
 import io.lumine.mythic.bukkit.BukkitAdapter;
 import io.lumine.mythic.lib.api.player.EquipmentSlot;
-import io.lumine.mythic.lib.api.stat.StatMap;
 import io.lumine.mythic.lib.damage.AttackMetadata;
 import io.lumine.mythic.lib.damage.DamageMetadata;
 import io.lumine.mythic.lib.damage.DamageType;
@@ -23,6 +22,7 @@ import io.lumine.mythic.lib.element.Element;
 import io.lumine.mythic.lib.player.PlayerMetadata;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -83,15 +83,13 @@ public class ElementalDamage implements ITargetedEntitySkill {
                 String decay_rate = Utils.splitTextAndNumber(gauge)[1];
 
                 Element element1 = Objects.requireNonNull(Element.valueOf(element), ConfigLoader.getDefaultElement());
-
                 // caster is player
                 if (bukkitcaster instanceof Player) {
 
                     //This part will damage the player
 
                     DamageMetadata damage = new DamageMetadata(amount.get(skillMetadata), element1, DamageType.SKILL);
-                    StatMap statMap = ((StatMap) skillMetadata.getMetadata("SNAPSHOT_STATS").orElse(PlayerData.get(bukkitcaster.getUniqueId()).getMMOPlayerData().getStatMap()));
-                    PlayerMetadata playerMetadata = new PlayerMetadata(statMap, EquipmentSlot.MAIN_HAND);
+                    PlayerMetadata playerMetadata = (PlayerMetadata) skillMetadata.getMetadata("SNAPSHOT_STATS").orElse(new PlayerMetadata(PlayerData.get(bukkitcaster.getUniqueId()).getMMOPlayerData().getStatMap(), EquipmentSlot.MAIN_HAND));
                     AttackMetadata attack = new ASTAttackMetadata(damage, (LivingEntity) bukkittarget, playerMetadata, cooldown_source, internal_cooldown, gauge_unit, decay_rate, damage_calculation, talent_percent.get(skillMetadata), AttackSource.SKILL);
 
                     Bukkit.getScheduler().runTask(MythicCore.getInstance(), () -> DamageManager.registerAttack(attack, true, false, EntityDamageEvent.DamageCause.ENTITY_ATTACK));

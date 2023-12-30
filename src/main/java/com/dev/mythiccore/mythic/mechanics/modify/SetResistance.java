@@ -1,4 +1,4 @@
-package com.dev.mythiccore.mythic_mechanics.modify;
+package com.dev.mythiccore.mythic.mechanics.modify;
 
 import com.dev.mythiccore.utils.ConfigLoader;
 import com.dev.mythiccore.utils.EntityStatManager;
