@@ -7,7 +7,10 @@ import io.lumine.mythic.core.skills.SkillExecutor;
 import io.lumine.mythic.core.skills.targeters.IEntitySelector;
 import io.lumine.mythic.core.utils.annotations.MythicTargeter;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
 
 @MythicTargeter(
