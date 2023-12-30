@@ -11,10 +11,11 @@ A Minecraft Plugin that modifies Minecraft combat mechanics by handle all types 
 ### snapshot
 Execute a Mythic Mob skills with Snapshot stats (Player Only)<br /><br />
 
-| Attribute | Aliases  | Data Type | Description                                      | Default |
-|-----------|----------|-----------|--------------------------------------------------|---------|
-| skill     | s, spell | String    | Mythic Mob Skill ID                              |         |
-| ANY_KEY   |          | Double    | Specify the key-value of current Snapshot Skill  | -       |
+| Attribute   | Aliases  | Data Type | Description                                         | Default |
+|-------------|----------|-----------|-----------------------------------------------------|---------|
+| skill       | s, spell | String    | Mythic Mob Skill ID                                 |         |
+| check_owner | co       | Boolean   | Make caster's owner as a caster if owner is present | false   |
+| ANY_KEY     |          | Double    | Specify the key-value of current Snapshot Skill     | -       |
 <br />
 
 #### Additional Targeters
