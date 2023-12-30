@@ -9,22 +9,47 @@ A Minecraft Plugin that modifies Minecraft combat mechanics by handle all types 
 ## MythicMobs Mechanics
 
 ### snapshot
-Execute a Mythic Mob skills with Snapshot stats (Player Only)
+Execute a Mythic Mob skills with Snapshot stats (Player Only)<br /><br />
 
+| Attribute | Aliases  | Data Type | Description                                      | Default |
+|-----------|----------|-----------|--------------------------------------------------|---------|
+| skill     | s, spell | String    | Mythic Mob Skill ID                              |         |
+| ANY_KEY   |          | Double    | Specify the key-value of current Snapshot Skill  | -       |
+<br />
 
-| Attribute | Aliases   | Data Type | Description          | Default |
-|-----------|-----------|-----------|----------------------|---------|
-| skill     | s, spell  | String    | Mythic Mob Skill ID  |         |
+#### Additional Targeters
+
+| Targeter  | Description                                    | 
+|-----------|------------------------------------------------|
+| @snapshot | Use the targeter of the current Snapshot Skill |
+<br />
+
+#### Additional Placeholders
+| Snapshot Placeholder  | Function                                      | 
+|-----------------------|-----------------------------------------------|
+| <snapshot.damage>     | Return Attacker's Snapshot base attack damage |
+| <snapshot.def>        | Return Attacker's Snapshot base defense       |
+| <snapshot.hp>         | Return Attacker's Snapshot max HP             |
+| <snapshot.em>         | Return Attacker's Snapshot elemental mastery  |
+| <snapshot.stat.STAT>  | Return Attacker's Specific snapshot stat      |
+| <snapshot.ANY_KEY>    | Return the value of specific key              |
+<br />
 
 Examples:
 ```yml
 test:
   Skills:
-  - snapshot{s=SKILL_ID}
+  - snapshot{s=test2} @target
+
+test2:
+  Skills:
+  - elemental_damage{a=<snapshot.damage>;element=ELECTRO} @snapshot
 ```
 
+<br />
+
 ### elemental_damage
-Deal elemental damage or physical damage
+Deal elemental damage or physical damage <br /><br />
 
 
 | Attribute         | Aliases | Data Type    | Description                                 | Default   |
@@ -35,6 +60,8 @@ Deal elemental damage or physical damage
 | internal_cooldown | icd     | String, Long | คูลดาวน์การติดธาตุและการเกิดปฏิกิริยาธาตุ   | default   | 
 | formula           | dc, f   | String       | สูตรคำนวนดาเมจตาม config.yml ของ MythicCore | (default) |
 | percent           | p       | Double       | Talent (%)                                  | 100       |
+
+<br />
 
 Examples:
 ```yml
@@ -42,9 +69,10 @@ test:
   Skills:
   - elemental_damage{amount=10;element=PYRO;gu=1.0A} @Target
 ```
+<br />
 
 ### elemental_shield
-Create elemental shields according to the specified quantity
+Create elemental shields according to the specified quantity<br /><br />
 
 | Attribute | Aliases | Data Type | Description                               | Default |
 |-----------|---------|-----------|-------------------------------------------|---------|
@@ -52,20 +80,25 @@ Create elemental shields according to the specified quantity
 | element   | e       | String    | Element of the shield                     |         | 
 | duration  | d, t    | Long      | Duration of the elemental shield in ticks | 0       |
 
+<br />
+
 Examples:
 ```yml
 test:
   Skills:
   - elemental_shield{amount=10;element=GEO;duration=100} @Target # apply geo shield for 5 seconds
 ```
+<br />
 
 ### reduce_defense
-Reduce defensive power according to the specified quantity and duration
+Reduce defensive power according to the specified quantity and duration<br /><br />
 
 | Attribute | Aliases | Data Type | Description                             | Default  |
 |-----------|---------|-----------|-----------------------------------------|----------|
 | amount    | a       | Double    | The amount of defense to be reduced (%) | 0        | 
 | duration  | d, t    | Long      | The duration for the reduction          | 0        |
+
+<br />
 
 Examples:
 ```yml
@@ -73,9 +106,10 @@ test:
   Skills:
   - reduce_defense{amount=10;duration=100} @Target # reduce 10 defense for 5 seconds
 ```
+<br />
 
 ### reduce_resistance
-Reduce the resistance of the specified element
+Reduce the resistance of the specified element<br /><br />
 
 | Attribute | Aliases | Data Type | Description                                | Default |
 |-----------|---------|-----------|--------------------------------------------|---------|
@@ -83,15 +117,18 @@ Reduce the resistance of the specified element
 | element   | e       | String    | The element of resistance                  |         |
 | duration  | d, t    | Long      | The duration for the reduction             | 0       |
 
+<br />
+
 Examples:
 ```yml
 test:
   Skills:
   - reduce_resistance{amount=50;element=ANEMO;duration=100} @Target # reduce 50% of anemo resistance
 ```
+<br />
 
 ### set_elemental_damage
-Set mythic mob damage
+Set mythic mob damage<br /><br />
 
 | Attribute         | Aliases | Data Type    | Description                                 | Default   |
 |-------------------|---------|--------------|---------------------------------------------|-----------|
@@ -101,6 +138,8 @@ Set mythic mob damage
 | internal_cooldown | icd     | String, Long | คูลดาวน์การติดธาตุและการเกิดปฏิกิริยาธาตุ   | default   | 
 | formula           | dc, f   | String       | สูตรคำนวนดาเมจตาม config.yml ของ MythicCore | (default) |
 | percent           | p       | Double       | Talent (%)                                  | 100       |
+
+<br />
 
 Examples:
 ```yml
@@ -109,13 +148,16 @@ test:
     - set_elemental_damage{a=10;e=PYRO;icd=20} @self ~onSpawn
     - set_elemental_damage{a=20;e=PYRO;gu=4B;icd=test} @self ~onSpawn
 ```
+<br />
 
 ### set_defense
-Set mythic mob defense
+Set mythic mob defense<br /><br />
 
 | Attribute         | Aliases | Data Type      | Description       | Default   |
 |-------------------|---------|----------------|-------------------|-----------|
 | amount            | a       | Double         | Amount of defense | 0         | 
+
+<br />
 
 Examples:
 ```yml
@@ -123,14 +165,17 @@ test:
   Skills:
     - set_defense{a=300} @self ~onSpawn
 ```
+<br />
 
 ### set_resistance
-Set mythic mob elemental resistance
+Set mythic mob elemental resistance<br /><br />
 
 | Attribute | Aliases | Data Type | Description          | Default   |
 |-----------|---------|-----------|----------------------|-----------|
 | amount    | a       | Double    | Amount of defense    | 0         | 
 | element   | e       | String    | Resistance element   | (default) |
+
+<br />
 
 Examples:
 ```yml
@@ -138,8 +183,52 @@ test:
   Skills:
     - set_resistance{a=20;e=CRYO} @self ~onSpawn
 ```
+<br />
+
+### clearAura
+Remove or clear target's aura <br /><br />
+
+
+| Attribute | Aliases | Data Type | Description    | Default |
+|-----------|---------|-----------|----------------|---------|
+| aura      | a       | String    | Aura to remove | ALL     | 
+
+<br />
+
+Examples:
+```yml
+test:
+  Skills:
+  - clearAura{aura=PYRO} @target
+  - clearAura{aura=FROZEN} @target
+  - clearAura{aura=ALL} @target
+  - clearAura{} @target
+```
+<br />
+
+### applyAura
+Apply aura to target <br /><br />
+
+
+| Attribute        | Aliases | Data Type | Description                 | Default   |
+|------------------|---------|-----------|-----------------------------|-----------|
+| aura             | a       | String    | Aura to remove              |           | 
+| gauge_unit       | gu      | String    | Elemental Gauge             | (default) |
+| trigger_reaction | tr      | Boolean   | Trigger elemental reactions | true      |
+
+<br />
+
+Examples:
+```yml
+test:
+  Skills:
+  - applyAura{aura=PYRO;gu=4C;tr=true} @target
+```
+<br />
 
 ## Installations
+<br />
+
 1. Register elements to MythicLibs plugin `plugins/MythicLibs/elements.yml`
    - PHYSICAL
    - GEO

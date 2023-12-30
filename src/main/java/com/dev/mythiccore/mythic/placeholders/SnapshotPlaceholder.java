@@ -26,7 +26,9 @@ public class SnapshotPlaceholder {
                                 String.valueOf(((PlayerMetadata) skillMetadata.getMetadata("SNAPSHOT_STATS").orElse(new PlayerMetadata(PlayerData.get(caster.getUniqueId()).getMMOPlayerData().getStatMap(), EquipmentSlot.MAIN_HAND))).getStat("DEFENSE"));
                         case "em" ->
                                 String.valueOf(((PlayerMetadata) skillMetadata.getMetadata("SNAPSHOT_STATS").orElse(new PlayerMetadata(PlayerData.get(caster.getUniqueId()).getMMOPlayerData().getStatMap(), EquipmentSlot.MAIN_HAND))).getStat("AST_ELEMENTAL_MASTERY"));
-                        default -> (String) (skillMetadata.getMetadata("SNAPSHOT_DATA_" + param.toLowerCase()).orElse("1"));
+                        default -> (param.startsWith("stat.")) ?
+                                String.valueOf(((PlayerMetadata) skillMetadata.getMetadata("SNAPSHOT_STATS").orElse(new PlayerMetadata(PlayerData.get(caster.getUniqueId()).getMMOPlayerData().getStatMap(), EquipmentSlot.MAIN_HAND))).getStat(param.substring(5).toUpperCase())) :
+                                (String) (skillMetadata.getMetadata("SNAPSHOT_DATA_" + param.toLowerCase()).orElse("1"));
                     };
                 } else {
                     return switch (param) {

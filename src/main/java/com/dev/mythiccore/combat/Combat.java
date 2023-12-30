@@ -33,12 +33,14 @@ public class Combat implements Listener {
             return;
         }
 
-        if (lastCombat.containsKey(damager)) {
-            if (ConfigLoader.aoeDamageFilterEnable() && !lastCombat.get(damager).equals(getMobType(event.getEntity()))) {
-                event.setCancelled(true);
-                return;
+        try {
+            if (lastCombat.containsKey(damager)) {
+                if (ConfigLoader.aoeDamageFilterEnable() && !lastCombat.get(damager).equals(getMobType(event.getEntity()))) {
+                    event.setCancelled(true);
+                    return;
+                }
             }
-        }
+        } catch (Exception ignored) {}
 
         lastCombat.put(damager, getMobType(event.getEntity()));
 

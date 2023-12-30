@@ -40,6 +40,12 @@ public class MythicLoad implements Listener {
         else if (event.getMechanicName().equalsIgnoreCase("snapshot"))	{
             event.register(new Snapshot(event.getConfig()));
         }
+        else if (event.getMechanicName().equalsIgnoreCase("clearAura"))	{
+            event.register(new ClearAura(event.getConfig()));
+        }
+        else if (event.getMechanicName().equalsIgnoreCase("applyAura"))	{
+            event.register(new ApplyAura(event.getConfig()));
+        }
     }
 
     @EventHandler
