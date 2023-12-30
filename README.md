@@ -48,7 +48,7 @@ test2:
   
 test3:
   Skills:
-  - elemental_damage{a=<snapshot.some_damage>;element=CRYO} @snapshot # deal <caster.damage> Damage to Entities in radius 10
+  - elemental_damage{a=<snapshot.some_damage>;element=CRYO} @snapshot # deal <caster.damage> Damage to Entities in radius 5
 ```
 
 <br />
