@@ -69,6 +69,12 @@ public class Snapshot implements ITargetedEntitySkill {
                     skillMetadata1.setMetadata("SNAPSHOT_TARGET", abstractEntity);
                     entryConfig.forEach((a) -> skillMetadata1.setMetadata("SNAPSHOT_DATA_" + a.getKey().toLowerCase(), String.valueOf(PlaceholderDouble.of(a.getValue()).get(skillMetadata))));
                 });
+
+            } else {
+                MythicBukkit.inst().getAPIHelper().castSkill(bukkitcaster, skill, skillMetadata1 -> {
+                    skillMetadata1.setMetadata("SNAPSHOT_TARGET", abstractEntity);
+                    entryConfig.forEach((a) -> skillMetadata1.setMetadata("SNAPSHOT_DATA_"+a.getKey().toLowerCase(), String.valueOf(PlaceholderDouble.of(a.getValue()).get(skillMetadata))));
+                });
             }
 
         }
