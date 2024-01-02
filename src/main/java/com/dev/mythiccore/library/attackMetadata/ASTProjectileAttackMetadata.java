@@ -1,4 +1,4 @@
-package com.dev.mythiccore.library;
+package com.dev.mythiccore.library.attackMetadata;
 
 import com.dev.mythiccore.enums.AttackSource;
 import com.dev.mythiccore.utils.ConfigLoader;
@@ -10,7 +10,7 @@ import org.bukkit.entity.Projectile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ASTProjectileAttackMetadata extends ProjectileAttackMetadata {
+public class ASTProjectileAttackMetadata extends ProjectileAttackMetadata implements AstAttackMeta {
     private String cooldown_source;
     private AttackSource attack_source;
     private long internal_cooldown;

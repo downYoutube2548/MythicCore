@@ -65,19 +65,18 @@ public class AuraVisualizer {
                     if (!mapHologram.containsKey(uuid)) {
 
                         TextDisplay textDisplay = entity.getWorld().spawn(spawnLocation, TextDisplay.class);
-                        textDisplay.setPersistent(false);
-                        textDisplay.setBillboard(Display.Billboard.CENTER);
-                        textDisplay.setText(Utils.colorize(MythicCore.getInstance().getConfig().getString("General.aura-visualizer").replace("{aura}", MythicCore.getAuraManager().getAura(uuid).getAuraIcon()).replace("{auraGaugeBar}", MythicCore.getAuraManager().getAura(uuid).getAuraGaugeBar()).replace("{name}", entity.getName()).replace("\\n", "\n").replace("{hpBar}", HpBar.getHpBar(uuid)))/* + " | " + MythicCore.getCooldownManager().getCooldown(uuid).getMapCooldown()*/);
-                        textDisplay.setTransformation(new Transformation(textDisplay.getTransformation().getTranslation(), textDisplay.getTransformation().getLeftRotation(), new Vector3f(scale), textDisplay.getTransformation().getRightRotation()));
-                        textDisplay.setShadowed(false);
-                        textDisplay.setSeeThrough(true);
-                        textDisplay.setBrightness(new Display.Brightness(15, 15));
-                        textDisplay.setBackgroundColor(Color.fromARGB(0, 0, 0, 0));
-                        textDisplay.setMetadata("AST_AURA_VISUALIZER", new FixedMetadataValue(MythicCore.getInstance(), true));
                         mapHologram.put(uuid, textDisplay);
+                            textDisplay.setPersistent(false);
+                            textDisplay.setBillboard(Display.Billboard.CENTER);
+                            textDisplay.setText(Utils.colorize(MythicCore.getInstance().getConfig().getString("General.aura-visualizer").replace("{aura}", MythicCore.getAuraManager().getAura(uuid).getAuraIcon()).replace("{auraGaugeBar}", MythicCore.getAuraManager().getAura(uuid).getAuraGaugeBar()).replace("{name}", entity.getName()).replace("\\n", "\n").replace("{hpBar}", HpBar.getHpBar(uuid)))/* + " | " + MythicCore.getCooldownManager().getCooldown(uuid).getMapCooldown()*/);
+                            textDisplay.setTransformation(new Transformation(textDisplay.getTransformation().getTranslation(), textDisplay.getTransformation().getLeftRotation(), new Vector3f(scale), textDisplay.getTransformation().getRightRotation()));
+                            textDisplay.setShadowed(false);
+                            textDisplay.setSeeThrough(true);
+                            textDisplay.setBrightness(new Display.Brightness(15, 15));
+                            textDisplay.setBackgroundColor(Color.fromARGB(0, 0, 0, 0));
+                            textDisplay.setMetadata("AST_AURA_VISUALIZER", new FixedMetadataValue(MythicCore.getInstance(), true));
 
                     } else {
-
                         TextDisplay textDisplay = mapHologram.get(uuid);
                         textDisplay.setText(Utils.colorize(MythicCore.getInstance().getConfig().getString("General.aura-visualizer").replace("{aura}", MythicCore.getAuraManager().getAura(uuid).getAuraIcon()).replace("{auraGaugeBar}", MythicCore.getAuraManager().getAura(uuid).getAuraGaugeBar()).replace("{name}", entity.getName()).replace("\\n", "\n").replace("{hpBar}", HpBar.getHpBar(uuid))));
                         textDisplay.teleport(spawnLocation);

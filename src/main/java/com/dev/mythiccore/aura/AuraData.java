@@ -83,7 +83,7 @@ public class AuraData {
     public void addAura(String aura, double gauge_unit, String decay_rate, boolean triggerReaction) {
         addAura(aura, gauge_unit, decay_rate);
         if (triggerReaction && Bukkit.getEntity(uuid) instanceof LivingEntity livingEntity) {
-            TriggerReaction.triggerReactions(new DamagePacket(0, Element.valueOf(aura), DamageType.SKILL), gauge_unit, decay_rate, livingEntity, null, s -> 0, EntityDamageEvent.DamageCause.CUSTOM);
+            TriggerReaction.triggerReactions(null, new DamagePacket(0, Element.valueOf(aura), DamageType.SKILL), gauge_unit, decay_rate, livingEntity, null, s -> 0, EntityDamageEvent.DamageCause.CUSTOM);
         }
     }
 

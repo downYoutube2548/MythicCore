@@ -71,7 +71,7 @@ public class CoreCommand implements CommandExecutor, TabExecutor {
                                         MythicCore.getAuraManager().getAura(target.getUniqueId()).addAura(args[2], gauge, decay_rate);
                                     if (gauge > 0) {
                                         if (elements.contains(args[2]))
-                                            TriggerReaction.triggerReactions(new DamagePacket(0, Element.valueOf(args[2]), DamageType.SKILL), gauge, decay_rate, target, player, new PlayerMetadata(PlayerData.get(player).getStats().getMap(), EquipmentSlot.MAIN_HAND), EntityDamageEvent.DamageCause.CUSTOM);
+                                            TriggerReaction.triggerReactions(null, new DamagePacket(0, Element.valueOf(args[2]), DamageType.SKILL), gauge, decay_rate, target, player, new PlayerMetadata(PlayerData.get(player).getStats().getMap(), EquipmentSlot.MAIN_HAND), EntityDamageEvent.DamageCause.CUSTOM);
                                     }
                                     sender.sendMessage(ConfigLoader.getMessage("apply-aura-success", true)
                                             .replace("{aura}", args[2])

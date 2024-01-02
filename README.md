@@ -6,16 +6,26 @@ A Minecraft Plugin that modifies Minecraft combat mechanics by handle all types 
 
 - `/mythiccore reload` reload plugin configuration
 
+## MythicMobs Conditions
+
+| Condition  | Type | Attribute   | Aliases | Description                             | 
+|------------|------|-------------|---------|-----------------------------------------|
+| doReaction | Meta | reaction_id | r, id   | Check if skill occur elemental reaction |
+
+
 ## MythicMobs Mechanics
 
 ### snapshot
-Execute a Mythic Mob skills with Snapshot stats (Player Only)<br /><br />
+Execute a Mythic Mob skills with Snapshot stats<br /><br />
 
-| Attribute   | Aliases  | Data Type | Description                                           | Default |
-|-------------|----------|-----------|-------------------------------------------------------|---------|
-| skill       | s, spell | String    | Mythic Mob Skill ID                                   |         |
-| check_owner | co       | Boolean   | Use caster owner's snapshot stats if owner is present | false   |
-| ANY_KEY     |          | Double    | Specify the key-value of current Snapshot Skill       | -       |
+| Attribute       | Aliases  | Data Type | Description                                           | Default  |
+|-----------------|----------|-----------|-------------------------------------------------------|----------|
+| skill           | s, spell | String    | Mythic Mob Skill ID                                   |          |
+| check_owner     | co       | Boolean   | Use caster owner's snapshot stats if owner is present | false    |
+| stat_STAT_ID    |          | Double    | Set custom modifier of specific stat                  |          |
+| update_stats    |          | Boolean   | Set current stats as snapshot stats                   | true     |
+| update_targeter |          | Boolean   | Set current skill targeter as snapshot targeter       | true     |
+| ANY_KEY         |          | Double    | Specify the key-value of current Snapshot Skill       | -        |
 <br />
 
 #### Additional Targeters
@@ -51,21 +61,43 @@ test3:
   Skills:
   - elemental_damage{a=<snapshot.some_damage>;element=CRYO} @snapshot # deal <caster.damage> Damage to Entities in radius 5
 ```
+<br />
 
+### sudoSnapshot
+Sudo a Mythic Mob skills with Snapshot stats (This mechanic inherits every attribute of the "snapshot" mechanic)<br /><br />
+
+
+| Attribute | Aliases | Data Type | Description                                      | Default |
+|-----------|---------|-----------|--------------------------------------------------|---------|
+| caster    | c       | String    | The entity that will be the caster of this skill | @caster | 
+
+<br />
+
+Examples:
+```yml
+test:
+   Skills:
+      - sudoSnapshot{s=test2;caster=@target} @target
+
+test2:
+   Skills:
+      - elemental_damage{a=<snapshot.damage>;element=ELECTRO} @snapshot
+```
 <br />
 
 ### elemental_damage
 Deal elemental damage or physical damage <br /><br />
 
 
-| Attribute         | Aliases | Data Type    | Description                                 | Default   |
-|-------------------|---------|--------------|---------------------------------------------|-----------|
-| amount            | a       | Double       | จำนวนดาเมจ                                  | 0         | 
-| element           | e       | String       | ประเภทของธาตุ                               | (default) | 
-| gauge_unit        | gu      | String       | เกจของออร่าธาตุที่จะติด (Ex. 1A, 2.2B, 4C)  | (default) |
-| internal_cooldown | icd     | String, Long | คูลดาวน์การติดธาตุและการเกิดปฏิกิริยาธาตุ   | default   | 
-| formula           | dc, f   | String       | สูตรคำนวนดาเมจตาม config.yml ของ MythicCore | (default) |
-| percent           | p       | Double       | Talent (%)                                  | 100       |
+| Attribute         | Aliases | Data Type    | Description                                     | Default   |
+|-------------------|---------|--------------|-------------------------------------------------|-----------|
+| amount            | a       | Double       | จำนวนดาเมจ                                      | 0         | 
+| element           | e       | String       | ประเภทของธาตุ                                   | (default) | 
+| gauge_unit        | gu      | String       | เกจของออร่าธาตุที่จะติด (Ex. 1A, 2.2B, 4C)      | (default) |
+| internal_cooldown | icd     | String, Long | คูลดาวน์การติดธาตุและการเกิดปฏิกิริยาธาตุ       | default   | 
+| formula           | dc, f   | String       | สูตรคำนวนดาเมจตาม config.yml ของ MythicCore     | (default) |
+| percent           | p       | Double       | Talent (%)                                      | 100       |
+| stat_STAT_ID      |         | Double       | Set custom modifier of specific stat            |           |
 
 <br />
 

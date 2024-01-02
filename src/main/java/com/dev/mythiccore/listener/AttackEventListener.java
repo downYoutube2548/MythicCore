@@ -1,9 +1,10 @@
 package com.dev.mythiccore.listener;
 
 import com.dev.mythiccore.enums.AttackSource;
-import com.dev.mythiccore.library.ASTAttackMetadata;
+import com.dev.mythiccore.library.attackMetadata.ASTAttackMetadata;
 import com.dev.mythiccore.library.ASTEntityStatProvider;
-import com.dev.mythiccore.library.ASTProjectileAttackMetadata;
+import com.dev.mythiccore.library.attackMetadata.ASTProjectileAttackMetadata;
+import com.dev.mythiccore.library.attackMetadata.AstAttackMeta;
 import com.dev.mythiccore.listener.events.attack.MiscAttackEvent;
 import com.dev.mythiccore.listener.events.attack.MobAttackEvent;
 import com.dev.mythiccore.listener.events.attack.PlayerAttackEvent;

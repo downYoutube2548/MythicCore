@@ -3,7 +3,7 @@ package com.dev.mythiccore.reaction;
 import com.dev.mythiccore.MythicCore;
 import com.dev.mythiccore.aura.AuraData;
 import com.dev.mythiccore.enums.AttackSource;
-import com.dev.mythiccore.library.ASTAttackMetadata;
+import com.dev.mythiccore.library.attackMetadata.ASTAttackMetadata;
 import com.dev.mythiccore.library.ASTEntityStatProvider;
 import com.dev.mythiccore.utils.ConfigLoader;
 import com.dev.mythiccore.utils.DamageManager;

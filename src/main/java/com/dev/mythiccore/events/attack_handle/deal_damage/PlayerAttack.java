@@ -1,8 +1,9 @@
 package com.dev.mythiccore.events.attack_handle.deal_damage;
 
 import com.dev.mythiccore.enums.AttackSource;
-import com.dev.mythiccore.library.ASTAttackMetadata;
-import com.dev.mythiccore.library.ASTProjectileAttackMetadata;
+import com.dev.mythiccore.library.attackMetadata.ASTAttackMetadata;
+import com.dev.mythiccore.library.attackMetadata.ASTProjectileAttackMetadata;
+import com.dev.mythiccore.library.attackMetadata.AstAttackMeta;
 import com.dev.mythiccore.listener.events.attack.PlayerAttackEvent;
 import com.dev.mythiccore.utils.ConfigLoader;
 import com.dev.mythiccore.utils.StatCalculation;
@@ -28,19 +29,11 @@ public class PlayerAttack implements Listener {
         String damage_formula = ConfigLoader.getDefaultDamageCalculation();
         double talent_percent = 100;
 
-        if (event.getAttack() instanceof ASTAttackMetadata astAttack) {
+        if (event.getAttack() instanceof AstAttackMeta astAttack) {
             if (astAttack.getAttackSource().equals(AttackSource.REACTION)) return;
             damage_formula = astAttack.getDamageCalculation();
 
-            if (astAttack.getAttackSource().equals(AttackSource.SKILL)) {
-                talent_percent = astAttack.getTalentPercent();
-            }
-        }
-        if (event.getAttack() instanceof ASTProjectileAttackMetadata astAttack) {
-            if (astAttack.getAttackSource().equals(AttackSource.REACTION)) return;
-            damage_formula = astAttack.getDamageCalculation();
-
-            if (astAttack.getAttackSource().equals(AttackSource.SKILL)) {
+            if (astAttack.getAttackSource().equals(AttackSource.SKILL) || astAttack.getAttackSource().equals(AttackSource.MYTHIC_SKILL)) {
                 talent_percent = astAttack.getTalentPercent();
             }
         }
@@ -58,7 +51,7 @@ public class PlayerAttack implements Listener {
                 continue;
             }
 
-            if ((event.getAttack() instanceof ASTAttackMetadata astAttack && astAttack.getAttackSource().equals(AttackSource.NORMAL)) || (event.getAttack() instanceof ASTProjectileAttackMetadata astAttack2 && astAttack2.getAttackSource().equals(AttackSource.NORMAL))) {
+            if (event.getAttack() instanceof AstAttackMeta astAttack && astAttack.getAttackSource().equals(AttackSource.NORMAL)) {
                 talent_percent = event.getAttacker().getStat("AST_"+packet.getElement().getId()+"_PERCENT");
                 if (talent_percent == 0) talent_percent = 100;
             }

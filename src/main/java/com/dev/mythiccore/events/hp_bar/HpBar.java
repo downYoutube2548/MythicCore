@@ -19,6 +19,8 @@ public class HpBar implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onAttack(EntityDamageEvent event) {
 
+        if (event.isCancelled()) return;
+
         if (event.getEntity() instanceof LivingEntity entity) {
             if (entity.getHealth() > 100000000) return;
 

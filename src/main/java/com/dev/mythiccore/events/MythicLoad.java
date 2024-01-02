@@ -1,11 +1,13 @@
 package com.dev.mythiccore.events;
 
+import com.dev.mythiccore.mythic.conditions.DoReactionCondition;
 import com.dev.mythiccore.mythic.mechanics.apply.*;
 import com.dev.mythiccore.mythic.mechanics.modify.SetDefense;
 import com.dev.mythiccore.mythic.mechanics.modify.SetElementalDamage;
 import com.dev.mythiccore.mythic.mechanics.modify.SetResistance;
 import com.dev.mythiccore.mythic.placeholders.SnapshotPlaceholder;
 import com.dev.mythiccore.mythic.targeters.SnapshotTargeter;
+import io.lumine.mythic.bukkit.events.MythicConditionLoadEvent;
 import io.lumine.mythic.bukkit.events.MythicMechanicLoadEvent;
 import io.lumine.mythic.bukkit.events.MythicReloadedEvent;
 import io.lumine.mythic.bukkit.events.MythicTargeterLoadEvent;
@@ -40,6 +42,9 @@ public class MythicLoad implements Listener {
         else if (event.getMechanicName().equalsIgnoreCase("snapshot"))	{
             event.register(new Snapshot(event.getConfig()));
         }
+        else if (event.getMechanicName().equalsIgnoreCase("sudoSnapshot"))	{
+            event.register(new SudoSnapshot(event.getConfig()));
+        }
         else if (event.getMechanicName().equalsIgnoreCase("clearAura"))	{
             event.register(new ClearAura(event.getConfig()));
         }
@@ -50,7 +55,7 @@ public class MythicLoad implements Listener {
 
     @EventHandler
     public void onTargeterLoad(MythicTargeterLoadEvent event) {
-        if(event.getTargeterName().equalsIgnoreCase("snapshot")) {
+        if (event.getTargeterName().equalsIgnoreCase("snapshot")) {
             event.register(new SnapshotTargeter(event.getContainer().getManager(), event.getConfig()));
         }
     }
@@ -58,5 +63,12 @@ public class MythicLoad implements Listener {
     @EventHandler
     public void mythicReload(MythicReloadedEvent event) {
         SnapshotPlaceholder.register();
+    }
+
+    @EventHandler
+    public void onConditionLoad(MythicConditionLoadEvent event) {
+        if (event.getConditionName().equalsIgnoreCase("doReaction")) {
+            event.register(new DoReactionCondition(event.getConfig()));
+        }
     }
 }
