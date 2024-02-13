@@ -162,62 +162,60 @@ public class TriggerReaction implements Listener {
                     }
                 }
             } else if (rawReaction instanceof DoubleAuraReaction reaction) {
-                if (reaction.getFirstAura().equals(damage.getElement().getId()) || reaction.getSecondAura().equals(damage.getElement().getId())) {
-                    if (MythicCore.getAuraManager().getAura(entity.getUniqueId()).getMapAura().containsKey(reaction.getFirstAura()) && MythicCore.getAuraManager().getAura(entity.getUniqueId()).getMapAura().containsKey(reaction.getSecondAura())) {
+                if ((reaction.getFirstAura().equals(damage.getElement().getId()) && MythicCore.getAuraManager().getAura(entity.getUniqueId()).getMapAura().containsKey(reaction.getSecondAura())) || (reaction.getSecondAura().equals(damage.getElement().getId()) && MythicCore.getAuraManager().getAura(entity.getUniqueId()).getMapAura().containsKey(reaction.getFirstAura()))) {
 
-                        if (!statProviderMap.containsKey(entity)) {
-                            statProviderMap.put(entity, new HashMap<>(Map.of(reaction, statProvider)));
-                        } else {
-                            statProviderMap.get(entity).put(reaction, statProvider);
-                        }
-
-                        // if already have task
-                        if (reactionTasks.containsKey(entity) && reactionTasks.get(entity).contains(reaction))
-                            return ReactionRespond.NONE;
-
-                        // display indicator
-                        if (!reaction.getDisplay().equals(""))
-                            Utils.displayIndicator(reaction.getDisplay(), entity);
-
-                        if (!reactionTasks.containsKey(entity)) {
-                            reactionTasks.put(entity, new HashSet<>(Set.of(reaction)));
-                        } else {
-                            reactionTasks.get(entity).add(reaction);
-                        }
-
-                        MobType last_mob_type = MobType.NULL;
-                        if (damager != null) {
-                            last_mob_type = Combat.getLastMobType(damager);
-                        }
-
-                        reaction_success = ReactionRespond.DOUBLE_REACTION;
-
-                        if (attack instanceof AstAttackMeta astAttackMeta && astAttackMeta.getAttackSource().equals(AttackSource.MYTHIC_SKILL)) {
-                            astAttackMeta.getMetadata("SKILL_METADATA").ifPresent(o -> ((SkillMetadata) o).setMetadata("REACTION_SUCCESS_" + reaction_id, true));
-                        }
-
-                        MobType finalLast_mob_type = last_mob_type;
-                        Bukkit.getScheduler().runTaskTimerAsynchronously(MythicCore.getInstance(), (task) -> {
-                            if (MythicCore.getAuraManager().getAura(entity.getUniqueId()).getMapAura().containsKey(reaction.getFirstAura()) && MythicCore.getAuraManager().getAura(entity.getUniqueId()).getMapAura().containsKey(reaction.getSecondAura())) {
-
-                                Bukkit.getScheduler().runTask(MythicCore.getInstance(), () -> reaction.t(damage, gauge_unit, decay_rate, entity, damager, statProviderMap.get(entity).get(reaction), damage_cause, finalLast_mob_type));
-
-                            } else {
-
-                                if (reactionTasks.containsKey(entity)) {
-                                    reactionTasks.get(entity).remove(reaction);
-                                    if (reactionTasks.get(entity).isEmpty()) reactionTasks.remove(entity);
-                                }
-
-                                if (statProviderMap.containsKey(entity)) {
-                                    statProviderMap.get(entity).remove(reaction);
-                                    if (statProviderMap.get(entity).isEmpty()) statProviderMap.remove(entity);
-                                }
-
-                                task.cancel();
-                            }
-                        }, 3, reaction.getFrequency());
+                    if (!statProviderMap.containsKey(entity)) {
+                        statProviderMap.put(entity, new HashMap<>(Map.of(reaction, statProvider)));
+                    } else {
+                        statProviderMap.get(entity).put(reaction, statProvider);
                     }
+
+                    // if already have task
+                    if (reactionTasks.containsKey(entity) && reactionTasks.get(entity).contains(reaction))
+                        return ReactionRespond.NONE;
+
+                    // display indicator
+                    if (!reaction.getDisplay().equals(""))
+                        Utils.displayIndicator(reaction.getDisplay(), entity);
+
+                    if (!reactionTasks.containsKey(entity)) {
+                        reactionTasks.put(entity, new HashSet<>(Set.of(reaction)));
+                    } else {
+                        reactionTasks.get(entity).add(reaction);
+                    }
+
+                    MobType last_mob_type = MobType.NULL;
+                    if (damager != null) {
+                        last_mob_type = Combat.getLastMobType(damager);
+                    }
+
+                    reaction_success = ReactionRespond.DOUBLE_REACTION;
+
+                    if (attack instanceof AstAttackMeta astAttackMeta && astAttackMeta.getAttackSource().equals(AttackSource.MYTHIC_SKILL)) {
+                        astAttackMeta.getMetadata("SKILL_METADATA").ifPresent(o -> ((SkillMetadata) o).setMetadata("REACTION_SUCCESS_" + reaction_id, true));
+                    }
+
+                    MobType finalLast_mob_type = last_mob_type;
+                    Bukkit.getScheduler().runTaskTimerAsynchronously(MythicCore.getInstance(), (task) -> {
+                        if (MythicCore.getAuraManager().getAura(entity.getUniqueId()).getMapAura().containsKey(reaction.getFirstAura()) && MythicCore.getAuraManager().getAura(entity.getUniqueId()).getMapAura().containsKey(reaction.getSecondAura())) {
+
+                            Bukkit.getScheduler().runTask(MythicCore.getInstance(), () -> reaction.t(damage, gauge_unit, decay_rate, entity, damager, statProviderMap.get(entity).get(reaction), damage_cause, finalLast_mob_type));
+
+                        } else {
+
+                            if (reactionTasks.containsKey(entity)) {
+                                reactionTasks.get(entity).remove(reaction);
+                                if (reactionTasks.get(entity).isEmpty()) reactionTasks.remove(entity);
+                            }
+
+                            if (statProviderMap.containsKey(entity)) {
+                                statProviderMap.get(entity).remove(reaction);
+                                if (statProviderMap.get(entity).isEmpty()) statProviderMap.remove(entity);
+                            }
+
+                            task.cancel();
+                        }
+                    }, 3, reaction.getFrequency());
                 }
             }
 

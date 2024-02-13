@@ -99,29 +99,31 @@ public class Utils {
 
     public static void generateParticles(Particle particle, double radius, int points, double speed, Location center, double xRotationAngle, double yRotationAngle) {
 
-        double xRotationRadians = Math.toRadians(xRotationAngle);
-        double yRotationRadians = Math.toRadians(yRotationAngle);
+        Bukkit.getScheduler().runTaskAsynchronously(MythicCore.getInstance(), ()->{
+            double xRotationRadians = Math.toRadians(xRotationAngle);
+            double yRotationRadians = Math.toRadians(yRotationAngle);
 
-        for (int i = 0; i < points; i++) {
-            double x = radius * Math.cos(i);
-            double y = radius * Math.sin(i);
-            double z = 0;
+            for (int i = 0; i < points; i++) {
+                double x = radius * Math.cos(i);
+                double y = radius * Math.sin(i);
+                double z = 0;
 
-            // Apply X-axis rotation
-            Vector rotatedX = new Vector(x, y, z).rotateAroundX(xRotationRadians);
+                // Apply X-axis rotation
+                Vector rotatedX = new Vector(x, y, z).rotateAroundX(xRotationRadians);
 
-            // Apply Y-axis rotation
-            Vector rotatedXY = rotatedX.clone().rotateAroundY(yRotationRadians);
+                // Apply Y-axis rotation
+                Vector rotatedXY = rotatedX.clone().rotateAroundY(yRotationRadians);
 
-            Objects.requireNonNull(center.getWorld()).spawnParticle(
-                    particle, // particle
-                    center, // location
-                    0, // count
-                    rotatedXY.getX(), rotatedXY.getY(), rotatedXY.getZ(),
-                    speed, // speed
-                    null, // Object: data
-                    true // force
-            );
-        }
+                Objects.requireNonNull(center.getWorld()).spawnParticle(
+                        particle, // particle
+                        center, // location
+                        0, // count
+                        rotatedXY.getX(), rotatedXY.getY(), rotatedXY.getZ(),
+                        speed, // speed
+                        null, // Object: data
+                        true // force
+                );
+            }
+        });
     }
 }

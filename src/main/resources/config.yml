@@ -3,6 +3,8 @@ General:
   disable-vanilla-damage: true
   aoe-damage-filter: true
   default-damage-calculation: scale-from-attack
+  enable-aura-visualizer: true
+  enable-hp-bar: true
   aura-visualizer: "{aura}\n{name}"
 
   decay-rate:
@@ -181,6 +183,7 @@ Elemental-Reaction:
     aura-overriding:
       FROZEN: CRYO
     swirl-radius: 3
+    swirl-limit:
     damage-formula: "0.7 * (16.12 * (attacker_level + 16) - 257.23) * (1 + ((16 * elemental_mastery) / (elemental_mastery + 2000))) * (1 + swirl_bonus/100) * resistance_multiplier"
   BLOOM:
     enable: true
@@ -559,3 +562,11 @@ message:
   syntax-error: "&cคำสั่งไม่ถูกต้อง!"
   apply-aura-success: "&eใส่ออร่า &6{aura} &eให้กับ &f{player} &eด้วยเกจธาตุ &b{gauge}"
   reload-success: "&eรีโหลดเรียบร้อยแล้ว!"
+  hp-bar:
+    symbol: "蔓:offset_-16:"
+    bar-prefix: "&f:offset_-16:桂:offset_-61:"
+    bar-color: "&8"
+    current-hp-color: "&a"
+    loss-hp-color: "&4"
+    bar-suffix: ""
+

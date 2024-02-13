@@ -1,85 +1,74 @@
 package com.dev.mythiccore.events.hp_bar;
 
 import com.dev.mythiccore.MythicCore;
+import com.dev.mythiccore.utils.ConfigLoader;
 import com.dev.mythiccore.utils.Utils;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.scheduler.BukkitTask;
 
 public class BarData {
 
     private double currentHp;
-    private final double maxHp;
+    private double maxHp;
     private double yellowHp;
     private final int maxBar;
-    private BukkitTask task = null;
-    private BukkitTask hpBarLifetime;
 
-    public BarData(double currentHp, double maxHp, double yellowBar, int maxBar, BukkitTask hpBarTask) {
+    public BarData(double currentHp, double maxHp, double yellowBar, int maxBar) {
         this.currentHp = currentHp;
         this.maxHp = maxHp;
         this.yellowHp = yellowBar;
         this.maxBar = maxBar;
-        this.hpBarLifetime = hpBarTask;
-
-        if (yellowBar > 0) {
-            task = Bukkit.getScheduler().runTaskTimerAsynchronously(MythicCore.getInstance(), () -> {
-                if (yellowHp > 0) {
-                    yellowHp -= (int) (0.01 * maxHp);
-                } else {
-                    task.cancel();
-                    task = null;
-                }
-            }, 2, 2);
-        }
     }
 
-    public void setHp(double value) {
-        if (value < currentHp) {
-            this.yellowHp = this.currentHp - value + this.yellowHp;
-            if (task == null) {
-                task = Bukkit.getScheduler().runTaskTimerAsynchronously(MythicCore.getInstance(), () -> {
-                    if (yellowHp > 0) {
-                        yellowHp -= (int) (0.01 * maxHp);
-                    } else {
-                        task.cancel();
-                        task = null;
-                    }
-                }, 2, 2);
-            }
-        }
-        this.currentHp = value;
+    public BarData setCurrentHp(double value) {
+        currentHp = value;
+        return this;
     }
 
-    public BukkitTask getTask() {
-        return task;
+    public BarData setMaxHp(double maxHp) {
+        this.maxHp = maxHp;
+        return this;
     }
 
-    public void newLifeTime(BukkitTask task) {
-        hpBarLifetime.cancel();
-        hpBarLifetime = task;
+    public BarData setYellowHp(double yellowHp) {
+        this.yellowHp = yellowHp;
+        return this;
     }
 
     public String getHpBar() {
 
         StringBuilder sb = new StringBuilder();
 
-        sb.append(Utils.colorize(FontImageWrapper.replaceFontImages("&f:offset_-16:桂:offset_-61:")));
+        FileConfiguration config = MythicCore.getInstance().getConfig();
+
+        sb.append(Utils.colorize(FontImageWrapper.replaceFontImages(config.getString("message.hp-bar.bar-prefix")
+                .replace("{currentHP}", Utils.Format(currentHp))
+                .replace("{maxHP}", Utils.Format(maxHp))
+                .replace("{lossHP}", Utils.Format(yellowHp))
+        )));
 
         int bars = (int) ((currentHp / maxHp) * maxBar);
         int y = 0;
         for (int i = 1; i <= maxBar; i++) {
             if (i <= bars) {
-                sb.append(Utils.colorize(FontImageWrapper.replaceFontImages("&a蔓:offset_-16:")));
+                sb.append(Utils.colorize(FontImageWrapper.replaceFontImages(config.getString("message.hp-bar.current-hp-color") + config.getString("message.hp-bar.symbol"))));
             } else {
                 if (y < (int)(yellowHp / maxHp * maxBar)) {
-                    sb.append(Utils.colorize(FontImageWrapper.replaceFontImages("&4蔓:offset_-16:")));
+                    sb.append(Utils.colorize(FontImageWrapper.replaceFontImages(config.getString("message.hp-bar.loss-hp-color") + config.getString("message.hp-bar.symbol"))));
                     y++;
                 } else {
-                    sb.append(Utils.colorize(FontImageWrapper.replaceFontImages("&8蔓:offset_-16:")));
+                    sb.append(Utils.colorize(FontImageWrapper.replaceFontImages(config.getString("message.hp-bar.bar-color") + config.getString("message.hp-bar.symbol"))));
                 }
             }
         }
+
+        sb.append(Utils.colorize(FontImageWrapper.replaceFontImages(config.getString("message.hp-bar.bar-suffix")
+                .replace("{currentHP}", Utils.Format(currentHp))
+                .replace("{maxHP}", Utils.Format(maxHp))
+                .replace("{lossHP}", Utils.Format(yellowHp))
+        )));
         return sb.toString();
     }
 }

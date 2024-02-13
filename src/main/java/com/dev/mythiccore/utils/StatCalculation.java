@@ -208,6 +208,11 @@ public class StatCalculation {
         return getResistanceMultiplier(elemental_resistance);
     }
 
+    public static double getResistanceMultiplier(Entity entity, String element) {
+        double elemental_resistance = getResistance(entity, element);
+        return getResistanceMultiplier(elemental_resistance);
+    }
+
     public static double getResistanceMultiplier(double elemental_resistance) {
 
         String formula = "0";
@@ -323,6 +328,24 @@ public class StatCalculation {
                 .setVariable("victim_level", victim_level);
 
         return expression.evaluate();
+    }
+
+    public static double getResistance(Entity entity, String element) {
+
+        ElementalResistanceReduction er = MythicCore.getBuffManager().getBuff(entity.getUniqueId()).getActivateBuff(ElementalResistanceReduction.class, new String[]{"element"}, new String[]{element});
+        double elemental_resistance;
+
+        if (entity instanceof Player player) {
+            PlayerData playerData = PlayerData.get(player);
+            PlayerStats playerStats = playerData.getStats();
+
+            elemental_resistance = playerStats.getStat("AST_"+element+"_RESISTANCE") + playerStats.getStat("AST_ALL_ELEMENTAL_RESISTANCE");
+        } else {
+            EntityStatManager entityStat = new EntityStatManager(entity);
+            elemental_resistance = entityStat.getDoubleStat("AST_"+element+"_RESISTANCE") + entityStat.getDoubleStat("AST_ALL_ELEMENTAL_RESISTANCE");
+        }
+
+        return getResistance(elemental_resistance, er == null ? 0 : er.getAmount());
     }
 
     public static double getResistance(UUID uuid, String element) {

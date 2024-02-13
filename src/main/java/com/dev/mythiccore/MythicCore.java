@@ -82,7 +82,7 @@ public final class MythicCore extends JavaPlugin {
         cooldown.startTick();
         FreezeEffect.effectApplier();
 
-        if (getServer().getPluginManager().isPluginEnabled("ItemsAdder")) AuraVisualizer.start();
+        if (getServer().getPluginManager().isPluginEnabled("ItemsAdder") && getConfig().getBoolean("General.enable-aura-visualizer")) AuraVisualizer.start();
         DendroCoreManager.dendroCoreTick();
 
         Objects.requireNonNull(Bukkit.getPluginCommand("mythiccore")).setExecutor(new CoreCommand());
@@ -104,7 +104,7 @@ public final class MythicCore extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new ShieldRefutation(), this);
         Bukkit.getPluginManager().registerEvents(new DendroCoreTrigger(), this);
         Bukkit.getPluginManager().registerEvents(new ChunkUnload(), this);
-        Bukkit.getPluginManager().registerEvents(new HpBar(), this);
+        if (getConfig().getBoolean("General.enable-hp-bar")) Bukkit.getPluginManager().registerEvents(new HpBar(), this);
 
         registerMMOItemStat();
 

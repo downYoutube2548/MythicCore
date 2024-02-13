@@ -11,6 +11,7 @@ import io.lumine.mythic.lib.damage.DamagePacket;
 import io.lumine.mythic.lib.damage.DamageType;
 import io.lumine.mythic.lib.element.Element;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageEvent;
 
@@ -88,8 +89,9 @@ public class AuraData {
     }
 
     public void addAura(String aura, double gauge_unit, String decay_rate) {
-        if (MythicLib.plugin.getElements().get(aura) == null && ConfigLoader.getSpecialAuraIcon(aura) == null) return;
 
+        if (gauge_unit <= 0) return;
+        if (MythicLib.plugin.getElements().get(aura) == null && ConfigLoader.getSpecialAuraIcon(aura) == null) return;
 
         if (!this.mapAura.containsKey(aura)) {
             this.mapAura.put(aura, new AuraGauge((long) Math.floor(gauge_unit * ConfigLoader.getDecayRate(decay_rate)), gauge_unit, decay_rate));

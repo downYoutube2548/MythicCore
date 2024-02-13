@@ -35,8 +35,11 @@ public class Resonance extends SingleReaction {
     @Override
     public boolean trigger(DamagePacket damage, double gauge_unit, String decay_rate, LivingEntity entity, @Nullable Entity damager, StatProvider stats, EntityDamageEvent.DamageCause damage_cause) {
 
-        if (MythicCore.getCooldownManager().getCooldown(entity.getUniqueId()).getCooldown(entity, "RESONANCE_COOLDOWN") > 0) return false;
-        MythicCore.getCooldownManager().getCooldown(entity.getUniqueId()).setCooldown(entity, "RESONANCE_COOLDOWN", getConfig().getLong("resonance-cooldown"));
+        if (damager != null) {
+            if (MythicCore.getCooldownManager().getCooldown(damager.getUniqueId()).getCooldown(entity, "RESONANCE_COOLDOWN") > 0)
+                return false;
+            MythicCore.getCooldownManager().getCooldown(damager.getUniqueId()).setCooldown(entity, "RESONANCE_COOLDOWN", getConfig().getLong("resonance-cooldown"));
+        }
 
         int level = 1;
         double resonance_bonus = 0;

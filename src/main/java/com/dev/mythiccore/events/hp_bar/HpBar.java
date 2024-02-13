@@ -15,6 +15,7 @@ import java.util.UUID;
 public class HpBar implements Listener {
 
     public static final HashMap<UUID, BarData> hpBars = new HashMap<>();
+    public static final HashMap<UUID, BukkitTask> tasks = new HashMap<>();
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onAttack(EntityDamageEvent event) {
@@ -22,34 +23,28 @@ public class HpBar implements Listener {
         if (event.isCancelled()) return;
 
         if (event.getEntity() instanceof LivingEntity entity) {
-            if (entity.getHealth() > 100000000) return;
 
-            if (hpBars.containsKey(event.getEntity().getUniqueId())) {
+            UUID entityUUID = event.getEntity().getUniqueId();
 
-                BarData bar = hpBars.get(event.getEntity().getUniqueId());
-                bar.setHp(entity.getHealth() - event.getFinalDamage());
-                BukkitTask task = getTask(event.getEntity().getUniqueId());
-                bar.newLifeTime(task);
+            double currentHP = entity.getHealth() - event.getFinalDamage();
+            double maxHP = entity.getMaxHealth();
+            double lossHP = entity.getHealth() - (entity.getHealth() - event.getFinalDamage());
 
+            if (hpBars.containsKey(entityUUID)) {
+                hpBars.get(entityUUID).setCurrentHp(currentHP).setMaxHp(maxHP).setYellowHp(lossHP);
             } else {
-
-                BukkitTask task = getTask(event.getEntity().getUniqueId());
-                hpBars.put(event.getEntity().getUniqueId(), new BarData(entity.getHealth() - event.getFinalDamage(), entity.getMaxHealth(), entity.getHealth() - (entity.getHealth() - event.getFinalDamage()), 40, task));
+                hpBars.put(entityUUID, new BarData(currentHP, maxHP, lossHP, 40));
             }
+
+            if (tasks.containsKey(entityUUID)) {
+                tasks.get(entityUUID).cancel();
+            }
+
+            tasks.put(entityUUID, Bukkit.getScheduler().runTaskLaterAsynchronously(MythicCore.getInstance(), ()->{
+                tasks.remove(entityUUID);
+                hpBars.remove(entityUUID);
+            }, 100));
         }
-    }
-
-    private BukkitTask getTask(UUID uuid) {
-        return Bukkit.getScheduler().runTaskLaterAsynchronously(MythicCore.getInstance(), () -> {
-
-            if (hpBars.containsKey(uuid)) {
-                if (hpBars.get(uuid).getTask() != null) {
-                    hpBars.get(uuid).getTask().cancel();
-                }
-                hpBars.remove(uuid);
-            }
-
-        }, 200);
     }
 
     public static String getHpBar(UUID uuid) {

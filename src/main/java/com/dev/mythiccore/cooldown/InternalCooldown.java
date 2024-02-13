@@ -4,10 +4,7 @@ import com.dev.mythiccore.MythicCore;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 
-import java.util.ConcurrentModificationException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class InternalCooldown {
 
@@ -24,9 +21,11 @@ public class InternalCooldown {
             try {
                 if (!entityCooldownData.isEmpty()) {
                     for (UUID keys : entityCooldownData.keySet()) {
-                        for (LivingEntity entity : entityCooldownData.get(keys).getMapCooldown().keySet()) {
+                        Iterator<LivingEntity> iteratorB = entityCooldownData.get(keys).getMapCooldown().keySet().iterator();
+                        while (iteratorB.hasNext()) {
+                            LivingEntity entity = iteratorB.next();
                             if (entity == null || entity.isDead() || !entity.isValid()) {
-                                entityCooldownData.get(keys).removeCooldown(entity);
+                                iteratorB.remove();
                             } else {
                                 for (String source : entityCooldownData.get(keys).getEntityCooldown(entity).keySet()) {
                                     entityCooldownData.get(keys).reduceCooldown(entity, source, 1);

@@ -7,6 +7,7 @@ import com.dev.mythiccore.utils.ConfigLoader;
 import com.dev.mythiccore.utils.Utils;
 import de.tr7zw.nbtapi.NBTItem;
 import io.lumine.mythic.lib.MythicLib;
+import io.lumine.mythic.lib.api.item.ItemTag;
 import io.lumine.mythic.lib.api.player.EquipmentSlot;
 import io.lumine.mythic.lib.api.stat.StatInstance;
 import io.lumine.mythic.lib.damage.DamagePacket;
@@ -14,8 +15,26 @@ import io.lumine.mythic.lib.damage.DamageType;
 import io.lumine.mythic.lib.element.Element;
 import io.lumine.mythic.lib.player.PlayerMetadata;
 import net.Indyuce.mmocore.api.player.PlayerData;
+import net.Indyuce.mmoitems.ItemStats;
+import net.Indyuce.mmoitems.MMOItems;
+import net.Indyuce.mmoitems.api.interaction.GemStone;
+import net.Indyuce.mmoitems.api.item.mmoitem.LiveMMOItem;
+import net.Indyuce.mmoitems.api.item.mmoitem.MMOItem;
+import net.Indyuce.mmoitems.api.item.mmoitem.VolatileMMOItem;
+import net.Indyuce.mmoitems.api.item.template.TemplateModifier;
+import net.Indyuce.mmoitems.comp.inventory.SlotEquippedItem;
+import net.Indyuce.mmoitems.stat.data.DoubleData;
+import net.Indyuce.mmoitems.stat.data.GemSocketsData;
+import net.Indyuce.mmoitems.stat.data.GemstoneData;
+import net.Indyuce.mmoitems.stat.data.type.Mergeable;
+import net.Indyuce.mmoitems.stat.data.type.StatData;
+import net.Indyuce.mmoitems.stat.type.GemStoneStat;
+import net.Indyuce.mmoitems.stat.type.ItemStat;
+import net.Indyuce.mmoitems.stat.type.StatHistory;
+import net.Indyuce.mmoitems.util.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -23,13 +42,11 @@ import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
+import java.util.*;
 
 public class CoreCommand implements CommandExecutor, TabExecutor {
 
@@ -145,7 +162,39 @@ public class CoreCommand implements CommandExecutor, TabExecutor {
                     }
 
                      */
-                } else {
+                } else if (args[0].equalsIgnoreCase("extract-gemstones")) {
+
+                    if (player.getInventory().getItemInMainHand().getType() != Material.AIR) {
+                        LiveMMOItem item = new LiveMMOItem(player.getInventory().getItemInMainHand());
+
+                        List<Pair<GemstoneData, MMOItem>> gemstones = item.extractGemstones();
+                        for (Pair<GemstoneData, MMOItem> gemstoneData : gemstones) {
+                            player.getInventory().setItemInMainHand(
+                                    addGemStone(item, gemstoneData.getValue())
+                            );
+                            break;
+                        }
+
+//                        Bukkit.broadcastMessage(String.valueOf(((DoubleData) item.getData(ItemStats.MAX_HEALTH)).getValue()));
+//                        item.setData(ItemStats.MAX_HEALTH, new DoubleData(100));
+//                        Bukkit.broadcastMessage(String.valueOf(((DoubleData) item.getData(ItemStats.MAX_HEALTH)).getValue()));
+
+
+//                        for (GemstoneData gemstoneData : gemstones) {
+//                            MMOItem mmoItem = item.extractGemstone(gemstoneData);
+//                            player.getInventory().addItem(
+//                                    mmoItem.newBuilder().build()
+//                            );
+//                        }
+
+//                        player.getInventory().setItemInMainHand(
+//                                new LiveMMOItem(item.newBuilder().build()).newBuilder().build()
+//                        );
+
+                    }
+                }
+
+                else {
                     sender.sendMessage(ConfigLoader.getMessage("syntax-error", true));
                 }
             } else {
@@ -164,7 +213,7 @@ public class CoreCommand implements CommandExecutor, TabExecutor {
 
         List<String> output = new ArrayList<>();
         if (args.length == 1) {
-            List<String> list = List.of("apply-aura", "nbt", "remove-entity", "test", "reload");
+            List<String> list = List.of("apply-aura", "nbt", "remove-entity", "test", "reload", "extract-gemstones");
             output = tabComplete(args[0], list);
         }
         if (args.length > 1) {
@@ -201,6 +250,51 @@ public class CoreCommand implements CommandExecutor, TabExecutor {
             }
         }
         return matches;
+    }
+
+    public ItemStack addGemStone(MMOItem mmoItem, MMOItem gemstone) {
+        if (mmoItem.hasData(ItemStats.GEM_SOCKETS)) {
+
+            GemSocketsData socketsData = (GemSocketsData) mmoItem.getData(ItemStats.GEM_SOCKETS);
+
+            if (!socketsData.getEmptySlots().isEmpty()) {
+
+                io.lumine.mythic.lib.api.item.NBTItem gemNBT = gemstone.newBuilder().buildNBT();
+                LiveMMOItem gemMMOItem = new LiveMMOItem(gemNBT);
+                String gemType = gemNBT.getString(ItemStats.GEM_COLOR.getNBTPath());
+                String foundSocketColor = socketsData.getEmptySocket(gemType);
+
+                GemstoneData gemData = new GemstoneData(gemMMOItem, foundSocketColor);
+
+                socketsData.apply(socketsData.getEmptySlots().get(0), gemData);
+
+                for (ItemStat<?, ?> stat : gemstone.getStats()) {
+                    if (!(stat instanceof GemStoneStat)) {
+
+                        // Get the stat data
+                        StatData data = gemstone.getData(stat);
+
+                        // If the data is MERGEABLE
+                        if (data instanceof Mergeable) {
+                            //UPGRD//MMOItems.log("\u00a79>>> \u00a77Gem-Merging \u00a7c" + stat.getNBTPath());
+                            // Merge into it
+                            //Bukkit.broadcastMessage(stat.getId()+((data instanceof DoubleData doubleData) ? doubleData.getValue() : 0));
+                            mmoItem.mergeData(stat, data, gemData.getHistoricUUID());
+                        }
+                    }
+                }
+            }
+
+
+//            StatHistory gemStory = StatHistory.from(mmoItem, ItemStats.GEM_SOCKETS);
+//
+//            for (UUID uuid : gemStory.getAllGemstones()) {
+//                Bukkit.broadcastMessage("E");
+//                ((GemSocketsData) gemStory.perGemstoneData.get(uuid)).add(gemstoneData);
+//            }
+            //((GemSocketsData)gemStory.getOriginalData()).add(gemstoneData);
+        }
+        return mmoItem.newBuilder().build();
     }
 
 }

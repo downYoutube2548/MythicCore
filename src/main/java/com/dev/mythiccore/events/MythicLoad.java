@@ -6,6 +6,9 @@ import com.dev.mythiccore.mythic.mechanics.modify.SetDefense;
 import com.dev.mythiccore.mythic.mechanics.modify.SetElementalDamage;
 import com.dev.mythiccore.mythic.mechanics.modify.SetResistance;
 import com.dev.mythiccore.mythic.placeholders.SnapshotPlaceholder;
+import com.dev.mythiccore.mythic.targeters.EntitiesNearLocationTargeter;
+import com.dev.mythiccore.mythic.targeters.EntitiesNearOriginOffsetTargeter;
+import com.dev.mythiccore.mythic.targeters.OriginOffsetTargeter;
 import com.dev.mythiccore.mythic.targeters.SnapshotTargeter;
 import io.lumine.mythic.bukkit.events.MythicConditionLoadEvent;
 import io.lumine.mythic.bukkit.events.MythicMechanicLoadEvent;
@@ -51,12 +54,24 @@ public class MythicLoad implements Listener {
         else if (event.getMechanicName().equalsIgnoreCase("applyAura"))	{
             event.register(new ApplyAura(event.getConfig()));
         }
+        else if (event.getMechanicName().equalsIgnoreCase("pullTo"))	{
+            event.register(new PullToLocation(event.getConfig()));
+        }
     }
 
     @EventHandler
     public void onTargeterLoad(MythicTargeterLoadEvent event) {
         if (event.getTargeterName().equalsIgnoreCase("snapshot")) {
             event.register(new SnapshotTargeter(event.getContainer().getManager(), event.getConfig()));
+        }
+        else if (event.getTargeterName().equalsIgnoreCase("originOffset")) {
+            event.register(new OriginOffsetTargeter(event.getContainer().getManager(), event.getConfig()));
+        }
+        else if (event.getTargeterName().equalsIgnoreCase("EntitiesNearOriginOffset") || event.getTargeterName().equalsIgnoreCase("ENOO")) {
+            event.register(new EntitiesNearOriginOffsetTargeter(event.getContainer().getManager(), event.getConfig()));
+        }
+        else if (event.getTargeterName().equalsIgnoreCase("EntitiesNearLocation") || event.getTargeterName().equalsIgnoreCase("ENL")) {
+            event.register(new EntitiesNearLocationTargeter(event.getContainer().getManager(), event.getConfig()));
         }
     }
 
