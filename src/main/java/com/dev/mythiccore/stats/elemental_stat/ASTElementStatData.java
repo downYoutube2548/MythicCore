@@ -48,9 +48,7 @@ public class ASTElementStatData implements Mergeable<ASTElementStatData> {
 
     @Override
     public void merge(ASTElementStatData data) {
-        data.stats.forEach((key, value) -> {
-            this.stats.put(key, value + this.stats.getOrDefault(key, 0.0));
-        });
+        data.stats.forEach((key, value) -> this.stats.put(key, value + this.stats.getOrDefault(key, 0.0)));
     }
 
     @NotNull

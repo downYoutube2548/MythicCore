@@ -4,13 +4,12 @@ import com.dev.mythiccore.MythicCore;
 import com.dev.mythiccore.combat.Combat;
 import com.dev.mythiccore.enums.AttackSource;
 import com.dev.mythiccore.enums.MobType;
-import com.dev.mythiccore.enums.ReactionRespond;
-import com.dev.mythiccore.library.attackMetadata.ASTAttackMetadata;
-import com.dev.mythiccore.library.attackMetadata.ASTProjectileAttackMetadata;
+import com.dev.mythiccore.enums.ReactionResponse;
 import com.dev.mythiccore.library.attackMetadata.AstAttackMeta;
 import com.dev.mythiccore.listener.events.attack.MiscAttackEvent;
 import com.dev.mythiccore.listener.events.attack.MobAttackEvent;
 import com.dev.mythiccore.listener.events.attack.PlayerAttackEvent;
+import com.dev.mythiccore.listener.events.aura.ReactionTriggerEvent;
 import com.dev.mythiccore.reaction.ElementalReaction;
 import com.dev.mythiccore.reaction.reaction_type.DoubleAuraReaction;
 import com.dev.mythiccore.reaction.reaction_type.SingleReaction;
@@ -22,12 +21,9 @@ import io.lumine.mythic.lib.api.stat.provider.StatProvider;
 import io.lumine.mythic.lib.damage.AttackMetadata;
 import io.lumine.mythic.lib.damage.DamagePacket;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
+import org.bukkit.event.*;
 import org.bukkit.event.entity.EntityDamageEvent;
 
 import java.util.*;
@@ -45,7 +41,7 @@ public class TriggerReaction implements Listener {
         String cooldown_source;
         long internal_cooldown;
 
-        if (event.getAttack() instanceof AstAttackMeta astAttack && astAttack.getAttackSource() == AttackSource.REACTION) return;
+        if (event.getAttack() instanceof AstAttackMeta astAttack && !astAttack.isTriggerReaction()) return;
 
         if (event.getAttack() instanceof AstAttackMeta astAttack) {
             gauge_unit = astAttack.getGaugeUnit();
@@ -61,13 +57,18 @@ public class TriggerReaction implements Listener {
         for (DamagePacket packet : event.getDamage().getPackets()) {
             if (packet.getElement() == null) continue;
 
-            ReactionRespond reaction_respond = triggerReactions(event.getAttack(), packet, gauge_unit, decay_rate, event.getEntity(), event.getAttacker().getPlayer(), event.getAttack().getAttacker(), event.toBukkit().getCause());
+            ReactionTriggerEvent reactionTriggerEvent = new ReactionTriggerEvent(event.getAttacker().getPlayer().getUniqueId());
+            Bukkit.getPluginManager().callEvent(reactionTriggerEvent);
 
-            if ((gauge_unit > 0 && ConfigLoader.getAuraWhitelist().contains(packet.getElement().getId())) || reaction_respond != ReactionRespond.NONE) {
+            if (reactionTriggerEvent.isCancelled()) continue;
+
+            ReactionResponse reaction_respond = triggerReactions(event.getAttack(), packet, gauge_unit, decay_rate, event.getEntity(), event.getAttacker().getPlayer(), event.getAttack().getAttacker(), event.toBukkit().getCause());
+
+            if ((gauge_unit > 0 && ConfigLoader.getAuraWhitelist().contains(packet.getElement().getId())) || reaction_respond != ReactionResponse.NONE) {
                 MythicCore.getCooldownManager().getCooldown(event.getAttacker().getPlayer().getUniqueId()).setCooldown(event.getEntity(), cooldown_source, internal_cooldown);
             }
 
-            if (reaction_respond == ReactionRespond.NONE || reaction_respond == ReactionRespond.DOUBLE_REACTION) {
+            if (reaction_respond == ReactionResponse.NONE || reaction_respond == ReactionResponse.DOUBLE_REACTION) {
                 if (ConfigLoader.getAuraWhitelist().contains(packet.getElement().getId()))
                     MythicCore.getAuraManager().getAura(event.getEntity().getUniqueId()).addAura(packet.getElement().getId(), gauge_unit, decay_rate);
             }
@@ -86,7 +87,7 @@ public class TriggerReaction implements Listener {
         String cooldown_source;
         long internal_cooldown;
 
-        if (event.getAttack() instanceof AstAttackMeta astAttack && astAttack.getAttackSource() == AttackSource.REACTION) return;
+        if (event.getAttack() instanceof AstAttackMeta astAttack && !astAttack.isTriggerReaction()) return;
 
         if (event.getAttack() instanceof AstAttackMeta astAttack) {
             gauge_unit = astAttack.getGaugeUnit();
@@ -102,13 +103,18 @@ public class TriggerReaction implements Listener {
         for (DamagePacket packet : event.getDamage().getPackets()) {
             if (packet.getElement() == null) continue;
 
-            ReactionRespond reaction_respond = triggerReactions(event.getAttack(), packet, gauge_unit, decay_rate, event.getEntity(), event.getDamager(), event.getAttack().getAttacker(), event.toBukkit().getCause());
+            ReactionTriggerEvent reactionTriggerEvent = new ReactionTriggerEvent(event.getDamager().getUniqueId());
+            Bukkit.getPluginManager().callEvent(reactionTriggerEvent);
 
-            if ((gauge_unit > 0 && ConfigLoader.getAuraWhitelist().contains(packet.getElement().getId())) || reaction_respond != ReactionRespond.NONE) {
+            if (reactionTriggerEvent.isCancelled()) continue;
+
+            ReactionResponse reaction_respond = triggerReactions(event.getAttack(), packet, gauge_unit, decay_rate, event.getEntity(), event.getDamager(), event.getAttack().getAttacker(), event.toBukkit().getCause());
+
+            if ((gauge_unit > 0 && ConfigLoader.getAuraWhitelist().contains(packet.getElement().getId())) || reaction_respond != ReactionResponse.NONE) {
                 MythicCore.getCooldownManager().getCooldown(event.getDamager().getUniqueId()).setCooldown(event.getEntity(), cooldown_source, internal_cooldown);
             }
 
-            if (reaction_respond == ReactionRespond.NONE || reaction_respond == ReactionRespond.DOUBLE_REACTION) {
+            if (reaction_respond == ReactionResponse.NONE || reaction_respond == ReactionResponse.DOUBLE_REACTION) {
                 if (ConfigLoader.getAuraWhitelist().contains(packet.getElement().getId()))
                     MythicCore.getAuraManager().getAura(event.getEntity().getUniqueId()).addAura(packet.getElement().getId(), gauge_unit, decay_rate);
             }
@@ -121,19 +127,24 @@ public class TriggerReaction implements Listener {
         for (DamagePacket packet : event.getDamage().getPackets()) {
             if (packet.getElement() == null) continue;
 
-            ReactionRespond reaction_respond = triggerReactions(event.getAttack(), packet, ConfigLoader.getDefaultGaugeUnit(), ConfigLoader.getDefaultDecayRate(), event.getEntity(), null, s -> 0, event.toBukkit().getCause());
+            ReactionTriggerEvent reactionTriggerEvent = new ReactionTriggerEvent(null);
+            Bukkit.getPluginManager().callEvent(reactionTriggerEvent);
 
-            if (reaction_respond == ReactionRespond.NONE || reaction_respond == ReactionRespond.DOUBLE_REACTION) {
+            if (reactionTriggerEvent.isCancelled()) continue;
+
+            ReactionResponse reaction_respond = triggerReactions(event.getAttack(), packet, ConfigLoader.getDefaultGaugeUnit(), ConfigLoader.getDefaultDecayRate(), event.getEntity(), null, s -> 0, event.toBukkit().getCause());
+
+            if (reaction_respond == ReactionResponse.NONE || reaction_respond == ReactionResponse.DOUBLE_REACTION) {
                 if (ConfigLoader.getAuraWhitelist().contains(packet.getElement().getId()))
                     MythicCore.getAuraManager().getAura(event.getEntity().getUniqueId()).addAura(packet.getElement().getId(), ConfigLoader.getDefaultGaugeUnit(), ConfigLoader.getDefaultDecayRate());
             }
         }
     }
 
-    public static ReactionRespond triggerReactions(AttackMetadata attack, DamagePacket damage, double gauge_unit, String decay_rate, LivingEntity entity, Entity damager, StatProvider statProvider, EntityDamageEvent.DamageCause damage_cause) {
-        if (damage.getElement() == null) return ReactionRespond.NONE;
+    public static ReactionResponse triggerReactions(AttackMetadata attack, DamagePacket damage, double gauge_unit, String decay_rate, LivingEntity entity, Entity damager, StatProvider statProvider, EntityDamageEvent.DamageCause damage_cause) {
+        if (damage.getElement() == null) return ReactionResponse.NONE;
 
-        ReactionRespond reaction_success = ReactionRespond.NONE;
+        ReactionResponse reaction_success = ReactionResponse.NONE;
         List<String> reaction_ids = ConfigLoader.getReactionPriorityList(damage.getElement().getId());
         for (String reaction_id : reaction_ids) {
 
@@ -144,7 +155,7 @@ public class TriggerReaction implements Listener {
                 if (MythicCore.getAuraManager().getAura(entity.getUniqueId()).getMapAura().containsKey(reaction.getTrigger()) && damage.getElement().getId().equals(reaction.getTrigger())) {
                     if (!reaction.getDisplay().equals("")) Utils.displayIndicator(reaction.getDisplay(), entity);
                     reaction.t(damage, gauge_unit, decay_rate, entity, damager, statProvider, damage_cause);
-                    reaction_success = ReactionRespond.SINGLE_REACTION;
+                    reaction_success = ReactionResponse.SINGLE_REACTION;
 
                     if (attack instanceof AstAttackMeta astAttackMeta && astAttackMeta.getAttackSource().equals(AttackSource.MYTHIC_SKILL)) {
                         astAttackMeta.getMetadata("SKILL_METADATA").ifPresent(o -> ((SkillMetadata) o).setMetadata("REACTION_SUCCESS_" + reaction_id, true));
@@ -155,7 +166,7 @@ public class TriggerReaction implements Listener {
                 if (MythicCore.getAuraManager().getAura(entity.getUniqueId()).getMapAura().containsKey(reaction.getAura()) && damage.getElement().getId().equals(reaction.getTrigger())) {
                     if (!reaction.getDisplay().equals("")) Utils.displayIndicator(reaction.getDisplay(), entity);
                     reaction.t(damage, gauge_unit, decay_rate, entity, damager, statProvider, damage_cause);
-                    reaction_success = ReactionRespond.TRIGGER_REACTION;
+                    reaction_success = ReactionResponse.TRIGGER_REACTION;
 
                     if (attack instanceof AstAttackMeta astAttackMeta && astAttackMeta.getAttackSource().equals(AttackSource.MYTHIC_SKILL)) {
                         astAttackMeta.getMetadata("SKILL_METADATA").ifPresent(o -> ((SkillMetadata) o).setMetadata("REACTION_SUCCESS_" + reaction_id, true));
@@ -172,7 +183,7 @@ public class TriggerReaction implements Listener {
 
                     // if already have task
                     if (reactionTasks.containsKey(entity) && reactionTasks.get(entity).contains(reaction))
-                        return ReactionRespond.NONE;
+                        return ReactionResponse.NONE;
 
                     // display indicator
                     if (!reaction.getDisplay().equals(""))
@@ -189,7 +200,7 @@ public class TriggerReaction implements Listener {
                         last_mob_type = Combat.getLastMobType(damager);
                     }
 
-                    reaction_success = ReactionRespond.DOUBLE_REACTION;
+                    reaction_success = ReactionResponse.DOUBLE_REACTION;
 
                     if (attack instanceof AstAttackMeta astAttackMeta && astAttackMeta.getAttackSource().equals(AttackSource.MYTHIC_SKILL)) {
                         astAttackMeta.getMetadata("SKILL_METADATA").ifPresent(o -> ((SkillMetadata) o).setMetadata("REACTION_SUCCESS_" + reaction_id, true));

@@ -65,7 +65,7 @@ public class Burgeon extends DendroCoreReaction {
 
                 double final_damage = expression.evaluate();
 
-                dendro_core.getInstance().damage(final_damage, damager, livingEntity, getConfig().getString("damage-element"), false, false, damage_cause);
+                dendro_core.getInstance().damage(final_damage, damager, livingEntity, getConfig().getString("damage-element"), false, false, false, damage_cause);
 
                 // visual
                 try {

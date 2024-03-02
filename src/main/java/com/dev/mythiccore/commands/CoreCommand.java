@@ -2,39 +2,36 @@ package com.dev.mythiccore.commands;
 
 import com.dev.mythiccore.MythicCore;
 import com.dev.mythiccore.events.attack_handle.TriggerReaction;
+import com.dev.mythiccore.library.attributeModifier.BaseMaxHealthStatHandler;
+import com.dev.mythiccore.library.attributeModifier.MaxHealthStatHandler;
+import com.dev.mythiccore.library.attributeModifier.MaxHealthPercentStatHandler;
 import com.dev.mythiccore.reaction.ReactionManager;
 import com.dev.mythiccore.utils.ConfigLoader;
 import com.dev.mythiccore.utils.Utils;
 import de.tr7zw.nbtapi.NBTItem;
 import io.lumine.mythic.lib.MythicLib;
-import io.lumine.mythic.lib.api.item.ItemTag;
 import io.lumine.mythic.lib.api.player.EquipmentSlot;
 import io.lumine.mythic.lib.api.stat.StatInstance;
 import io.lumine.mythic.lib.damage.DamagePacket;
 import io.lumine.mythic.lib.damage.DamageType;
 import io.lumine.mythic.lib.element.Element;
 import io.lumine.mythic.lib.player.PlayerMetadata;
+import io.lumine.mythic.lib.util.ConfigFile;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmoitems.ItemStats;
-import net.Indyuce.mmoitems.MMOItems;
-import net.Indyuce.mmoitems.api.interaction.GemStone;
 import net.Indyuce.mmoitems.api.item.mmoitem.LiveMMOItem;
 import net.Indyuce.mmoitems.api.item.mmoitem.MMOItem;
-import net.Indyuce.mmoitems.api.item.mmoitem.VolatileMMOItem;
-import net.Indyuce.mmoitems.api.item.template.TemplateModifier;
-import net.Indyuce.mmoitems.comp.inventory.SlotEquippedItem;
-import net.Indyuce.mmoitems.stat.data.DoubleData;
 import net.Indyuce.mmoitems.stat.data.GemSocketsData;
 import net.Indyuce.mmoitems.stat.data.GemstoneData;
 import net.Indyuce.mmoitems.stat.data.type.Mergeable;
 import net.Indyuce.mmoitems.stat.data.type.StatData;
 import net.Indyuce.mmoitems.stat.type.GemStoneStat;
 import net.Indyuce.mmoitems.stat.type.ItemStat;
-import net.Indyuce.mmoitems.stat.type.StatHistory;
 import net.Indyuce.mmoitems.util.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -63,6 +60,11 @@ public class CoreCommand implements CommandExecutor, TabExecutor {
                     MythicCore.getInstance().reloadConfig();
                     ConfigLoader.loadConfig();
                     ReactionManager.registerDefaultReactions();
+
+                    MythicLib.inst().getStats().registerStat(new BaseMaxHealthStatHandler(new ConfigFile("stats").getConfig(), Attribute.GENERIC_MAX_HEALTH, "MAX_HEALTH"));
+                    MythicLib.inst().getStats().registerStat(new MaxHealthPercentStatHandler(new ConfigFile("stats").getConfig(), Attribute.GENERIC_MAX_HEALTH, "AST_MAX_HEALTH_BUFF_PERCENT"));
+                    MythicLib.inst().getStats().registerStat(new MaxHealthStatHandler(new ConfigFile("stats").getConfig(), Attribute.GENERIC_MAX_HEALTH, "AST_MAX_HEALTH_BUFF"));
+
                     sender.sendMessage(ConfigLoader.getMessage("reload-success", true));
                 }
                 else if (args[0].equals("apply-aura")) {

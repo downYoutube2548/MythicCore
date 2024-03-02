@@ -42,7 +42,7 @@ public class AuraVisualizer {
                 for (UUID uuid : uuids) {
                     Entity entity = Bukkit.getEntity(uuid);
 
-                    //if (entity instanceof Player) continue;
+                    if (entity instanceof Player) continue;
 
                     if (entity == null || !entity.isValid() || entity.isDead() || !entity.getLocation().getChunk().isLoaded()) {
                         if (!mapHologram.containsKey(uuid)) continue;
@@ -71,7 +71,8 @@ public class AuraVisualizer {
                             textDisplay.setText(Utils.colorize(MythicCore.getInstance().getConfig().getString("General.aura-visualizer").replace("{aura}", MythicCore.getAuraManager().getAura(uuid).getAuraIcon()).replace("{auraGaugeBar}", MythicCore.getAuraManager().getAura(uuid).getAuraGaugeBar()).replace("{name}", entity.getName()).replace("\\n", "\n").replace("{hpBar}", HpBar.getHpBar(uuid)).replace("{cooldown}", MythicCore.getCooldownManager().getCooldown(uuid).getMapCooldown().toString()))/* + " | " + MythicCore.getCooldownManager().getCooldown(uuid).getMapCooldown()*/);
                             textDisplay.setTransformation(new Transformation(textDisplay.getTransformation().getTranslation(), textDisplay.getTransformation().getLeftRotation(), new Vector3f(scale), textDisplay.getTransformation().getRightRotation()));
                             textDisplay.setShadowed(false);
-                            textDisplay.setSeeThrough(true);
+                            textDisplay.setSeeThrough(false);
+                            textDisplay.setViewRange(5);
                             textDisplay.setBrightness(new Display.Brightness(15, 15));
                             textDisplay.setBackgroundColor(Color.fromARGB(0, 0, 0, 0));
                             textDisplay.setMetadata("AST_AURA_VISUALIZER", new FixedMetadataValue(MythicCore.getInstance(), true));

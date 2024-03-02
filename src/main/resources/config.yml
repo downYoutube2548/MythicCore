@@ -4,8 +4,17 @@ General:
   aoe-damage-filter: true
   default-damage-calculation: scale-from-attack
   enable-aura-visualizer: true
-  enable-hp-bar: true
+  hp-bar:
+    enable: true
+    bar-length: 100 # 40
+    symbol: "蔓:offset_-16:"
+    bar-prefix: "&f:offset_-16:桂:offset_-61:"
+    bar-color: "&8"
+    current-hp-color: "&a"
+    loss-hp-color: "&4"
+    bar-suffix: ""
   aura-visualizer: "{aura}\n{name}"
+  aura-apply-limit-per-hit: 10
 
   decay-rate:
     A: 200
@@ -183,7 +192,7 @@ Elemental-Reaction:
     aura-overriding:
       FROZEN: CRYO
     swirl-radius: 3
-    swirl-limit:
+    swirl-limit: 3
     damage-formula: "0.7 * (16.12 * (attacker_level + 16) - 257.23) * (1 + ((16 * elemental_mastery) / (elemental_mastery + 2000))) * (1 + swirl_bonus/100) * resistance_multiplier"
   BLOOM:
     enable: true
@@ -282,7 +291,7 @@ Elemental-Reaction:
 
 Damage-Calculation:
 
-  final-damage: "total_damage * defense_multiplier * resistance_multiplier * level_multiplier"
+  final-damage: "total_damage * defense_multiplier * resistance_multiplier * level_multiplier * (1 + weapon_bonus/100)"
   defense-multiplier: "1 - (((1 - (attacker_ignore_defense / 100)) * victim_defense) / (victim_defense + (5 * attacker_level)+500))"
   resistance-multiplier:
     resistance<0: "1 - (elemental_resistance/2/100)"
@@ -295,16 +304,16 @@ Damage-Calculation:
 
   damage-calculation-formula:
     scale-from-attack:
-      base: "%mmocore_stat_ATTACK_DAMAGE%"
+      base: ATTACK_DAMAGE
       formula: "((damage * (1+(attack_buff_percent/100))) + attack_buff) * (1 + talent_percent/100) * (1 + ((elemental_damage_bonus + all_elemental_damage_bonus) / 100))"
     scale-from-hp:
-      base: "%mmocore_stat_MAX_HEALTH%"
-      formula: "damage * (1 + talent_percent/100) * (1 + ((elemental_damage_bonus + all_elemental_damage_bonus) / 100))"
+      base: MAX_HEALTH
+      formula: "((damage * (1+(health_buff_percent/100))) + health_buff) * (1 + talent_percent/100) * (1 + ((elemental_damage_bonus + all_elemental_damage_bonus) / 100))"
     scale-from-defense:
-      base: "%mmocore_stat_DEFENSE%"
+      base: DEFENSE
       formula: "((damage * (1+(defense_buff_percent/100))) + defense_buff) * (1 + talent_percent/100) * (1 + ((elemental_damage_bonus + all_elemental_damage_bonus) / 100))"
     scale-from-elemental-mastery:
-      base: "%mmocore_stat_AST_ELEMENTAL_MASTERY%"
+      base: AST_ELEMENTAL_MASTERY
       formula: "damage * (1 + talent_percent/100) * (1 + ((elemental_damage_bonus + all_elemental_damage_bonus) / 100))"
 
 # don't forget to disable damage-indicator in MythicLib config.yml if you enable this
@@ -424,6 +433,18 @@ Stats:
         Name: Defense Buff (%)
         Material: SHIELD
         Lore: [ '&7Increase defense (%)' ]
+    AST_MAX_HEALTH_BUFF:
+      Name: Max Health Buff
+      Icon:
+        Name: Max Health Buff
+        Material: ENCHANTED_GOLDEN_APPLE
+        Lore: [ '&7Increase max health' ]
+    AST_MAX_HEALTH_BUFF_PERCENT:
+      Name: Max Health Buff (%)
+      Icon:
+        Name: Max Health Buff (%)
+        Material: ENCHANTED_GOLDEN_APPLE
+        Lore: [ '&7Increase max health (%)' ]
 
     AST_VAPORIZE_BONUS:
       Name: Vaporize Bonus
@@ -562,11 +583,4 @@ message:
   syntax-error: "&cคำสั่งไม่ถูกต้อง!"
   apply-aura-success: "&eใส่ออร่า &6{aura} &eให้กับ &f{player} &eด้วยเกจธาตุ &b{gauge}"
   reload-success: "&eรีโหลดเรียบร้อยแล้ว!"
-  hp-bar:
-    symbol: "蔓:offset_-16:"
-    bar-prefix: "&f:offset_-16:桂:offset_-61:"
-    bar-color: "&8"
-    current-hp-color: "&a"
-    loss-hp-color: "&4"
-    bar-suffix: ""
 

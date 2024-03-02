@@ -73,13 +73,7 @@ public class Overloaded extends TriggerAuraReaction {
                         .setVariable("resistance_multiplier", resistance_multiplier)
                         .setVariable("overloaded_bonus", overloaded_bonus);
                 double final_damage = expression.evaluate();
-
-//                Bukkit.broadcastMessage("Level: "+attacker_level);
-//                Bukkit.broadcastMessage("EM: "+elemental_mastery);
-//                Bukkit.broadcastMessage("Resis: "+resistance_multiplier);
-//                Bukkit.broadcastMessage("Bonus: "+overloaded_bonus);
-//                Bukkit.broadcastMessage("Overloaded: "+final_damage);
-                damage(final_damage, damager, aoe_living_entity, getConfig().getString("damage-element"), false, true, damage_cause);
+                damage(final_damage, damager, aoe_living_entity, getConfig().getString("damage-element"), false, false, true, damage_cause);
 
                 if (damager != null) {
                     Vector kb = aoe_living_entity.getLocation().toVector().subtract(damager.getLocation().toVector());

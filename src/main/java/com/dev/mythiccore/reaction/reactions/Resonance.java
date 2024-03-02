@@ -93,7 +93,7 @@ public class Resonance extends SingleReaction {
             if (i >= getConfig().getInt("resonance-limit")) break;
 
             double distance = entity.getLocation().distance(living_entity.getLocation());
-            Bukkit.getScheduler().runTaskLater(MythicCore.getInstance(), ()-> damage(final_damage, damager, living_entity, this.getTrigger(), false, (getAuraData(living_entity.getUniqueId()).getMapAura().containsKey(getTrigger())) ? 1 : 0, ConfigLoader.getDefaultDecayRate(), "RESONANCE_REACTION", 0, false, damage_cause), (long) (getConfig().getDouble("delay-tick-per-block") * distance));
+            Bukkit.getScheduler().runTaskLater(MythicCore.getInstance(), ()-> damage(final_damage, damager, living_entity, this.getTrigger(), false, true, (getAuraData(living_entity.getUniqueId()).getMapAura().containsKey(getTrigger())) ? 1 : 0, ConfigLoader.getDefaultDecayRate(), "RESONANCE_REACTION", 0, false, damage_cause), (long) (getConfig().getDouble("delay-tick-per-block") * distance));
 
             i++;
             if (getAuraData(living_entity.getUniqueId()).getMapAura().containsKey(this.getTrigger()) && getConfig().getBoolean("stop-on-resonate-other")) break;

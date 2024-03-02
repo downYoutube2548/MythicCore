@@ -33,4 +33,7 @@ public interface AstAttackMeta {
     AttackSource getAttackSource();
     void setAttackSource(AttackSource attack_source);
     void setInternalCooldownSource(String attack_source);
+    boolean calculate();
+    boolean isTriggerReaction();
+    String getWeaponType();
 }

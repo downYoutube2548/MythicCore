@@ -5,6 +5,7 @@ import com.dev.mythiccore.utils.ConfigLoader;
 import com.dev.mythiccore.utils.Utils;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -43,31 +44,33 @@ public class BarData {
 
         FileConfiguration config = MythicCore.getInstance().getConfig();
 
-        sb.append(Utils.colorize(FontImageWrapper.replaceFontImages(config.getString("message.hp-bar.bar-prefix")
-                .replace("{currentHP}", Utils.Format(currentHp))
-                .replace("{maxHP}", Utils.Format(maxHp))
-                .replace("{lossHP}", Utils.Format(yellowHp))
+        sb.append(Utils.colorize(FontImageWrapper.replaceFontImages(config.getString("General.hp-bar.bar-prefix")
+                .replace("{currentHP}", Utils.formatNumber(currentHp))
+                .replace("{maxHP}", Utils.formatNumber(maxHp))
+                .replace("{lossHP}", Utils.formatNumber(yellowHp))
+                .replace("{color}", currentHp >= 0.5 * maxHp ? "&a" : currentHp >= 0.2 * maxHp ? "&e" : "&c")
         )));
 
         int bars = (int) ((currentHp / maxHp) * maxBar);
         int y = 0;
         for (int i = 1; i <= maxBar; i++) {
             if (i <= bars) {
-                sb.append(Utils.colorize(FontImageWrapper.replaceFontImages(config.getString("message.hp-bar.current-hp-color") + config.getString("message.hp-bar.symbol"))));
+                sb.append(Utils.colorize(FontImageWrapper.replaceFontImages(config.getString("General.hp-bar.current-hp-color") + config.getString("General.hp-bar.symbol"))));
             } else {
                 if (y < (int)(yellowHp / maxHp * maxBar)) {
-                    sb.append(Utils.colorize(FontImageWrapper.replaceFontImages(config.getString("message.hp-bar.loss-hp-color") + config.getString("message.hp-bar.symbol"))));
+                    sb.append(Utils.colorize(FontImageWrapper.replaceFontImages(config.getString("General.hp-bar.loss-hp-color") + config.getString("General.hp-bar.symbol"))));
                     y++;
                 } else {
-                    sb.append(Utils.colorize(FontImageWrapper.replaceFontImages(config.getString("message.hp-bar.bar-color") + config.getString("message.hp-bar.symbol"))));
+                    sb.append(Utils.colorize(FontImageWrapper.replaceFontImages(config.getString("General.hp-bar.bar-color") + config.getString("General.hp-bar.symbol"))));
                 }
             }
         }
 
-        sb.append(Utils.colorize(FontImageWrapper.replaceFontImages(config.getString("message.hp-bar.bar-suffix")
-                .replace("{currentHP}", Utils.Format(currentHp))
-                .replace("{maxHP}", Utils.Format(maxHp))
-                .replace("{lossHP}", Utils.Format(yellowHp))
+        sb.append(Utils.colorize(FontImageWrapper.replaceFontImages(config.getString("General.hp-bar.bar-suffix")
+                .replace("{currentHP}", Utils.formatNumber(currentHp))
+                .replace("{maxHP}", Utils.formatNumber(maxHp))
+                .replace("{lossHP}", Utils.formatNumber(yellowHp))
+                .replace("{color}", currentHp >= 0.5 * maxHp ? "&a" : currentHp >= 0.2 * maxHp ? "&e" : "&c")
         )));
         return sb.toString();
     }

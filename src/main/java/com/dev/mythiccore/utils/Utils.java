@@ -126,4 +126,16 @@ public class Utils {
             }
         });
     }
+
+    public static String formatNumber(double number) {
+        if (number >= 1000000) {
+            double millions = number / 1000000.0;
+            return String.format("%.1fM", millions);
+        } else if (number >= 1000) {
+            double thousands = number / 1000.0;
+            return String.format("%.2fk", thousands);
+        } else {
+            return String.format("%.2f", number);
+        }
+    }
 }

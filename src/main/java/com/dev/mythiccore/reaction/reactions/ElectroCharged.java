@@ -97,7 +97,7 @@ public class ElectroCharged extends DoubleAuraReaction {
                         .setVariable("electro_charged_bonus", electro_charged_bonus);
 
                 double final_damage = expression.evaluate();
-                damage(final_damage, damager, currentTarget, getConfig().getString("damage-element"), false, false, damage_cause);
+                damage(final_damage, damager, currentTarget, getConfig().getString("damage-element"), false, false, false, damage_cause);
 
                 spawnParticle(currentTarget, getConfig().getStringList("particle"));
                 playSound(currentTarget, getConfig().getStringList("sound"));

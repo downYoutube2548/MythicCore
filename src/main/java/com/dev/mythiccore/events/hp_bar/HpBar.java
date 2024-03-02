@@ -33,7 +33,7 @@ public class HpBar implements Listener {
             if (hpBars.containsKey(entityUUID)) {
                 hpBars.get(entityUUID).setCurrentHp(currentHP).setMaxHp(maxHP).setYellowHp(lossHP);
             } else {
-                hpBars.put(entityUUID, new BarData(currentHP, maxHP, lossHP, 40));
+                hpBars.put(entityUUID, new BarData(currentHP, maxHP, lossHP, MythicCore.getInstance().getConfig().getInt("General.hp-bar.bar-length")));
             }
 
             if (tasks.containsKey(entityUUID)) {

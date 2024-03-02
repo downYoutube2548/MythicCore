@@ -10,6 +10,7 @@ import com.dev.mythiccore.utils.StatCalculation;
 import io.lumine.mythic.lib.damage.DamagePacket;
 import io.lumine.mythic.lib.damage.DamageType;
 import io.lumine.mythic.lib.player.PlayerMetadata;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -28,10 +29,12 @@ public class PlayerAttack implements Listener {
 
         String damage_formula = ConfigLoader.getDefaultDamageCalculation();
         double talent_percent = 100;
+        String weaponType = "NONE";
 
         if (event.getAttack() instanceof AstAttackMeta astAttack) {
-            if (astAttack.getAttackSource().equals(AttackSource.REACTION)) return;
+            if (!astAttack.calculate()) return;
             damage_formula = astAttack.getDamageCalculation();
+            weaponType = astAttack.getWeaponType();
 
             if (astAttack.getAttackSource().equals(AttackSource.SKILL) || astAttack.getAttackSource().equals(AttackSource.MYTHIC_SKILL)) {
                 talent_percent = astAttack.getTalentPercent();
@@ -40,10 +43,10 @@ public class PlayerAttack implements Listener {
 
         LivingEntity victim = event.getEntity();
 
+        double weaponBonus = weaponType.equals("NONE") ? 0 : event.getAttacker().getStat("AST_WEAPON_BONUS_"+weaponType);
 
         // loop all elemental type damage
         for (DamagePacket packet : event.getDamage().getPackets()) {
-            if (Arrays.asList(packet.getTypes()).contains(DamageType.DOT) || Arrays.asList(packet.getTypes()).contains(DamageType.MINION)) continue;
 
             // working only damage that have element (include physical damage)
             if (packet.getElement() == null) {
@@ -61,7 +64,7 @@ public class PlayerAttack implements Listener {
             boolean isCritical = new Random().nextDouble() < AttackerCRITRate / 100;
             if (isCritical) event.getDamage().registerElementalCriticalStrike(packet.getElement());
 
-            double damage = StatCalculation.getFinalDamage(event.getAttacker(), victim.getUniqueId(), damage_formula, talent_percent, packet, isCritical);
+            double damage = StatCalculation.getFinalDamage(event.getAttacker(), victim.getUniqueId(), damage_formula, talent_percent, packet, isCritical, weaponBonus);
             packet.setValue(damage);
         }
     }

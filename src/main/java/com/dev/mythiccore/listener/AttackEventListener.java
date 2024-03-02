@@ -4,15 +4,14 @@ import com.dev.mythiccore.enums.AttackSource;
 import com.dev.mythiccore.library.attackMetadata.ASTAttackMetadata;
 import com.dev.mythiccore.library.ASTEntityStatProvider;
 import com.dev.mythiccore.library.attackMetadata.ASTProjectileAttackMetadata;
-import com.dev.mythiccore.library.attackMetadata.AstAttackMeta;
 import com.dev.mythiccore.listener.events.attack.MiscAttackEvent;
 import com.dev.mythiccore.listener.events.attack.MobAttackEvent;
 import com.dev.mythiccore.listener.events.attack.PlayerAttackEvent;
 import com.dev.mythiccore.utils.ConfigLoader;
 import com.dev.mythiccore.utils.EntityStatManager;
 import com.dev.mythiccore.utils.Utils;
-import de.tr7zw.nbtapi.NBTItem;
 import io.lumine.mythic.lib.api.event.AttackEvent;
+import io.lumine.mythic.lib.api.item.NBTItem;
 import io.lumine.mythic.lib.api.stat.provider.EntityStatProvider;
 import io.lumine.mythic.lib.damage.AttackMetadata;
 import io.lumine.mythic.lib.damage.ProjectileAttackMetadata;
@@ -77,7 +76,7 @@ public class AttackEventListener implements Listener {
                     talent_percent = entityStat.getDoubleStat("AST_ELEMENTAL_DAMAGE_PERCENT");
                 }
 
-                AttackMetadata astAttack = (event.getAttack() instanceof ProjectileAttackMetadata) ? new ASTProjectileAttackMetadata(event.getDamage(), event.getEntity(), new ASTEntityStatProvider(real_attacker), ((ProjectileAttackMetadata) event.getAttack()).getProjectile(), cooldown_source, internal_cooldown, gauge_unit, decay_rate, damage_calculation, talent_percent, AttackSource.NORMAL) : new ASTAttackMetadata(event.getAttack().getDamage(), event.getAttack().getTarget(), new ASTEntityStatProvider(real_attacker), cooldown_source, internal_cooldown, gauge_unit, decay_rate, damage_calculation, talent_percent, AttackSource.NORMAL);
+                AttackMetadata astAttack = (event.getAttack() instanceof ProjectileAttackMetadata) ? new ASTProjectileAttackMetadata(event.getDamage(), event.getEntity(), new ASTEntityStatProvider(real_attacker), ((ProjectileAttackMetadata) event.getAttack()).getProjectile(), cooldown_source, internal_cooldown, gauge_unit, decay_rate, damage_calculation, "NONE", talent_percent, AttackSource.NORMAL, true, true) : new ASTAttackMetadata(event.getAttack().getDamage(), event.getAttack().getTarget(), new ASTEntityStatProvider(real_attacker), cooldown_source, internal_cooldown, gauge_unit, decay_rate, damage_calculation, "NONE", talent_percent, AttackSource.NORMAL, true, true);
                 Bukkit.getPluginManager().callEvent(new MobAttackEvent((EntityDamageByEntityEvent) event.toBukkit(), astAttack));
 
             } else if (event.getAttack().getAttacker() instanceof PlayerMetadata playerMetadata) {
@@ -88,10 +87,11 @@ public class AttackEventListener implements Listener {
                 String cooldown_source = "default";
                 long internal_cooldown = ConfigLoader.getInternalCooldown("default");
                 String damage_formula = ConfigLoader.getDefaultDamageCalculation();
+                String weaponType = "NONE";
 
                 ItemStack player_weapon = (event.getAttack() instanceof ProjectileAttackMetadata projectile) ? (ItemStack) projectile.getProjectile().getMetadata("ATTACK_WEAPON").get(0).value() : playerMetadata.getPlayer().getInventory().getItem(playerMetadata.getActionHand().toBukkit());
                 if (player_weapon != null && !player_weapon.getType().equals(Material.AIR)) {
-                    NBTItem nbt = new NBTItem(player_weapon);
+                    NBTItem nbt = NBTItem.get(player_weapon);
 
                     if (!nbt.getString("MMOITEMS_AST_GAUGE_UNIT").equals("")) {
                         gauge_unit = Double.parseDouble(Utils.splitTextAndNumber(nbt.getString("MMOITEMS_AST_GAUGE_UNIT"))[0]);
@@ -107,9 +107,16 @@ public class AttackEventListener implements Listener {
                     if (!nbt.getString("MMOITEMS_AST_DAMAGE_FORMULA").equals("")) {
                         damage_formula = nbt.getString("MMOITEMS_AST_DAMAGE_FORMULA");
                     }
+
+                    if (nbt.hasType()) {
+                        weaponType = nbt.getString("MMOITEMS_AST_WEAPON_TYPE");
+
+                        if (weaponType.equals("default") || weaponType.equals(""))
+                            weaponType = nbt.getType().toUpperCase();
+                    }
                 }
 
-                AttackMetadata astAttack = (event.getAttack() instanceof ProjectileAttackMetadata) ? new ASTProjectileAttackMetadata((ProjectileAttackMetadata) event.getAttack(), cooldown_source, internal_cooldown, gauge_unit, decay_rate, damage_formula, 100, AttackSource.NORMAL) : new ASTAttackMetadata(event.getAttack(), cooldown_source, internal_cooldown, gauge_unit, decay_rate, damage_formula, 100, AttackSource.NORMAL);
+                AttackMetadata astAttack = (event.getAttack() instanceof ProjectileAttackMetadata) ? new ASTProjectileAttackMetadata((ProjectileAttackMetadata) event.getAttack(), cooldown_source, internal_cooldown, gauge_unit, decay_rate, damage_formula, weaponType, 100, AttackSource.NORMAL, true, true) : new ASTAttackMetadata(event.getAttack(), cooldown_source, internal_cooldown, gauge_unit, decay_rate, damage_formula, weaponType, 100, AttackSource.NORMAL, true, true);
                 Bukkit.getPluginManager().callEvent(new PlayerAttackEvent((EntityDamageByEntityEvent) event.toBukkit(), astAttack));
 
             } else {

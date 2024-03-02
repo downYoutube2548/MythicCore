@@ -1,6 +1,7 @@
 package com.dev.mythiccore.events.attack_handle;
 
 import com.dev.mythiccore.library.ASTEntityStatProvider;
+import com.dev.mythiccore.library.attackMetadata.AstAttackMeta;
 import com.dev.mythiccore.utils.ConfigLoader;
 import com.dev.mythiccore.utils.EntityStatManager;
 import de.tr7zw.nbtapi.NBTItem;
@@ -10,7 +11,6 @@ import io.lumine.mythic.lib.damage.DamagePacket;
 import io.lumine.mythic.lib.damage.DamageType;
 import io.lumine.mythic.lib.damage.ProjectileAttackMetadata;
 import io.lumine.mythic.lib.element.Element;
-import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -21,7 +21,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -36,10 +35,7 @@ public class AttackModifier implements Listener {
      */
     @EventHandler(priority = EventPriority.LOWEST)
     public void onEntityAttack(AttackEvent event) {
-
-        for (DamagePacket packet : event.getDamage().getPackets()) {
-            if (Arrays.asList(packet.getTypes()).contains(DamageType.DOT)) return;
-        }
+        if (event.getAttack() instanceof AstAttackMeta astAttackMeta && !astAttackMeta.calculate()) return;
 
         Element defaultElement = Objects.requireNonNull(Element.valueOf(ConfigLoader.getDefaultElement()));
 
@@ -59,6 +55,7 @@ public class AttackModifier implements Listener {
                     double damage = event.getDamage().getDamage();
 
                     boolean stop = false;
+                    DamageType[] defaultDamageType = event.getDamage().getPackets().get(0).getTypes();
                     byte disable_regular_damage = nbt.getByte("MMOITEMS_AST_DISABLE_REGULAR_DAMAGE");
                     if (disable_regular_damage == 1) {
                         event.getDamage().getPackets().clear();
@@ -69,9 +66,9 @@ public class AttackModifier implements Listener {
 
                     for (Element element : Element.values()) {
                         if (e.getAttacker().getStat("AST_"+element.getId()+"_PERCENT") > 0) {
-                            double base = Double.parseDouble(PlaceholderAPI.setPlaceholders(attacker, ConfigLoader.getDamageCalculation("damage-calculation-formula." + damage_formula + ".base")));
+                            double base = e.getAttacker().getStat(ConfigLoader.getDamageCalculation("damage-calculation-formula." + damage_formula + ".base"));
                             double attack_speed_multiplier = damage / e.getAttacker().getStat("ATTACK_DAMAGE");
-                            event.getDamage().add(base * attack_speed_multiplier, element, DamageType.PHYSICAL);
+                            event.getDamage().add(base * attack_speed_multiplier, element, defaultDamageType);
                             stop = true;
                         }
                     }
@@ -99,7 +96,6 @@ public class AttackModifier implements Listener {
                             Element element = Element.valueOf(entityStat.getStringStat("AST_ELEMENTAL_DAMAGE_ELEMENT"));
                             if (element == null) return;
 
-                            event.getDamage().getPackets().get(0).setTypes(new DamageType[]{DamageType.SKILL});
                             event.getDamage().getPackets().get(0).setElement(element);
                             event.getDamage().getPackets().get(0).setValue(damage_amount);
 

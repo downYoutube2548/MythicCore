@@ -1,6 +1,6 @@
 package com.dev.mythiccore.enums;
 
-public enum ReactionRespond {
+public enum ReactionResponse {
     NONE,
     TRIGGER_REACTION,
     SINGLE_REACTION,

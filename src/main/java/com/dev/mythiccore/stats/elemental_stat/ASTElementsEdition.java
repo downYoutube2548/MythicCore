@@ -24,7 +24,7 @@ import java.util.*;
 public class ASTElementsEdition extends EditionInventory {
     private final List<Element> elements = new ArrayList<>();
     private final int maxPage;
-    private final Map<Integer, Pair<Element, ASTElementStatType>> editableStats = new HashMap();
+    private final Map<Integer, Pair<Element, ASTElementStatType>> editableStats = new HashMap<>();
     private int page = 1;
     private static final int[] INIT_SLOTS = new int[]{19, 22, 28, 31, 37, 40};
 

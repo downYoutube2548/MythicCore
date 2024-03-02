@@ -24,11 +24,11 @@ public class MiscAttack implements Listener {
             LivingEntity victim = event.getEntity();
 
             for (DamagePacket packet : event.getDamage().getPackets()) {
-                if (packet.getElement() == null || Arrays.asList(packet.getTypes()).contains(DamageType.DOT)) {
+                if (packet.getElement() == null) {
                     continue;
                 }
 
-                packet.setValue(StatCalculation.getFinalDamage(victim.getUniqueId(), ConfigLoader.getDefaultDamageCalculation(), packet));
+                packet.setValue(StatCalculation.getFinalDamage(victim.getUniqueId(), ConfigLoader.getDefaultDamageCalculation(), packet, 0));
             }
         } catch (NullPointerException ignored) {}
     }

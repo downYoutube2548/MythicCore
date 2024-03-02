@@ -27,7 +27,7 @@ public class MobAttack implements Listener {
             double talent_percent = 100;
 
             if (event.getAttack() instanceof AstAttackMeta astAttack) {
-                if (astAttack.getAttackSource().equals(AttackSource.REACTION)) return;
+                if (!astAttack.calculate()) return;
                 damage_formula = astAttack.getDamageCalculation();
 
                 if (astAttack.getAttackSource().equals(AttackSource.SKILL) || astAttack.getAttackSource().equals(AttackSource.MYTHIC_SKILL)) {
@@ -47,7 +47,7 @@ public class MobAttack implements Listener {
                     continue;
                 }
 
-                double damage = StatCalculation.getFinalDamage(event.getAttack().getAttacker(), victim.getUniqueId(), damage_formula, talent_percent, packet, false);
+                double damage = StatCalculation.getFinalDamage(event.getAttack().getAttacker(), victim.getUniqueId(), damage_formula, talent_percent, packet, false, 0);
                 //Bukkit.broadcastMessage(damage+"");
                 packet.setValue(damage);
             }
