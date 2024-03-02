@@ -3,8 +3,8 @@ package com.dev.mythiccore.commands;
 import com.dev.mythiccore.MythicCore;
 import com.dev.mythiccore.events.attack_handle.TriggerReaction;
 import com.dev.mythiccore.library.attributeModifier.BaseMaxHealthStatHandler;
-import com.dev.mythiccore.library.attributeModifier.MaxHealthStatHandler;
 import com.dev.mythiccore.library.attributeModifier.MaxHealthPercentStatHandler;
+import com.dev.mythiccore.library.attributeModifier.MaxHealthStatHandler;
 import com.dev.mythiccore.reaction.ReactionManager;
 import com.dev.mythiccore.utils.ConfigLoader;
 import com.dev.mythiccore.utils.Utils;
@@ -43,7 +43,10 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 
 public class CoreCommand implements CommandExecutor, TabExecutor {
 

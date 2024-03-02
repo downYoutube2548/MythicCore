@@ -4,13 +4,10 @@ import com.dev.mythiccore.listener.events.attack.MiscAttackEvent;
 import com.dev.mythiccore.utils.ConfigLoader;
 import com.dev.mythiccore.utils.StatCalculation;
 import io.lumine.mythic.lib.damage.DamagePacket;
-import io.lumine.mythic.lib.damage.DamageType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-
-import java.util.Arrays;
 
 /**
  * This class use to deal damage from another damage source -> Mob or Player

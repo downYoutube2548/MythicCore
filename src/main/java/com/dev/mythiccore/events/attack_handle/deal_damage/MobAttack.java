@@ -1,8 +1,6 @@
 package com.dev.mythiccore.events.attack_handle.deal_damage;
 
 import com.dev.mythiccore.enums.AttackSource;
-import com.dev.mythiccore.library.attackMetadata.ASTAttackMetadata;
-import com.dev.mythiccore.library.attackMetadata.ASTProjectileAttackMetadata;
 import com.dev.mythiccore.library.attackMetadata.AstAttackMeta;
 import com.dev.mythiccore.listener.events.attack.MobAttackEvent;
 import com.dev.mythiccore.utils.ConfigLoader;

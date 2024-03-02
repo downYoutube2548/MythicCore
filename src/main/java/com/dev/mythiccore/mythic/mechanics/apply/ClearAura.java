@@ -3,7 +3,6 @@ package com.dev.mythiccore.mythic.mechanics.apply;
 import com.dev.mythiccore.MythicCore;
 import io.lumine.mythic.api.adapters.AbstractEntity;
 import io.lumine.mythic.api.config.MythicLineConfig;
-import io.lumine.mythic.api.mobs.MythicMob;
 import io.lumine.mythic.api.skills.ITargetedEntitySkill;
 import io.lumine.mythic.api.skills.SkillMetadata;
 import io.lumine.mythic.api.skills.SkillResult;

@@ -1,13 +1,9 @@
 package com.dev.mythiccore.events.hp_bar;
 
 import com.dev.mythiccore.MythicCore;
-import com.dev.mythiccore.utils.ConfigLoader;
 import com.dev.mythiccore.utils.Utils;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.scheduler.BukkitTask;
 
 public class BarData {
 

@@ -1,8 +1,8 @@
 package com.dev.mythiccore.mythic.mechanics.apply;
 
 import com.dev.mythiccore.enums.AttackSource;
-import com.dev.mythiccore.library.attackMetadata.ASTAttackMetadata;
 import com.dev.mythiccore.library.ASTEntityStatProvider;
+import com.dev.mythiccore.library.attackMetadata.ASTAttackMetadata;
 import com.dev.mythiccore.utils.ConfigLoader;
 import com.dev.mythiccore.utils.DamageManager;
 import com.dev.mythiccore.utils.Utils;

@@ -1,22 +1,17 @@
 package com.dev.mythiccore.events.attack_handle.deal_damage;
 
 import com.dev.mythiccore.enums.AttackSource;
-import com.dev.mythiccore.library.attackMetadata.ASTAttackMetadata;
-import com.dev.mythiccore.library.attackMetadata.ASTProjectileAttackMetadata;
 import com.dev.mythiccore.library.attackMetadata.AstAttackMeta;
 import com.dev.mythiccore.listener.events.attack.PlayerAttackEvent;
 import com.dev.mythiccore.utils.ConfigLoader;
 import com.dev.mythiccore.utils.StatCalculation;
 import io.lumine.mythic.lib.damage.DamagePacket;
-import io.lumine.mythic.lib.damage.DamageType;
 import io.lumine.mythic.lib.player.PlayerMetadata;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
-import java.util.Arrays;
 import java.util.Random;
 
 /**
