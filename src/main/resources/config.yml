@@ -6,14 +6,26 @@ General:
   enable-aura-visualizer: true
   hp-bar:
     enable: true
-    bar-length: 100 # 40
+    bar-length: 80 # 40
     symbol: "蔓:offset_-16:"
-    bar-prefix: "&f:offset_-16:桂:offset_-61:"
-    bar-color: "&8"
+    bar-prefix: "" # "&f:offset_-16:桂:offset_-61:"
+    bar-color: "&7"
     current-hp-color: "&a"
     loss-hp-color: "&4"
     bar-suffix: ""
-  aura-visualizer: "{aura}\n{name}"
+  aura-visualizer: "&f{aura}\n\n{name}\n{hpBar}\n\n"
+  aura-bar-format:
+    dummy:
+      bar: "&f{aura}\n\n{name}\n{hpBar}\n\n&fʏᴏᴜʀ ᴅᴘꜱ: &e{dps}/ꜱ\n&fᴛᴏᴛᴀʟ ᴅᴀᴍᴀɢᴇ: &c{total}\n\n"
+      hp-bar:
+        bar-length: 80 # 40
+        symbol: "蔓:offset_-16:"
+        bar-prefix: "{color}{currentHP}" # "&f:offset_-16:桂:offset_-61:"
+        bar-color: "&7"
+        current-hp-color: "&a"
+        loss-hp-color: "&4"
+        bar-suffix: "         &b{maxHP} &c(-{lossHP})"
+
   aura-apply-limit-per-hit: 10
 
   decay-rate:
@@ -34,6 +46,9 @@ General:
   internal-cooldown:
     default: 20
     test: 100
+
+Placeholders:
+  max_health_buff_percent: "%mythiccore_stat_ast_max_health_buff_percent%/100 * %mythiccore_stat_max_health%"
 
 Elemental-Modifier:
   # <Damage Cause>: <Element>

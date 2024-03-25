@@ -1,7 +1,9 @@
 package com.dev.mythiccore.events.hp_bar;
 
 import com.dev.mythiccore.MythicCore;
+import com.dev.mythiccore.utils.EntityStatManager;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -14,8 +16,8 @@ import java.util.UUID;
 
 public class HpBar implements Listener {
 
-    public static final HashMap<UUID, BarData> hpBars = new HashMap<>();
-    public static final HashMap<UUID, BukkitTask> tasks = new HashMap<>();
+    public static final HashMap<Entity, BarData> hpBars = new HashMap<>();
+    public static final HashMap<Entity, BukkitTask> tasks = new HashMap<>();
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onAttack(EntityDamageEvent event) {
@@ -24,32 +26,33 @@ public class HpBar implements Listener {
 
         if (event.getEntity() instanceof LivingEntity entity) {
 
-            UUID entityUUID = event.getEntity().getUniqueId();
+            EntityStatManager entityStat = new EntityStatManager(entity);
+            int bar_length = entityStat.has("AURA_BAR_FORMAT", String.class) ? MythicCore.getInstance().getConfig().getInt("General.aura-bar-format."+entityStat.getStringStat("AURA_BAR_FORMAT")+".hp-bar.bar-length") : MythicCore.getInstance().getConfig().getInt("General.hp-bar.bar-length");
 
             double currentHP = entity.getHealth() - event.getFinalDamage();
             double maxHP = entity.getMaxHealth();
             double lossHP = entity.getHealth() - (entity.getHealth() - event.getFinalDamage());
 
-            if (hpBars.containsKey(entityUUID)) {
-                hpBars.get(entityUUID).setCurrentHp(currentHP).setMaxHp(maxHP).setYellowHp(lossHP);
+            if (hpBars.containsKey(entity)) {
+                hpBars.get(entity).setCurrentHp(currentHP).setMaxHp(maxHP).setYellowHp(lossHP);
             } else {
-                hpBars.put(entityUUID, new BarData(currentHP, maxHP, lossHP, MythicCore.getInstance().getConfig().getInt("General.hp-bar.bar-length")));
+                hpBars.put(entity, new BarData(currentHP, maxHP, lossHP, bar_length));
             }
 
-            if (tasks.containsKey(entityUUID)) {
-                tasks.get(entityUUID).cancel();
+            if (tasks.containsKey(entity)) {
+                tasks.get(entity).cancel();
             }
 
-            tasks.put(entityUUID, Bukkit.getScheduler().runTaskLaterAsynchronously(MythicCore.getInstance(), ()->{
-                tasks.remove(entityUUID);
-                hpBars.remove(entityUUID);
+            tasks.put(entity, Bukkit.getScheduler().runTaskLaterAsynchronously(MythicCore.getInstance(), ()->{
+                tasks.remove(entity);
+                hpBars.remove(entity);
             }, 100));
         }
     }
 
-    public static String getHpBar(UUID uuid) {
-        if (hpBars.containsKey(uuid)) {
-            return hpBars.get(uuid).getHpBar();
+    public static String getHpBar(Entity entity) {
+        if (hpBars.containsKey(entity)) {
+            return hpBars.get(entity).getHpBar(entity);
         }
         return "";
     }

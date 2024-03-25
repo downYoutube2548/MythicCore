@@ -40,7 +40,7 @@ public class Utils {
     }
 
     public static String Format(Double input) {
-        DecimalFormat df = new DecimalFormat("0.0");
+        DecimalFormat df = new DecimalFormat("#,###.#");
         return df.format(input);
     }
 

@@ -1,8 +1,11 @@
 package com.dev.mythiccore.visuals;
 
 import com.dev.mythiccore.MythicCore;
+import com.dev.mythiccore.events.dps_check.DPSCheck;
 import com.dev.mythiccore.events.hp_bar.HpBar;
+import com.dev.mythiccore.utils.EntityStatManager;
 import com.dev.mythiccore.utils.Utils;
+import com.ticxo.modelengine.api.ModelEngineAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -29,7 +32,7 @@ public class AuraVisualizer {
             try {
                 for (UUID uuid : mapHologram.keySet()) {
                     Entity entity = Bukkit.getEntity(uuid);
-                    if (entity == null || !entity.isValid() || entity.isDead() || !entity.getLocation().getChunk().isLoaded() || (!MythicCore.getAuraManager().getMapEntityAura().containsKey(uuid) && !HpBar.hpBars.containsKey(uuid) && !MythicCore.getCooldownManager().getEntityCooldown().containsKey(uuid)/*&& !MythicCore.getCooldownManager().getEntityCooldown().containsKey(uuid)) && !MythicCore.getBuffManager().getMapBuffData().containsKey(uuid)*/)) {
+                    if (entity == null || !entity.isValid() || entity.isDead() || !entity.getLocation().getChunk().isLoaded() || (!MythicCore.getAuraManager().getMapEntityAura().containsKey(uuid) && !HpBar.hpBars.containsKey(entity) && !MythicCore.getCooldownManager().getEntityCooldown().containsKey(uuid)/*&& !MythicCore.getCooldownManager().getEntityCooldown().containsKey(uuid)) && !MythicCore.getBuffManager().getMapBuffData().containsKey(uuid)*/)) {
                         TextDisplay textDisplay = mapHologram.get(uuid);
                         textDisplay.remove();
                         mapHologram.remove(uuid);
@@ -37,7 +40,7 @@ public class AuraVisualizer {
                 }
 
                 List<UUID> uuids = new ArrayList<>(MythicCore.getAuraManager().getMapEntityAura().keySet());
-                uuids.addAll(HpBar.hpBars.keySet());
+                uuids.addAll(HpBar.hpBars.keySet().stream().map(Entity::getUniqueId).toList());
                 uuids.addAll(MythicCore.getCooldownManager().getEntityCooldown().keySet());
                 for (UUID uuid : uuids) {
                     Entity entity = Bukkit.getEntity(uuid);
@@ -62,13 +65,28 @@ public class AuraVisualizer {
 
                     Location spawnLocation = new Location(entity.getWorld(), entity.getLocation().getX(), entity.getLocation().getY()+ height, entity.getLocation().getZ());
 
+                    EntityStatManager entityStatManager = new EntityStatManager(entity);
+                    String format = entityStatManager.has("AURA_BAR_FORMAT", String.class) ? MythicCore.getInstance().getConfig().getString("General.aura-bar-format."+entityStatManager.getStringStat("AURA_BAR_FORMAT")+".bar") : MythicCore.getInstance().getConfig().getString("General.aura-visualizer");
+                    if (format == null) format = MythicCore.getInstance().getConfig().getString("General.aura-visualizer");
+
+                    assert format != null;
+
                     if (!mapHologram.containsKey(uuid)) {
 
                         TextDisplay textDisplay = entity.getWorld().spawn(spawnLocation, TextDisplay.class);
                         mapHologram.put(uuid, textDisplay);
                             textDisplay.setPersistent(false);
                             textDisplay.setBillboard(Display.Billboard.CENTER);
-                            textDisplay.setText(Utils.colorize(MythicCore.getInstance().getConfig().getString("General.aura-visualizer").replace("{aura}", MythicCore.getAuraManager().getAura(uuid).getAuraIcon()).replace("{auraGaugeBar}", MythicCore.getAuraManager().getAura(uuid).getAuraGaugeBar()).replace("{name}", entity.getName()).replace("\\n", "\n").replace("{hpBar}", HpBar.getHpBar(uuid)).replace("{cooldown}", MythicCore.getCooldownManager().getCooldown(uuid).getMapCooldown().toString()))/* + " | " + MythicCore.getCooldownManager().getCooldown(uuid).getMapCooldown()*/);
+                        textDisplay.setText(Utils.colorize(format
+                                    .replace("{aura}", MythicCore.getAuraManager().getAura(uuid).getAuraIcon())
+                                    .replace("{auraGaugeBar}", MythicCore.getAuraManager().getAura(uuid).getAuraGaugeBar())
+                                    .replace("{name}", entity.getName()).replace("\\n", "\n")
+                                    .replace("{hpBar}", HpBar.getHpBar(entity))
+                                    .replace("{cooldown}", MythicCore.getCooldownManager().getCooldown(uuid).getMapCooldown().toString()))/* + " | " + MythicCore.getCooldownManager().getCooldown(uuid).getMapCooldown()*/
+                                    .replace("{dps}", DPSCheck.getDPS(uuid))
+                                    .replace("{total}", DPSCheck.getTotal(uuid))
+                            );
+
                             textDisplay.setTransformation(new Transformation(textDisplay.getTransformation().getTranslation(), textDisplay.getTransformation().getLeftRotation(), new Vector3f(scale), textDisplay.getTransformation().getRightRotation()));
                             textDisplay.setShadowed(false);
                             textDisplay.setSeeThrough(false);
@@ -77,10 +95,22 @@ public class AuraVisualizer {
                             textDisplay.setBackgroundColor(Color.fromARGB(0, 0, 0, 0));
                             textDisplay.setMetadata("AST_AURA_VISUALIZER", new FixedMetadataValue(MythicCore.getInstance(), true));
 
+                            if (!MythicCore.getInstance().getServer().getPluginManager().isPluginEnabled("ModelEngine") || ModelEngineAPI.getModeledEntity(uuid) == null) entity.addPassenger(textDisplay);
+
                     } else {
                         TextDisplay textDisplay = mapHologram.get(uuid);
-                        textDisplay.setText(Utils.colorize(MythicCore.getInstance().getConfig().getString("General.aura-visualizer").replace("{aura}", MythicCore.getAuraManager().getAura(uuid).getAuraIcon()).replace("{auraGaugeBar}", MythicCore.getAuraManager().getAura(uuid).getAuraGaugeBar()).replace("{name}", entity.getName()).replace("\\n", "\n").replace("{hpBar}", HpBar.getHpBar(uuid)).replace("{cooldown}", MythicCore.getCooldownManager().getCooldown(uuid).getMapCooldown().toString())));
-                        textDisplay.teleport(spawnLocation);
+                        textDisplay.setText(Utils.colorize(format
+                                .replace("{aura}", MythicCore.getAuraManager().getAura(uuid).getAuraIcon())
+                                .replace("{auraGaugeBar}", MythicCore.getAuraManager().getAura(uuid).getAuraGaugeBar())
+                                .replace("{name}", entity.getName()).replace("\\n", "\n")
+                                .replace("{hpBar}", HpBar.getHpBar(entity))
+                                .replace("{cooldown}", MythicCore.getCooldownManager().getCooldown(uuid).getMapCooldown().toString()))
+                                .replace("{dps}", DPSCheck.getDPS(uuid))
+                                .replace("{total}", DPSCheck.getTotal(uuid))
+                        );
+
+                        if (!textDisplay.isInsideVehicle()) textDisplay.teleport(spawnLocation);
+
                     }
                 }
             } catch (Exception ignored) {

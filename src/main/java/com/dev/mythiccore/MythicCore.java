@@ -14,12 +14,14 @@ import com.dev.mythiccore.events.attack_handle.*;
 import com.dev.mythiccore.events.attack_handle.deal_damage.MiscAttack;
 import com.dev.mythiccore.events.attack_handle.deal_damage.MobAttack;
 import com.dev.mythiccore.events.attack_handle.deal_damage.PlayerAttack;
+import com.dev.mythiccore.events.dps_check.DPSCheck;
 import com.dev.mythiccore.events.hp_bar.HpBar;
 import com.dev.mythiccore.library.attributeModifier.BaseMaxHealthStatHandler;
 import com.dev.mythiccore.library.attributeModifier.MaxHealthPercentStatHandler;
 import com.dev.mythiccore.library.attributeModifier.MaxHealthStatHandler;
 import com.dev.mythiccore.listener.AttackEventListener;
 import com.dev.mythiccore.reaction.ReactionManager;
+import com.dev.mythiccore.reaction.reactions.bloom.DendroCore;
 import com.dev.mythiccore.reaction.reactions.bloom.DendroCoreManager;
 import com.dev.mythiccore.reaction.reactions.bloom.DendroCoreTrigger;
 import com.dev.mythiccore.reaction.reactions.frozen.FreezeEffect;
@@ -37,8 +39,10 @@ import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import net.Indyuce.mmoitems.MMOItems;
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.entity.TextDisplay;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.List;
 import java.util.Objects;
 
 public final class MythicCore extends JavaPlugin {
@@ -94,6 +98,7 @@ public final class MythicCore extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new DendroCoreTrigger(), this);
         Bukkit.getPluginManager().registerEvents(new ChunkUnload(), this);
         Bukkit.getPluginManager().registerEvents(new AuraApplyLimit(), this);
+        Bukkit.getPluginManager().registerEvents(new DPSCheck(), this);
         if (getConfig().getBoolean("General.hp-bar.enable"))
             Bukkit.getPluginManager().registerEvents(new HpBar(), this);
 
@@ -118,7 +123,7 @@ public final class MythicCore extends JavaPlugin {
     @Override
     public void onDisable() {
 
-        /*
+
         placeholderExpansion.unregister();
 
         for (TextDisplay textDisplay : AuraVisualizer.mapHologram.values()) {
@@ -130,8 +135,6 @@ public final class MythicCore extends JavaPlugin {
                 dendroCore.getDendroCore().remove();
             }
         }
-
-         */
     }
 
     public static MythicCore getInstance() {

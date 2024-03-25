@@ -2,6 +2,7 @@ package com.dev.mythiccore.events;
 
 import com.dev.mythiccore.mythic.conditions.DoReactionCondition;
 import com.dev.mythiccore.mythic.mechanics.apply.*;
+import com.dev.mythiccore.mythic.mechanics.modify.SetAuraBarFormat;
 import com.dev.mythiccore.mythic.mechanics.modify.SetDefense;
 import com.dev.mythiccore.mythic.mechanics.modify.SetElementalDamage;
 import com.dev.mythiccore.mythic.mechanics.modify.SetResistance;
@@ -56,6 +57,18 @@ public class MythicLoad implements Listener {
         }
         else if (event.getMechanicName().equalsIgnoreCase("pullTo"))	{
             event.register(new PullToLocation(event.getConfig()));
+        }
+        else if (event.getMechanicName().equalsIgnoreCase("setAuraBar"))	{
+            event.register(new SetAuraBarFormat(event.getConfig()));
+        }
+        else if (event.getMechanicName().equalsIgnoreCase("setMana"))	{
+            event.register(new SetMana(event.getConfig()));
+        }
+        else if (event.getMechanicName().equalsIgnoreCase("addMana"))	{
+            event.register(new AddMana(event.getConfig()));
+        }
+        else if (event.getMechanicName().equalsIgnoreCase("reduceMana"))	{
+            event.register(new ReduceMana(event.getConfig()));
         }
     }
 
