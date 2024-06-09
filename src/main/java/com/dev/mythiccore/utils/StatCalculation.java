@@ -25,13 +25,21 @@ public class StatCalculation {
 
     public static double getFinalDamage(UUID victim, String damage_formula, DamagePacket damage_packet, double weapon_bonus) {
         String formula = ConfigLoader.getDamageCalculation("final-damage");
+
+        double totalDamage = getTotalDamage(damage_formula, damage_packet.getValue(), 100, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        double defense = getDefenseMultiplier(victim);
+        double resistance = damage_packet.getElement() != null ? getResistanceMultiplier(victim, damage_packet.getElement().getId()) : 1;
+        double level = getLevelDifferentMultiplier(victim, victim);
+
+        //Bukkit.broadcastMessage(totalDamage+"\n"+defense+"\n"+resistance+"\n"+level);
+
         Expression expression = new ExpressionBuilder(formula)
                 .variables("total_damage", "defense_multiplier", "resistance_multiplier", "level_multiplier", "weapon_bonus")
                 .build()
-                .setVariable("total_damage", getTotalDamage(damage_formula, damage_packet.getValue(), 100, 0, 0, 0, 0, 0, 0, 0, 0, 0))
-                .setVariable("defense_multiplier", getDefenseMultiplier(victim))
-                .setVariable("resistance_multiplier", damage_packet.getElement() != null ? getResistanceMultiplier(victim, damage_packet.getElement().getId()) : 1)
-                .setVariable("level_multiplier", getLevelDifferentMultiplier(victim))
+                .setVariable("total_damage", totalDamage)
+                .setVariable("defense_multiplier", defense)
+                .setVariable("resistance_multiplier", resistance)
+                .setVariable("level_multiplier", level)
                 .setVariable("weapon_bonus", weapon_bonus);
 
         return expression.evaluate();
@@ -202,6 +210,7 @@ public class StatCalculation {
         if (!entity.isValid()) return 0;
 
         double defense = getDefense(uuid);
+        //Bukkit.broadcastMessage("DEFENSE: "+defense);
         return getDefenseMultiplier(defense, ignore_defense, attacker_level);
     }
 
@@ -224,6 +233,7 @@ public class StatCalculation {
         if (!entity.isValid()) return 0;
 
         double elemental_resistance = getResistance(uuid, element);
+
         return getResistanceMultiplier(elemental_resistance);
     }
 
@@ -293,6 +303,8 @@ public class StatCalculation {
             ActiveMob mythicMob = MythicBukkit.inst().getMobManager().getActiveMob(victim).orElse(null);
             level = mythicMob != null ? (int) mythicMob.getLevel() : 1;
         }
+
+        //Bukkit.broadcastMessage("LEVEL: "+level);
 
         return getLevelDifferentMultiplier(entity instanceof Player ? VictimType.PLAYER : VictimType.MOB, attacker_level, level);
     }

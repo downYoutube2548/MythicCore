@@ -9,12 +9,7 @@ import io.lumine.mythic.api.skills.SkillMetadata;
 import io.lumine.mythic.api.skills.SkillResult;
 import io.lumine.mythic.api.skills.placeholders.PlaceholderDouble;
 import io.lumine.mythic.bukkit.BukkitAdapter;
-import io.lumine.mythic.core.skills.SkillMetadataImpl;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
-
-import java.lang.reflect.Field;
-import java.util.Map;
 
 public class ReduceDefense implements ITargetedEntitySkill {
     private final PlaceholderDouble amount;

@@ -2,7 +2,6 @@ package com.dev.mythiccore.api;
 
 import com.dev.mythiccore.MythicCore;
 import com.dev.mythiccore.events.hp_bar.HpBar;
-import com.dev.mythiccore.utils.ConfigLoader;
 import com.dev.mythiccore.utils.Utils;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
@@ -11,8 +10,6 @@ import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Objects;
 
 public class PlaceholderHook extends PlaceholderExpansion {
     @NotNull

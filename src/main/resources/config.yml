@@ -1,5 +1,6 @@
 General:
   default-element: PHYSICAL
+  cancel-fire-tick: false
   disable-vanilla-damage: true
   aoe-damage-filter: true
   default-damage-calculation: scale-from-attack

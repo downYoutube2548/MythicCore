@@ -12,7 +12,6 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.HashMap;
-import java.util.UUID;
 
 public class HpBar implements Listener {
 

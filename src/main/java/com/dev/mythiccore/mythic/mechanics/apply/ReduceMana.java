@@ -1,7 +1,5 @@
 package com.dev.mythiccore.mythic.mechanics.apply;
 
-import com.dev.mythiccore.MythicCore;
-import com.dev.mythiccore.buff.buffs.DefenseReduction;
 import io.lumine.mythic.api.adapters.AbstractEntity;
 import io.lumine.mythic.api.config.MythicLineConfig;
 import io.lumine.mythic.api.skills.ITargetedEntitySkill;

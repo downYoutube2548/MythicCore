@@ -19,14 +19,20 @@ import io.lumine.mythic.lib.player.PlayerMetadata;
 import io.lumine.mythic.lib.util.ConfigFile;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmoitems.ItemStats;
+import net.Indyuce.mmoitems.MMOItems;
+import net.Indyuce.mmoitems.api.MMOItemsAPI;
+import net.Indyuce.mmoitems.api.Type;
 import net.Indyuce.mmoitems.api.item.mmoitem.LiveMMOItem;
 import net.Indyuce.mmoitems.api.item.mmoitem.MMOItem;
+import net.Indyuce.mmoitems.stat.LoreFormat;
 import net.Indyuce.mmoitems.stat.data.GemSocketsData;
 import net.Indyuce.mmoitems.stat.data.GemstoneData;
+import net.Indyuce.mmoitems.stat.data.StringData;
 import net.Indyuce.mmoitems.stat.data.type.Mergeable;
 import net.Indyuce.mmoitems.stat.data.type.StatData;
 import net.Indyuce.mmoitems.stat.type.GemStoneStat;
 import net.Indyuce.mmoitems.stat.type.ItemStat;
+import net.Indyuce.mmoitems.stat.type.StringStat;
 import net.Indyuce.mmoitems.util.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -171,6 +177,10 @@ public class CoreCommand implements CommandExecutor, TabExecutor {
 
                     if (player.getInventory().getItemInMainHand().getType() != Material.AIR) {
                         LiveMMOItem item = new LiveMMOItem(player.getInventory().getItemInMainHand());
+
+                        //MMOItems.plugin.getTypes().register(new Type());
+
+                        // item.setData(ItemStats.LORE_FORMAT, new StringData(""));
 
                         List<Pair<GemstoneData, MMOItem>> gemstones = item.extractGemstones();
                         for (Pair<GemstoneData, MMOItem> gemstoneData : gemstones) {

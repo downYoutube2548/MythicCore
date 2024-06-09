@@ -7,10 +7,12 @@ import com.dev.mythiccore.utils.EntityStatManager;
 import de.tr7zw.nbtapi.NBTItem;
 import io.lumine.mythic.lib.api.event.AttackEvent;
 import io.lumine.mythic.lib.api.event.PlayerAttackEvent;
+import io.lumine.mythic.lib.api.stat.provider.EntityStatProvider;
 import io.lumine.mythic.lib.damage.DamagePacket;
 import io.lumine.mythic.lib.damage.DamageType;
 import io.lumine.mythic.lib.damage.ProjectileAttackMetadata;
 import io.lumine.mythic.lib.element.Element;
+import io.lumine.mythic.lib.player.PlayerMetadata;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -35,9 +37,16 @@ public class AttackModifier implements Listener {
      */
     @EventHandler(priority = EventPriority.LOWEST)
     public void onEntityAttack(AttackEvent event) {
-        if (event.getAttack() instanceof AstAttackMeta astAttackMeta && !astAttackMeta.calculate()) return;
 
         Element defaultElement = Objects.requireNonNull(Element.valueOf(ConfigLoader.getDefaultElement()));
+
+        if (event.getAttack() instanceof AstAttackMeta astAttackMeta) {
+            if (!astAttackMeta.calculate()) return;
+        } else {
+            if (!(event.getAttack().getAttacker() instanceof PlayerMetadata) && !(event.getAttack().getAttacker() instanceof EntityStatProvider)) {
+                event.getDamage().getPackets().get(0).setValue(event.getDamage().getDamage() / 20.0 * event.getEntity().getMaxHealth());
+            }
+        }
 
         // if damage doesn't have element
         if (event.getDamage().collectElements().size() == 0) {
@@ -117,6 +126,8 @@ public class AttackModifier implements Listener {
                 element = defaultElement;
             }
             event.getDamage().getPackets().get(0).setElement(element);
+
+
 
         }
 

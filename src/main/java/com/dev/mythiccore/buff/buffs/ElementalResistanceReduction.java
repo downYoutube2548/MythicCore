@@ -25,12 +25,7 @@ public class ElementalResistanceReduction extends BuffStatus {
         List<BuffStatus> output = new ArrayList<>();
 
         // cast List<DebuffStatus> to List<ElementalResistanceReduction>
-        List<ElementalResistanceReduction> allElementalRes = new ArrayList<>();
-        for (BuffStatus debuff : allDebuff) {
-            if (debuff instanceof ElementalResistanceReduction) {
-                allElementalRes.add((ElementalResistanceReduction) debuff);
-            }
-        }
+        List<ElementalResistanceReduction> allElementalRes = allDebuff.stream().map(o -> (ElementalResistanceReduction) o).toList();
 
         // separate element
         HashMap<String, List<ElementalResistanceReduction>> separatedElement = new HashMap<>();

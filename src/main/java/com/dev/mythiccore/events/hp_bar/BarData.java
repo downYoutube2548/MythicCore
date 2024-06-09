@@ -5,7 +5,6 @@ import com.dev.mythiccore.utils.EntityStatManager;
 import com.dev.mythiccore.utils.Utils;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
 
 public class BarData {

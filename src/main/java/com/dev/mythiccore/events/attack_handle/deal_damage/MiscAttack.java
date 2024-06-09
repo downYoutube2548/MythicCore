@@ -8,6 +8,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageEvent;
 
 /**
  * This class use to deal damage from another damage source -> Mob or Player
@@ -17,6 +18,9 @@ public class MiscAttack implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onMiscAttack(MiscAttackEvent event) {
+
+        if (event.toBukkit().getCause().equals(EntityDamageEvent.DamageCause.MAGIC)) return;
+
         try {
             LivingEntity victim = event.getEntity();
 
