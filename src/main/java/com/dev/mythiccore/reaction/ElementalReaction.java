@@ -58,59 +58,59 @@ public abstract class ElementalReaction {
     }
 
     public void damage(double amount, Entity caster, LivingEntity target, boolean knockback, EntityDamageEvent.DamageCause damage_cause) {
-         damage(new DamageMetadata(amount, DamageType.SKILL), caster, target, false, false, knockback, damage_cause);
+         damage(new DamageMetadata(amount, DamageType.SKILL), caster, target, false, false, true, knockback, damage_cause);
     }
 
-    public void damage(double amount, Entity caster, LivingEntity target, String element, boolean damage_calculate, boolean trigger_reaction, double aura_gauge_unit, String aura_decay_rate, String cooldown_source, long internal_cooldown, boolean knockback, EntityDamageEvent.DamageCause damage_cause) {
+    public void damage(double amount, Entity caster, LivingEntity target, String element, boolean damage_calculate, boolean trigger_reaction, boolean shield_refuse, double aura_gauge_unit, String aura_decay_rate, String cooldown_source, long internal_cooldown, boolean knockback, EntityDamageEvent.DamageCause damage_cause) {
         Element e = Objects.requireNonNull(MythicLib.plugin.getElements().get(element));
         DamageMetadata damageMetadata = new DamageMetadata(amount, e, DamageType.SKILL);
-        damage(damageMetadata, caster, target, damage_calculate, trigger_reaction, aura_gauge_unit, aura_decay_rate, cooldown_source, internal_cooldown, knockback, damage_cause);
+        damage(damageMetadata, caster, target, damage_calculate, trigger_reaction, shield_refuse, aura_gauge_unit, aura_decay_rate, cooldown_source, internal_cooldown, knockback, damage_cause);
     }
 
-    public void damage(double amount, Entity caster, LivingEntity target, @NotNull Element element, boolean damage_calculate, boolean trigger_reaction, double aura_gauge_unit, String aura_decay_rate, String cooldown_source, long internal_cooldown, boolean knockback, EntityDamageEvent.DamageCause damage_cause) {
+    public void damage(double amount, Entity caster, LivingEntity target, @NotNull Element element, boolean damage_calculate, boolean trigger_reaction, boolean shield_refuse, double aura_gauge_unit, String aura_decay_rate, String cooldown_source, long internal_cooldown, boolean knockback, EntityDamageEvent.DamageCause damage_cause) {
         DamageMetadata damageMetadata = new DamageMetadata(amount, element, DamageType.SKILL);
-        damage(damageMetadata, caster, target, damage_calculate, trigger_reaction, aura_gauge_unit, aura_decay_rate, cooldown_source, internal_cooldown, knockback, damage_cause);
+        damage(damageMetadata, caster, target, damage_calculate, trigger_reaction, shield_refuse, aura_gauge_unit, aura_decay_rate, cooldown_source, internal_cooldown, knockback, damage_cause);
     }
 
-    public void damage(double amount, Entity caster, LivingEntity target, String element, boolean damage_calculate, boolean trigger_reaction, boolean knockback, EntityDamageEvent.DamageCause damage_cause) {
+    public void damage(double amount, Entity caster, LivingEntity target, String element, boolean damage_calculate, boolean trigger_reaction, boolean shield_refuse, boolean knockback, EntityDamageEvent.DamageCause damage_cause) {
         Element e = Objects.requireNonNull(MythicLib.plugin.getElements().get(element));
-        damage(amount, caster, target, e, damage_calculate, trigger_reaction, knockback, damage_cause);
+        damage(amount, caster, target, e, damage_calculate, trigger_reaction, shield_refuse, knockback, damage_cause);
     }
-    public void damage(double amount, Entity caster, LivingEntity target, @NotNull Element element, boolean damage_calculate, boolean trigger_reaction, boolean knockback, EntityDamageEvent.DamageCause damage_cause) {
+    public void damage(double amount, Entity caster, LivingEntity target, @NotNull Element element, boolean damage_calculate, boolean trigger_reaction, boolean shield_refuse, boolean knockback, EntityDamageEvent.DamageCause damage_cause) {
         DamageMetadata damageMetadata = new DamageMetadata(amount, element, DamageType.SKILL);
-        damage(damageMetadata, caster, target, damage_calculate, trigger_reaction, knockback, damage_cause);
+        damage(damageMetadata, caster, target, damage_calculate, trigger_reaction, shield_refuse, knockback, damage_cause);
     }
 
-    private void damage(DamageMetadata damage, Entity caster, LivingEntity target, boolean damage_calculate, boolean trigger_reaction, boolean knockback, EntityDamageEvent.DamageCause damage_cause) {
+    private void damage(DamageMetadata damage, Entity caster, LivingEntity target, boolean damage_calculate, boolean trigger_reaction, boolean shield_refuse, boolean knockback, EntityDamageEvent.DamageCause damage_cause) {
 
         if (caster instanceof Player) {
             PlayerData playerData = PlayerData.get(caster.getUniqueId());
 
             StatMap statMap = playerData.getMMOPlayerData().getStatMap();
             PlayerMetadata playerMetadata = new PlayerMetadata(statMap, EquipmentSlot.MAIN_HAND);
-            AttackMetadata attack = new ASTAttackMetadata(damage, target, playerMetadata, "0", ConfigLoader.getDefaultDamageCalculation(), "NONE", 100, AttackSource.REACTION, damage_calculate, trigger_reaction);
+            AttackMetadata attack = new ASTAttackMetadata(damage, target, playerMetadata, "0", ConfigLoader.getDefaultDamageCalculation(), "NONE", 100, AttackSource.REACTION, damage_calculate, trigger_reaction, shield_refuse);
 
             Bukkit.getScheduler().runTask(MythicCore.getInstance(), () -> DamageManager.registerAttack(attack, knockback, true, damage_cause));
 
         }  else {
-            AttackMetadata attack = new ASTAttackMetadata(damage, target, caster != null ? new ASTEntityStatProvider((LivingEntity) caster) : null, "0", ConfigLoader.getDefaultDamageCalculation(), "NONE", 100, AttackSource.REACTION, damage_calculate, trigger_reaction);
+            AttackMetadata attack = new ASTAttackMetadata(damage, target, caster != null ? new ASTEntityStatProvider((LivingEntity) caster) : null, "0", ConfigLoader.getDefaultDamageCalculation(), "NONE", 100, AttackSource.REACTION, damage_calculate, trigger_reaction, shield_refuse);
             Bukkit.getScheduler().runTask(MythicCore.getInstance(), () -> DamageManager.registerAttack(attack, knockback, true, damage_cause));
         }
     }
 
-    private void damage(DamageMetadata damage, Entity caster, LivingEntity target, boolean damage_calculate, boolean trigger_reaction, double gauge_unit, String decay_rate, String cooldown_source, long internal_cooldown, boolean knockback, EntityDamageEvent.DamageCause damage_cause) {
+    private void damage(DamageMetadata damage, Entity caster, LivingEntity target, boolean damage_calculate, boolean trigger_reaction, boolean shield_refuse, double gauge_unit, String decay_rate, String cooldown_source, long internal_cooldown, boolean knockback, EntityDamageEvent.DamageCause damage_cause) {
 
         if (caster instanceof Player) {
             PlayerData playerData = PlayerData.get(caster.getUniqueId());
 
             StatMap statMap = playerData.getMMOPlayerData().getStatMap();
             PlayerMetadata playerMetadata = new PlayerMetadata(statMap, EquipmentSlot.MAIN_HAND);
-            AttackMetadata attack = new ASTAttackMetadata(damage, target, playerMetadata, cooldown_source, internal_cooldown, gauge_unit, decay_rate, ConfigLoader.getDefaultDamageCalculation(), "NONE", 100, AttackSource.REACTION, damage_calculate, trigger_reaction);
+            AttackMetadata attack = new ASTAttackMetadata(damage, target, playerMetadata, cooldown_source, internal_cooldown, gauge_unit, decay_rate, ConfigLoader.getDefaultDamageCalculation(), "NONE", 100, AttackSource.REACTION, damage_calculate, trigger_reaction, shield_refuse);
 
             Bukkit.getScheduler().runTask(MythicCore.getInstance(), () -> DamageManager.registerAttack(attack, knockback, true, damage_cause));
 
         }  else {
-            AttackMetadata attack = new ASTAttackMetadata(damage, target, caster != null ? new ASTEntityStatProvider((LivingEntity) caster) : null, cooldown_source, internal_cooldown, gauge_unit, decay_rate, ConfigLoader.getDefaultDamageCalculation(), "NONE", 100, AttackSource.REACTION, damage_calculate, trigger_reaction);
+            AttackMetadata attack = new ASTAttackMetadata(damage, target, caster != null ? new ASTEntityStatProvider((LivingEntity) caster) : null, cooldown_source, internal_cooldown, gauge_unit, decay_rate, ConfigLoader.getDefaultDamageCalculation(), "NONE", 100, AttackSource.REACTION, damage_calculate, trigger_reaction, shield_refuse);
             Bukkit.getScheduler().runTask(MythicCore.getInstance(), ()-> DamageManager.registerAttack(attack, knockback, true, damage_cause));
 
         }

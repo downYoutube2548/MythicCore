@@ -6,6 +6,7 @@ import com.dev.mythiccore.enums.AttackSource;
 import com.dev.mythiccore.enums.MobType;
 import com.dev.mythiccore.enums.ReactionResponse;
 import com.dev.mythiccore.library.attackMetadata.AstAttackMeta;
+import com.dev.mythiccore.listener.events.MakeReactionEvent;
 import com.dev.mythiccore.listener.events.attack.MiscAttackEvent;
 import com.dev.mythiccore.listener.events.attack.MobAttackEvent;
 import com.dev.mythiccore.listener.events.attack.PlayerAttackEvent;
@@ -159,6 +160,8 @@ public class TriggerReaction implements Listener {
                     reaction.t(damage, gauge_unit, decay_rate, entity, damager, statProvider, damage_cause);
                     reaction_success = ReactionResponse.SINGLE_REACTION;
 
+                    Bukkit.getPluginManager().callEvent(new MakeReactionEvent(damager, rawReaction));
+
                     if (attack instanceof AstAttackMeta astAttackMeta && astAttackMeta.getAttackSource().equals(AttackSource.MYTHIC_SKILL)) {
                         astAttackMeta.getMetadata("SKILL_METADATA").ifPresent(o -> ((SkillMetadata) o).setMetadata("REACTION_SUCCESS_" + reaction_id, true));
                     }
@@ -169,6 +172,8 @@ public class TriggerReaction implements Listener {
                     if (!reaction.getDisplay().equals("")) Utils.displayIndicator(reaction.getDisplay(), entity);
                     reaction.t(damage, gauge_unit, decay_rate, entity, damager, statProvider, damage_cause);
                     reaction_success = ReactionResponse.TRIGGER_REACTION;
+
+                    Bukkit.getPluginManager().callEvent(new MakeReactionEvent(damager, rawReaction));
 
                     if (attack instanceof AstAttackMeta astAttackMeta && astAttackMeta.getAttackSource().equals(AttackSource.MYTHIC_SKILL)) {
                         astAttackMeta.getMetadata("SKILL_METADATA").ifPresent(o -> ((SkillMetadata) o).setMetadata("REACTION_SUCCESS_" + reaction_id, true));
@@ -203,6 +208,8 @@ public class TriggerReaction implements Listener {
                     }
 
                     reaction_success = ReactionResponse.DOUBLE_REACTION;
+
+                    Bukkit.getPluginManager().callEvent(new MakeReactionEvent(damager, rawReaction));
 
                     if (attack instanceof AstAttackMeta astAttackMeta && astAttackMeta.getAttackSource().equals(AttackSource.MYTHIC_SKILL)) {
                         astAttackMeta.getMetadata("SKILL_METADATA").ifPresent(o -> ((SkillMetadata) o).setMetadata("REACTION_SUCCESS_" + reaction_id, true));

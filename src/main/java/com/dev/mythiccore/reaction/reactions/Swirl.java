@@ -65,7 +65,7 @@ public class Swirl extends TriggerAuraReaction {
                     .setVariable("swirl_bonus", swirl_bonus);
 
             double final_damage = expression.evaluate();
-            damage(final_damage, damager, entity, this.aura, false, false, false, damage_cause);
+            damage(final_damage, damager, entity, this.aura, false, false, true, false, damage_cause);
 
             double swirl_radius = getConfig().getDouble("swirl-radius");
 
@@ -91,7 +91,7 @@ public class Swirl extends TriggerAuraReaction {
                     boolean mob_type_filter = damager != null && ConfigLoader.aoeDamageFilterEnable() && Combat.getLastMobType(damager) != Combat.getMobType(swirl_entity);
                     if (swirl_entity == damager || swirl_entity.isInvulnerable() || swirl_entity.hasMetadata("NPC") || mob_type_filter || (swirl_entity instanceof Player player && (player.getGameMode().equals(GameMode.CREATIVE) || player.getGameMode().equals(GameMode.SPECTATOR)))) continue;
                     if (swirl_entity instanceof LivingEntity swirled_living_entity && !swirled_living_entity.isInvulnerable()) {
-                        damage(final_damage, damager, swirled_living_entity, Objects.requireNonNull(getConfig().getConfigurationSection("aura-overriding")).getKeys(false).contains(this.aura) ? getConfig().getString("aura-overriding."+this.aura) : this.aura, false, true, Double.parseDouble(Utils.splitTextAndNumber(finalSwirled_aura_gauge)[0]), Utils.splitTextAndNumber(finalSwirled_aura_gauge)[1], "SWIRL_"+this.aura, 0, false, damage_cause);
+                        damage(final_damage, damager, swirled_living_entity, Objects.requireNonNull(getConfig().getConfigurationSection("aura-overriding")).getKeys(false).contains(this.aura) ? getConfig().getString("aura-overriding."+this.aura) : this.aura, false, true, true, Double.parseDouble(Utils.splitTextAndNumber(finalSwirled_aura_gauge)[0]), Utils.splitTextAndNumber(finalSwirled_aura_gauge)[1], "SWIRL_"+this.aura, 0, false, damage_cause);
                         swirled++;
                     }
                 }

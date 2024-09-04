@@ -4,6 +4,7 @@ import com.dev.mythiccore.MythicCore;
 import com.dev.mythiccore.stats.BooleanStatRegister;
 import com.dev.mythiccore.stats.DoubleStatInternal;
 import com.dev.mythiccore.stats.DoubleStatRegister;
+import com.dev.mythiccore.visuals.HealthBarSettings;
 import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.element.Element;
 import net.Indyuce.mmoitems.MMOItems;
@@ -156,5 +157,66 @@ public class ConfigLoader {
                 }
             }
         }
+    }
+
+    @SuppressWarnings("DataFlowIssue")
+    public static Map<String, String> getTextReplace() {
+        ConfigurationSection config = MythicCore.getInstance().getConfig().getConfigurationSection("Health-Bars.Replacement");
+        Map<String, String> replacements = new HashMap<>();
+        for (String key : config.getKeys(false)) {
+            replacements.put(key, config.getString(key));
+        }
+        return replacements;
+    }
+
+    public static HealthBarSettings getDefaultHealthBar() {
+        ConfigurationSection config = MythicCore.getInstance().getConfig().getConfigurationSection("Health-Bars.Default");
+        return new HealthBarSettings(
+                config.getDouble("HeightOffset"),
+                config.getInt("HologramDuration"),
+                config.getStringList("Lines").toArray(new String[0]),
+                config.getString("Bar.Prefix"),
+                config.getString("Bar.Suffix"),
+                config.getString("Bar.Filler"),
+                config.getString("Bar.HealthFiller"),
+                config.getString("Bar.DamagedFiller"),
+                config.getString("Bar.SeparateFiller"),
+                config.getInt("Bar.Width"),
+                config.getString("Bar.FillerColor"),
+                config.getString("Bar.HealthColor"),
+                config.getString("Bar.DamagedColor"),
+                config.getBoolean("Enabled", true),
+                config.getBoolean("Display", true)
+        );
+    }
+
+    public static Map<String, HealthBarSettings> getCustomHealthBars() {
+        Map<String, HealthBarSettings> bars = new HashMap<>();
+        ConfigurationSection config = MythicCore.getInstance().getConfig().getConfigurationSection("Health-Bars.Custom");
+        for (String key : config.getKeys(false)) {
+            HealthBarSettings settings = new HealthBarSettings(
+                    config.getDouble(key + ".HeightOffset"),
+                    config.getInt(key + ".HologramDuration"),
+                    config.getStringList(key + ".Lines").toArray(new String[0]),
+                    config.getString(key + ".Bar.Prefix"),
+                    config.getString(key + ".Bar.Suffix"),
+                    config.getString(key + ".Bar.Filler"),
+                    config.getString(key + ".Bar.HealthFiller"),
+                    config.getString(key + ".Bar.DamagedFiller"),
+                    config.getString(key + ".Bar.SeparateFiller"),
+                    config.getInt(key + ".Bar.Width"),
+                    config.getString(key + ".Bar.FillerColor"),
+                    config.getString(key + ".Bar.HealthColor"),
+                    config.getString(key + ".Bar.DamagedColor"),
+                    config.getBoolean(key + ".Enabled", true),
+                    config.getBoolean(key + ".Display", true)
+            );
+            bars.put(key, settings);
+        }
+        return bars;
+    }
+
+    public static int getHealthBarUpdateRate() {
+        return MythicCore.getInstance().getConfig().getInt("Health-Bars.Default.UpdateRate", 1);
     }
 }

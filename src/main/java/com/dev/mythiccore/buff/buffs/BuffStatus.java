@@ -17,6 +17,7 @@ public abstract class BuffStatus {
     }
 
     public abstract List<BuffStatus> getCurrentBuff(List<BuffStatus> allBuff);
+    public abstract String getBuffIcon();
 
     public long getDuration() {
         return duration;

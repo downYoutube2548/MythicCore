@@ -55,7 +55,7 @@ public class Burning extends DoubleAuraReaction {
         double final_damage = expression.evaluate();
         double new_gauge = Double.parseDouble(Utils.splitTextAndNumber(getConfig().getString("damage-gauge-unit", "1A"))[0]);
         String new_decay_rate = Utils.splitTextAndNumber(getConfig().getString("damage-gauge-unit", "1A"))[1];
-        damage(final_damage, damager, entity, getConfig().getString("damage-element"), false, false, new_gauge, new_decay_rate, "BURNING_REACTION", 20, false, damage_cause);
+        damage(final_damage, damager, entity, getConfig().getString("damage-element"), false, false, true, new_gauge, new_decay_rate, "BURNING_REACTION", 20, false, damage_cause);
 
         spawnParticle(entity, getConfig().getStringList("particle"));
         playSound(entity, getConfig().getStringList("sound"));

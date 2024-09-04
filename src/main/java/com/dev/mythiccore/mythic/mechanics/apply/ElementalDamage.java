@@ -41,6 +41,11 @@ public class ElementalDamage implements ITargetedEntitySkill {
     private final Set<Map.Entry<String, String>> entryConfig;
     private final DamageType damageType;
     private final String weaponType;
+    private final boolean damageCalculate;
+    private final boolean triggerReaction;
+    private final boolean shieldRefuse;
+    private final boolean knockback;
+    private final boolean ignoreImmunity;
 
     /**
      * This is constructor for the Skill
@@ -57,6 +62,11 @@ public class ElementalDamage implements ITargetedEntitySkill {
         entryConfig = config.entrySet();
         damageType = DamageType.valueOf(config.getString(new String[] {"damageType", "dt"}, "SKILL"));
         weaponType = config.getString(new String[]{"weaponType", "wt", "weapon"}, "NONE");
+        damageCalculate = config.getBoolean(new String[]{"calculate"}, true);
+        triggerReaction = config.getBoolean(new String[]{"triggerReaction", "tr"}, true);
+        shieldRefuse = config.getBoolean(new String[]{"shieldRefuse", "srf"}, true);
+        knockback = config.getBoolean(new String[]{"knockback", "kb"}, true);
+        ignoreImmunity = config.getBoolean(new String[]{"ignoreImmunity", "ignoreNoDamageTick", "im"}, false);
 
         UUID uuid = UUID.randomUUID();
 
@@ -96,20 +106,20 @@ public class ElementalDamage implements ITargetedEntitySkill {
                 PlayerMetadata playerMetadata = (PlayerMetadata) skillMetadata.getMetadata("SNAPSHOT_STATS").orElse(new PlayerMetadata(PlayerData.get(bukkitcaster.getUniqueId()).getMMOPlayerData().getStatMap(), EquipmentSlot.MAIN_HAND));
                 entryConfig.stream().filter(a -> a.getKey().startsWith("stat_")).forEach(a -> playerMetadata.setStat(a.getKey().substring(5).toUpperCase(), PlaceholderDouble.of(a.getValue()).get(skillMetadata)));
 
-                ASTAttackMetadata attack = new ASTAttackMetadata(damage, (LivingEntity) bukkittarget, playerMetadata, cooldown_source, internal_cooldown, gauge_unit, decay_rate, damage_calculation, weaponType, talent_percent.get(skillMetadata), AttackSource.MYTHIC_SKILL, true, true);
+                ASTAttackMetadata attack = new ASTAttackMetadata(damage, (LivingEntity) bukkittarget, playerMetadata, cooldown_source, internal_cooldown, gauge_unit, decay_rate, damage_calculation, weaponType, talent_percent.get(skillMetadata), AttackSource.MYTHIC_SKILL, damageCalculate, triggerReaction, shieldRefuse);
                 attack.setMetadata("SKILL_METADATA", skillMetadata);
 
-                DamageManager.registerAttack(attack, true, false, EntityDamageEvent.DamageCause.ENTITY_ATTACK);
+                DamageManager.registerAttack(attack, knockback, ignoreImmunity, EntityDamageEvent.DamageCause.ENTITY_ATTACK);
             }
 
             // caster is not player
             else {
 
                 DamageMetadata damage = new DamageMetadata(amount.get(skillMetadata), Objects.requireNonNull(Element.valueOf(element), ConfigLoader.getDefaultElement()), damageType);
-                ASTAttackMetadata attack = new ASTAttackMetadata(damage, (LivingEntity) bukkittarget, new ASTEntityStatProvider((LivingEntity) bukkitcaster), cooldown_source, internal_cooldown, gauge_unit, decay_rate, damage_calculation, weaponType, talent_percent.get(skillMetadata), AttackSource.MYTHIC_SKILL, true, true);
+                ASTAttackMetadata attack = new ASTAttackMetadata(damage, (LivingEntity) bukkittarget, new ASTEntityStatProvider((LivingEntity) bukkitcaster), cooldown_source, internal_cooldown, gauge_unit, decay_rate, damage_calculation, weaponType, talent_percent.get(skillMetadata), AttackSource.MYTHIC_SKILL, damageCalculate, triggerReaction, shieldRefuse);
                 attack.setMetadata("SKILL_METADATA", skillMetadata);
 
-                DamageManager.registerAttack(attack, true, false, EntityDamageEvent.DamageCause.ENTITY_ATTACK);
+                DamageManager.registerAttack(attack, knockback, ignoreImmunity, EntityDamageEvent.DamageCause.ENTITY_ATTACK);
             }
             return SkillResult.SUCCESS;
         }

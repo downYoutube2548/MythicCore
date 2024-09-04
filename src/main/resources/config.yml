@@ -4,30 +4,9 @@ General:
   disable-vanilla-damage: true
   aoe-damage-filter: true
   default-damage-calculation: scale-from-attack
-  enable-aura-visualizer: true
-  hp-bar:
-    enable: true
-    bar-length: 80 # 40
-    symbol: "蔓:offset_-16:"
-    bar-prefix: "" # "&f:offset_-16:桂:offset_-61:"
-    bar-color: "&7"
-    current-hp-color: "&a"
-    loss-hp-color: "&4"
-    bar-suffix: ""
-  aura-visualizer: "&f{aura}\n\n{name}\n{hpBar}\n\n"
-  aura-bar-format:
-    dummy:
-      bar: "&f{aura}\n\n{name}\n{hpBar}\n\n&fʏᴏᴜʀ ᴅᴘꜱ: &e{dps}/ꜱ\n&fᴛᴏᴛᴀʟ ᴅᴀᴍᴀɢᴇ: &c{total}\n\n"
-      hp-bar:
-        bar-length: 80 # 40
-        symbol: "蔓:offset_-16:"
-        bar-prefix: "{color}{currentHP}" # "&f:offset_-16:桂:offset_-61:"
-        bar-color: "&7"
-        current-hp-color: "&a"
-        loss-hp-color: "&4"
-        bar-suffix: "         &b{maxHP} &c(-{lossHP})"
-
   aura-apply-limit-per-hit: 10
+  shield-refuse-reduction: 80
+  shield-hit-command: []
 
   decay-rate:
     A: 200
@@ -48,6 +27,68 @@ General:
     default: 20
     test: 100
 
+Buff-Status:
+  separator: " "
+  buff:
+    DefenseReduction:
+      symbol: "&c⬇🛡<amount>&f <duration>"
+    ElementalResistanceReduction:
+      symbol: "&c⬇&f<element><color><amount> &f<duration>"
+    ElementalShield:
+      symbol: "<color>🛡<element><amount> &f<duration>"
+
+Health-Bars:
+  Replacement:
+    1: '1'
+    2: '2'
+    3: '3'
+    4: '4'
+    5: '5'
+    6: '6'
+    7: '7'
+    8: '8'
+    9: '9'
+    0: '0'
+  Default:
+    Enabled: true
+    Display: true
+    # The offset based on the entity's height, the higher number the more distance between hologram and entity's head
+    HeightOffset: 1.0
+    # The duration of the hologram in ticks (20 ticks = 1 second)
+    HologramDuration: 100
+    # Update rate of the hologram (location, health) in ticks
+    UpdateRate: 2
+    # Lines to display in the health bar hologram
+    # Available placeholders:
+    # <name>, <name_uncolored>, <health>, <max_health>, <bar>
+    Lines:
+      - "<aura>"
+      - "<buff>"
+      - "<name>"          # The entity's name
+      - "<health>/<max_health>"  # Current health and maximum health
+      - "<bar>"           # Health bar graphical representation
+    Bar:
+      # Prefix for the health bar
+      Prefix: "[ "
+      # Suffix for the health bar
+      Suffix: " ]"
+      # Character used to fill the empty health bar
+      Filler: "|"
+      # Character used to fill the health bar
+      HealthFiller: "|"
+      DamagedFiller: "|"
+      # Character used to separate between health and normal filler
+      SeparateFiller: ""
+      # Width of the health bar in characters
+      Width: 20
+      # Color code for the filler part of the health bar
+      FillerColor: "&f"
+      # Color code for the health part of the health bar
+      HealthColor: "&a"
+      DamagedColor: "&c"
+
+  Custom: { }
+
 Placeholders:
   max_health_buff_percent: "%mythiccore_stat_ast_max_health_buff_percent%/100 * %mythiccore_stat_max_health%"
 
@@ -56,7 +97,7 @@ Elemental-Modifier:
   FIRE: PYRO
   FIRE_TICK: PYRO
   HOT_FLOOR: PYRO
-  LAVA: DENDRO
+  LAVA: PYRO
   FREEZE: CRYO
 
 Special-Aura:

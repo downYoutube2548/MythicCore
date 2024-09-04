@@ -21,29 +21,30 @@ public class ASTProjectileAttackMetadata extends ProjectileAttackMetadata implem
     private final boolean calculate;
     private final boolean triggerReaction;
     private final String weaponType;
+    private final boolean shieldRefuse;
 
-    public ASTProjectileAttackMetadata(ProjectileAttackMetadata parent, String cooldown_source, String damage_calculation, String weaponType, double talent_percent, AttackSource attack_source, boolean calculate, boolean triggerReaction) {
-        this(parent.getDamage(), parent.getTarget(), parent.getAttacker(), parent.getProjectile(), cooldown_source, ConfigLoader.getInternalCooldown(cooldown_source), damage_calculation, weaponType, talent_percent, attack_source, calculate, triggerReaction);
+    public ASTProjectileAttackMetadata(ProjectileAttackMetadata parent, String cooldown_source, String damage_calculation, String weaponType, double talent_percent, AttackSource attack_source, boolean calculate, boolean triggerReaction, boolean shield_refuse) {
+        this(parent.getDamage(), parent.getTarget(), parent.getAttacker(), parent.getProjectile(), cooldown_source, ConfigLoader.getInternalCooldown(cooldown_source), damage_calculation, weaponType, talent_percent, attack_source, calculate, triggerReaction, shield_refuse);
     }
-    public ASTProjectileAttackMetadata(@NotNull DamageMetadata damage, @NotNull LivingEntity target, @Nullable StatProvider attacker, Projectile projectile, String cooldown_source, String damage_calculation, String weaponType, double talent_percent, AttackSource attack_source, boolean calculate, boolean triggerReaction) {
-        this(damage, target, attacker, projectile, cooldown_source, ConfigLoader.getInternalCooldown(cooldown_source), damage_calculation, weaponType, talent_percent, attack_source, calculate, triggerReaction);
+    public ASTProjectileAttackMetadata(@NotNull DamageMetadata damage, @NotNull LivingEntity target, @Nullable StatProvider attacker, Projectile projectile, String cooldown_source, String damage_calculation, String weaponType, double talent_percent, AttackSource attack_source, boolean calculate, boolean triggerReaction, boolean shield_refuse) {
+        this(damage, target, attacker, projectile, cooldown_source, ConfigLoader.getInternalCooldown(cooldown_source), damage_calculation, weaponType, talent_percent, attack_source, calculate, triggerReaction, shield_refuse);
     }
-    public ASTProjectileAttackMetadata(ProjectileAttackMetadata parent, String cooldown_source, long internal_cooldown, String damage_calculation, String weaponType, double talent_percent, AttackSource attack_source, boolean calculate, boolean triggerReaction) {
-        this(parent.getDamage(), parent.getTarget(), parent.getAttacker(), parent.getProjectile(), cooldown_source, internal_cooldown, ConfigLoader.getDefaultGaugeUnit(), ConfigLoader.getDefaultDecayRate(), damage_calculation, weaponType, talent_percent, attack_source, calculate, triggerReaction);
+    public ASTProjectileAttackMetadata(ProjectileAttackMetadata parent, String cooldown_source, long internal_cooldown, String damage_calculation, String weaponType, double talent_percent, AttackSource attack_source, boolean calculate, boolean triggerReaction, boolean shield_refuse) {
+        this(parent.getDamage(), parent.getTarget(), parent.getAttacker(), parent.getProjectile(), cooldown_source, internal_cooldown, ConfigLoader.getDefaultGaugeUnit(), ConfigLoader.getDefaultDecayRate(), damage_calculation, weaponType, talent_percent, attack_source, calculate, triggerReaction, shield_refuse);
     }
-    public ASTProjectileAttackMetadata(@NotNull DamageMetadata damage, @NotNull LivingEntity target, @Nullable StatProvider attacker, Projectile projectile, String cooldown_source, long internal_cooldown, String damage_calculation, String weaponType, double talent_percent, AttackSource attack_source, boolean calculate, boolean triggerReaction) {
-        this(damage, target, attacker, projectile, cooldown_source, internal_cooldown, ConfigLoader.getDefaultGaugeUnit(), ConfigLoader.getDefaultDecayRate(), damage_calculation, weaponType, talent_percent, attack_source, calculate, triggerReaction);
+    public ASTProjectileAttackMetadata(@NotNull DamageMetadata damage, @NotNull LivingEntity target, @Nullable StatProvider attacker, Projectile projectile, String cooldown_source, long internal_cooldown, String damage_calculation, String weaponType, double talent_percent, AttackSource attack_source, boolean calculate, boolean triggerReaction, boolean shield_refuse) {
+        this(damage, target, attacker, projectile, cooldown_source, internal_cooldown, ConfigLoader.getDefaultGaugeUnit(), ConfigLoader.getDefaultDecayRate(), damage_calculation, weaponType, talent_percent, attack_source, calculate, triggerReaction, shield_refuse);
     }
-    public ASTProjectileAttackMetadata(ProjectileAttackMetadata parent, String cooldown_source, double gauge_unit, String decay_rate, String damage_calculation, String weaponType, double talent_percent, AttackSource attack_source, boolean calculate, boolean triggerReaction) {
-        this(parent.getDamage(), parent.getTarget(), parent.getAttacker(), parent.getProjectile(), cooldown_source, ConfigLoader.getInternalCooldown(cooldown_source), gauge_unit, decay_rate, damage_calculation, weaponType, talent_percent, attack_source, calculate, triggerReaction);
+    public ASTProjectileAttackMetadata(ProjectileAttackMetadata parent, String cooldown_source, double gauge_unit, String decay_rate, String damage_calculation, String weaponType, double talent_percent, AttackSource attack_source, boolean calculate, boolean triggerReaction, boolean shield_refuse) {
+        this(parent.getDamage(), parent.getTarget(), parent.getAttacker(), parent.getProjectile(), cooldown_source, ConfigLoader.getInternalCooldown(cooldown_source), gauge_unit, decay_rate, damage_calculation, weaponType, talent_percent, attack_source, calculate, triggerReaction, shield_refuse);
     }
-    public ASTProjectileAttackMetadata(ProjectileAttackMetadata parent, String cooldown_source, long internal_cooldown, double gauge_unit, String decay_rate, String damage_calculation, String weaponType, double talent_percent, AttackSource attack_source, boolean calculate, boolean triggerReaction) {
-        this(parent.getDamage(), parent.getTarget(), parent.getAttacker(), parent.getProjectile(), cooldown_source, internal_cooldown, gauge_unit, decay_rate, damage_calculation, weaponType, talent_percent, attack_source, calculate, triggerReaction);
+    public ASTProjectileAttackMetadata(ProjectileAttackMetadata parent, String cooldown_source, long internal_cooldown, double gauge_unit, String decay_rate, String damage_calculation, String weaponType, double talent_percent, AttackSource attack_source, boolean calculate, boolean triggerReaction, boolean shield_refuse) {
+        this(parent.getDamage(), parent.getTarget(), parent.getAttacker(), parent.getProjectile(), cooldown_source, internal_cooldown, gauge_unit, decay_rate, damage_calculation, weaponType, talent_percent, attack_source, calculate, triggerReaction, shield_refuse);
     }
-    public ASTProjectileAttackMetadata(@NotNull DamageMetadata damage, @NotNull LivingEntity target, @Nullable StatProvider attacker, Projectile projectile, String cooldown_source, double gauge_unit, String decay_rate, String damage_calculation, String weaponType, double talent_percent, AttackSource attack_source, boolean calculate, boolean triggerReaction) {
-        this(damage, target, attacker, projectile, cooldown_source, ConfigLoader.getInternalCooldown(cooldown_source), gauge_unit, decay_rate, damage_calculation, weaponType, talent_percent, attack_source, calculate, triggerReaction);
+    public ASTProjectileAttackMetadata(@NotNull DamageMetadata damage, @NotNull LivingEntity target, @Nullable StatProvider attacker, Projectile projectile, String cooldown_source, double gauge_unit, String decay_rate, String damage_calculation, String weaponType, double talent_percent, AttackSource attack_source, boolean calculate, boolean triggerReaction, boolean shield_refuse) {
+        this(damage, target, attacker, projectile, cooldown_source, ConfigLoader.getInternalCooldown(cooldown_source), gauge_unit, decay_rate, damage_calculation, weaponType, talent_percent, attack_source, calculate, triggerReaction, shield_refuse);
     }
-    public ASTProjectileAttackMetadata(@NotNull DamageMetadata damage, @NotNull LivingEntity target, @Nullable StatProvider attacker, Projectile projectile, String cooldown_source, long internal_cooldown, double gauge_unit, String decay_rate, String damage_calculation, String weaponType, double talent_percent, AttackSource attack_source, boolean calculate, boolean triggerReaction) {
+    public ASTProjectileAttackMetadata(@NotNull DamageMetadata damage, @NotNull LivingEntity target, @Nullable StatProvider attacker, Projectile projectile, String cooldown_source, long internal_cooldown, double gauge_unit, String decay_rate, String damage_calculation, String weaponType, double talent_percent, AttackSource attack_source, boolean calculate, boolean triggerReaction, boolean shield_refuse) {
         super(damage, target, attacker, projectile);
         this.cooldown_source = cooldown_source;
         this.attack_source = attack_source;
@@ -55,6 +56,7 @@ public class ASTProjectileAttackMetadata extends ProjectileAttackMetadata implem
         this.talent_percent = talent_percent;
         this.calculate = calculate;
         this.triggerReaction = triggerReaction;
+        this.shieldRefuse = shield_refuse;
     }
 
     public String getInternalCooldownSource() {
@@ -96,4 +98,6 @@ public class ASTProjectileAttackMetadata extends ProjectileAttackMetadata implem
     public String getWeaponType() {
         return weaponType;
     }
+    public boolean isShieldRefuse() { return shieldRefuse; }
+
 }

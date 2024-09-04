@@ -2,9 +2,13 @@ package com.dev.mythiccore.buff;
 
 import com.dev.mythiccore.MythicCore;
 import com.dev.mythiccore.buff.buffs.BuffStatus;
+import com.dev.mythiccore.utils.Utils;
+import com.dev.mythiccore.visuals.HealthBar;
+import org.bukkit.Bukkit;
 
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * The data set of specified entity about Buff
@@ -20,6 +24,12 @@ public class BuffData {
 
     public List<BuffStatus> getTotalBuffs() {
         return totalBuff;
+    }
+
+    public String getBuffIcon() {
+        String separator = MythicCore.getInstance().getConfig().getString("Buff-Status.separator");
+        assert separator != null;
+        return Utils.colorize(getActivateBuffs().stream().map(BuffStatus::getBuffIcon).collect(Collectors.joining(separator)));
     }
 
     public List<BuffStatus> getActivateBuffs() {
@@ -72,6 +82,11 @@ public class BuffData {
     public void addBuff(BuffStatus buff) {
         totalBuff.add(buff);
         if (!MythicCore.getBuffManager().mapBuffData.containsKey(this.uuid)) MythicCore.getBuffManager().mapBuffData.put(this.uuid, this);
+
+        HealthBar.checkInstance(Bukkit.getEntity(uuid), healthBarData -> {
+            healthBarData.buff = getBuffIcon();
+            healthBarData.reload();
+        });
     }
 
     public void removeBuff(UUID uuid) {

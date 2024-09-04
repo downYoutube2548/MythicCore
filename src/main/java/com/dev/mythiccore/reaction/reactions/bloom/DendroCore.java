@@ -118,7 +118,7 @@ public class DendroCore {
 
                 double final_damage = expression.evaluate();
 
-                instance.damage(final_damage, owner, livingEntity, instance.getConfig().getString("damage-element"), false, false, false, damage_cause);
+                instance.damage(final_damage, owner, livingEntity, instance.getConfig().getString("damage-element"), false, false, true, false, damage_cause);
             }
         }
 

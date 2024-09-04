@@ -69,7 +69,7 @@ public class SuperConduct extends TriggerAuraReaction {
             boolean mob_type_filter = damager != null && ConfigLoader.aoeDamageFilterEnable() && Combat.getLastMobType(damager) != Combat.getMobType(aoe_entity);
             if (aoe_entity == damager || aoe_entity.isInvulnerable() || aoe_entity.hasMetadata("NPC") || mob_type_filter || (aoe_entity instanceof Player player && (player.getGameMode().equals(GameMode.CREATIVE) || player.getGameMode().equals(GameMode.SPECTATOR)))) continue;
             if (aoe_entity instanceof LivingEntity aoe_living_entity && !aoe_living_entity.isInvulnerable()) {
-                damage(final_damage, damager, aoe_living_entity, getConfig().getString("damage-element"), false, false, true, damage_cause);
+                damage(final_damage, damager, aoe_living_entity, getConfig().getString("damage-element"), false, false, true, true, damage_cause);
                 MythicCore.getBuffManager().getBuff(aoe_living_entity.getUniqueId()).addBuff(new ElementalResistanceReduction(getConfig().getDouble("resistance-reduction"), getConfig().getLong("resistance-reduction-duration"), getConfig().getString("resistance-reduction-element")));
             }
         }

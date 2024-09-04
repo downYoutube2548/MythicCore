@@ -1,10 +1,16 @@
 package com.dev.mythiccore.buff.buffs;
 
+import com.dev.mythiccore.MythicCore;
+import com.dev.mythiccore.utils.Utils;
+import io.lumine.mythic.lib.MythicLib;
+import io.lumine.mythic.lib.element.Element;
+
 import java.util.*;
 
 public class ElementalResistanceReduction extends BuffStatus {
     private final double amount;
     private final String element;
+    private final String symbol = MythicCore.getInstance().getConfig().getString("Buff-Status.buff.ElementalResistanceReduction.symbol");
 
     public ElementalResistanceReduction(double amount, long duration, String element) {
         super(duration);
@@ -49,5 +55,17 @@ public class ElementalResistanceReduction extends BuffStatus {
         }
 
         return output;
+    }
+
+    @Override
+    public String getBuffIcon() {
+        String value = symbol.replace("<amount>", Utils.Format(amount, "#,###.#")).replace("<duration>", String.valueOf(duration/20));
+        Element element = MythicLib.plugin.getElements().get(this.element);
+        if (element != null) {
+            value = value.replace("<element>", element.getLoreIcon()).replace("<color>", element.getColor());
+        } else {
+            value = value.replace("<color>", "").replace("<element>", this.element);
+        }
+        return Utils.colorize(value);
     }
 }

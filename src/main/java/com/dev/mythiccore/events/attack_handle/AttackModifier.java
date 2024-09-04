@@ -42,10 +42,6 @@ public class AttackModifier implements Listener {
 
         if (event.getAttack() instanceof AstAttackMeta astAttackMeta) {
             if (!astAttackMeta.calculate()) return;
-        } else {
-            if (!(event.getAttack().getAttacker() instanceof PlayerMetadata) && !(event.getAttack().getAttacker() instanceof EntityStatProvider)) {
-                event.getDamage().getPackets().get(0).setValue(event.getDamage().getDamage() / 20.0 * event.getEntity().getMaxHealth());
-            }
         }
 
         // if damage doesn't have element
@@ -61,8 +57,6 @@ public class AttackModifier implements Listener {
                         damage_formula = nbt.getString("MMOITEMS_AST_DAMAGE_FORMULA");
                     }
 
-                    double damage = event.getDamage().getDamage();
-
                     boolean stop = false;
                     DamageType[] defaultDamageType = event.getDamage().getPackets().get(0).getTypes();
                     byte disable_regular_damage = nbt.getByte("MMOITEMS_AST_DISABLE_REGULAR_DAMAGE");
@@ -76,8 +70,7 @@ public class AttackModifier implements Listener {
                     for (Element element : Element.values()) {
                         if (e.getAttacker().getStat("AST_"+element.getId()+"_PERCENT") > 0) {
                             double base = e.getAttacker().getStat(ConfigLoader.getDamageCalculation("damage-calculation-formula." + damage_formula + ".base"));
-                            double attack_speed_multiplier = damage / e.getAttacker().getStat("ATTACK_DAMAGE");
-                            event.getDamage().add(base * attack_speed_multiplier, element, defaultDamageType);
+                            event.getDamage().add(base * attacker.getAttackCooldown(), element, defaultDamageType);
                             stop = true;
                         }
                     }

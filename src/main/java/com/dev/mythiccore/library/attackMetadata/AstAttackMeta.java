@@ -36,4 +36,5 @@ public interface AstAttackMeta {
     boolean calculate();
     boolean isTriggerReaction();
     String getWeaponType();
+    boolean isShieldRefuse();
 }

@@ -6,16 +6,12 @@ import com.dev.mythiccore.buff.Buff;
 import com.dev.mythiccore.combat.Combat;
 import com.dev.mythiccore.commands.CoreCommand;
 import com.dev.mythiccore.cooldown.InternalCooldown;
-import com.dev.mythiccore.events.ChunkUnload;
-import com.dev.mythiccore.events.MythicLoad;
-import com.dev.mythiccore.events.PlayerDeath;
-import com.dev.mythiccore.events.ProjectileLaunch;
+import com.dev.mythiccore.events.*;
 import com.dev.mythiccore.events.attack_handle.*;
 import com.dev.mythiccore.events.attack_handle.deal_damage.MiscAttack;
 import com.dev.mythiccore.events.attack_handle.deal_damage.MobAttack;
 import com.dev.mythiccore.events.attack_handle.deal_damage.PlayerAttack;
 import com.dev.mythiccore.events.dps_check.DPSCheck;
-import com.dev.mythiccore.events.hp_bar.HpBar;
 import com.dev.mythiccore.library.attributeModifier.BaseMaxHealthStatHandler;
 import com.dev.mythiccore.library.attributeModifier.MaxHealthPercentStatHandler;
 import com.dev.mythiccore.library.attributeModifier.MaxHealthStatHandler;
@@ -25,22 +21,30 @@ import com.dev.mythiccore.reaction.reactions.bloom.DendroCore;
 import com.dev.mythiccore.reaction.reactions.bloom.DendroCoreManager;
 import com.dev.mythiccore.reaction.reactions.bloom.DendroCoreTrigger;
 import com.dev.mythiccore.reaction.reactions.frozen.FreezeEffect;
+import com.dev.mythiccore.statistic.DamagePerHitStatistic;
+import com.dev.mythiccore.statistic.DendroCoreReactionStatistic;
+import com.dev.mythiccore.statistic.ReactionStatistic;
 import com.dev.mythiccore.stats.DamageFormulaStat;
 import com.dev.mythiccore.stats.GaugeUnitStat;
 import com.dev.mythiccore.stats.InternalCooldownStat;
 import com.dev.mythiccore.stats.WeaponTypeStat;
 import com.dev.mythiccore.stats.elemental_stat.ASTElements;
 import com.dev.mythiccore.utils.ConfigLoader;
-import com.dev.mythiccore.visuals.AuraVisualizer;
 import com.dev.mythiccore.visuals.DamageIndicatorEvent;
+import com.dev.mythiccore.visuals.HealthBar;
+import eu.decentsoftware.holograms.api.holograms.Hologram;
+import io.lumine.mythic.api.skills.SkillTrigger;
 import io.lumine.mythic.lib.MythicLib;
+import io.lumine.mythic.lib.skill.trigger.TriggerType;
 import io.lumine.mythic.lib.util.ConfigFile;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import net.Indyuce.mmoitems.MMOItems;
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.entity.TextDisplay;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.ScoreboardManager;
+import org.bukkit.scoreboard.Team;
 
 import java.util.List;
 import java.util.Objects;
@@ -75,7 +79,6 @@ public final class MythicCore extends JavaPlugin {
         cooldown.startTick();
         FreezeEffect.effectApplier();
 
-        if (getServer().getPluginManager().isPluginEnabled("ItemsAdder") && getConfig().getBoolean("General.enable-aura-visualizer")) AuraVisualizer.start();
         DendroCoreManager.dendroCoreTick();
 
         Objects.requireNonNull(Bukkit.getPluginCommand("mythiccore")).setExecutor(new CoreCommand());
@@ -99,12 +102,17 @@ public final class MythicCore extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new ChunkUnload(), this);
         Bukkit.getPluginManager().registerEvents(new AuraApplyLimit(), this);
         Bukkit.getPluginManager().registerEvents(new DPSCheck(), this);
-        if (getConfig().getBoolean("General.hp-bar.enable"))
-            Bukkit.getPluginManager().registerEvents(new HpBar(), this);
-
+        Bukkit.getPluginManager().registerEvents(new HealthBar(), this);
+        Bukkit.getPluginManager().registerEvents(new ShieldHit(), this);
+        Bukkit.getPluginManager().registerEvents(new ReactionStatistic(), this);
+        Bukkit.getPluginManager().registerEvents(new DamagePerHitStatistic(), this);
+        Bukkit.getPluginManager().registerEvents(new DendroCoreReactionStatistic(), this);
+        Bukkit.getPluginManager().registerEvents(new StatsChanged(), this);
         registerMMOItemStat();
 
         ReactionManager.registerDefaultReactions();
+
+        TriggerType.register(new TriggerType("STATS_CHANGE"));
 
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mm reload");
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mi reload all");
@@ -117,7 +125,6 @@ public final class MythicCore extends JavaPlugin {
         MythicLib.inst().getStats().registerStat(new MaxHealthPercentStatHandler(new ConfigFile("stats").getConfig(), Attribute.GENERIC_MAX_HEALTH, "AST_MAX_HEALTH_BUFF_PERCENT"));
         MythicLib.inst().getStats().registerStat(new MaxHealthStatHandler(new ConfigFile("stats").getConfig(), Attribute.GENERIC_MAX_HEALTH, "AST_MAX_HEALTH_BUFF"));
 
-
     }
 
     @Override
@@ -126,8 +133,21 @@ public final class MythicCore extends JavaPlugin {
 
         placeholderExpansion.unregister();
 
-        for (TextDisplay textDisplay : AuraVisualizer.mapHologram.values()) {
-            textDisplay.remove();
+        // Remove holograms
+        for (Hologram holo : Hologram.getCachedHolograms()) {
+            if (holo.getId().startsWith("DamageIndicator_")) {
+                holo.delete();
+            }
+        }
+
+        // Remove entities from the team
+        ScoreboardManager manager = Bukkit.getScoreboardManager();
+        Scoreboard board = manager.getMainScoreboard();
+        Team damageIndicatorTeam = board.getTeam("DamageIndicatorBars");
+        if (damageIndicatorTeam != null) {
+            for (String entry : damageIndicatorTeam.getEntries()) {
+                damageIndicatorTeam.removeEntry(entry);
+            }
         }
 
         for (List<DendroCore> dendroCores : DendroCoreManager.dendroCoreInChunk.values()) {

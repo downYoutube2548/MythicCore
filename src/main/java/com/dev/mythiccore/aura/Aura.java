@@ -22,6 +22,7 @@ public class Aura {
     public Map<UUID, AuraData> getMapEntityAura() { return entityAura; }
 
     public void startTick() {
+
         Bukkit.getScheduler().runTaskTimerAsynchronously(MythicCore.getInstance(), () -> {
             try {
                 if (!entityAura.isEmpty()) {

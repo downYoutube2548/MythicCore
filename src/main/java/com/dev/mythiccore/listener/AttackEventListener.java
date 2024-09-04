@@ -76,7 +76,7 @@ public class AttackEventListener implements Listener {
                     talent_percent = entityStat.getDoubleStat("AST_ELEMENTAL_DAMAGE_PERCENT");
                 }
 
-                AttackMetadata astAttack = (event.getAttack() instanceof ProjectileAttackMetadata) ? new ASTProjectileAttackMetadata(event.getDamage(), event.getEntity(), new ASTEntityStatProvider(real_attacker), ((ProjectileAttackMetadata) event.getAttack()).getProjectile(), cooldown_source, internal_cooldown, gauge_unit, decay_rate, damage_calculation, "NONE", talent_percent, AttackSource.NORMAL, true, true) : new ASTAttackMetadata(event.getAttack().getDamage(), event.getAttack().getTarget(), new ASTEntityStatProvider(real_attacker), cooldown_source, internal_cooldown, gauge_unit, decay_rate, damage_calculation, "NONE", talent_percent, AttackSource.NORMAL, true, true);
+                AttackMetadata astAttack = (event.getAttack() instanceof ProjectileAttackMetadata) ? new ASTProjectileAttackMetadata(event.getDamage(), event.getEntity(), new ASTEntityStatProvider(real_attacker), ((ProjectileAttackMetadata) event.getAttack()).getProjectile(), cooldown_source, internal_cooldown, gauge_unit, decay_rate, damage_calculation, "NONE", talent_percent, AttackSource.NORMAL, true, true, true) : new ASTAttackMetadata(event.getAttack().getDamage(), event.getAttack().getTarget(), new ASTEntityStatProvider(real_attacker), cooldown_source, internal_cooldown, gauge_unit, decay_rate, damage_calculation, "NONE", talent_percent, AttackSource.NORMAL, true, true, true);
                 Bukkit.getPluginManager().callEvent(new MobAttackEvent((EntityDamageByEntityEvent) event.toBukkit(), astAttack));
 
             } else if (event.getAttack().getAttacker() instanceof PlayerMetadata playerMetadata) {
@@ -116,7 +116,7 @@ public class AttackEventListener implements Listener {
                     }
                 }
 
-                AttackMetadata astAttack = (event.getAttack() instanceof ProjectileAttackMetadata) ? new ASTProjectileAttackMetadata((ProjectileAttackMetadata) event.getAttack(), cooldown_source, internal_cooldown, gauge_unit, decay_rate, damage_formula, weaponType, 100, AttackSource.NORMAL, true, true) : new ASTAttackMetadata(event.getAttack(), cooldown_source, internal_cooldown, gauge_unit, decay_rate, damage_formula, weaponType, 100, AttackSource.NORMAL, true, true);
+                AttackMetadata astAttack = (event.getAttack() instanceof ProjectileAttackMetadata) ? new ASTProjectileAttackMetadata((ProjectileAttackMetadata) event.getAttack(), cooldown_source, internal_cooldown, gauge_unit, decay_rate, damage_formula, weaponType, 100, AttackSource.NORMAL, true, true, true) : new ASTAttackMetadata(event.getAttack(), cooldown_source, internal_cooldown, gauge_unit, decay_rate, damage_formula, weaponType, 100, AttackSource.NORMAL, true, true, true);
                 Bukkit.getPluginManager().callEvent(new PlayerAttackEvent((EntityDamageByEntityEvent) event.toBukkit(), astAttack));
 
             } else {

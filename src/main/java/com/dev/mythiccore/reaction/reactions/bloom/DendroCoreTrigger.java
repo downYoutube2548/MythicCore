@@ -4,6 +4,7 @@ import com.dev.mythiccore.MythicCore;
 import com.dev.mythiccore.enums.AttackSource;
 import com.dev.mythiccore.library.attackMetadata.ASTAttackMetadata;
 import com.dev.mythiccore.library.attackMetadata.ASTProjectileAttackMetadata;
+import com.dev.mythiccore.listener.events.DendroCoreReactionEvent;
 import com.dev.mythiccore.listener.events.attack.MiscAttackEvent;
 import com.dev.mythiccore.listener.events.attack.MobAttackEvent;
 import com.dev.mythiccore.listener.events.attack.PlayerAttackEvent;
@@ -12,6 +13,7 @@ import com.dev.mythiccore.utils.Utils;
 import io.lumine.mythic.lib.api.stat.provider.StatProvider;
 import io.lumine.mythic.lib.damage.DamageMetadata;
 import io.lumine.mythic.lib.damage.DamagePacket;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
@@ -54,6 +56,9 @@ public class DendroCoreTrigger implements Listener {
     public void trigger(DamageMetadata damage, LivingEntity entity, @Nullable Entity damager, StatProvider stats, EntityDamageEvent.DamageCause damageCause) {
 
         double trigger_radius = ConfigLoader.getReactionConfig().getDouble("BLOOM.dendro-core-trigger-radius");
+
+
+
         List<Entity> entities = entity.getNearbyEntities(trigger_radius, trigger_radius, trigger_radius);
         for (Entity nearbyEntity : entities) {
 
@@ -70,6 +75,7 @@ public class DendroCoreTrigger implements Listener {
                             nearbyEntity.setMetadata("AST_DENDRO_CORE_TRIGGERED", new FixedMetadataValue(MythicCore.getInstance(), true));
                             dendroCore.remove(true);
 
+                            Bukkit.getPluginManager().callEvent(new DendroCoreReactionEvent(damager, reaction));
                             if (!reaction.getDisplay().equals("")) Utils.displayIndicator(reaction.getDisplay(), dendroCore.getDendroCore());
 
                             reaction.trigger(dendroCore, entity, damager, stats, damageCause);

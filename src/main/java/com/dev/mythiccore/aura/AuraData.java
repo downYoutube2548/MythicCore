@@ -98,9 +98,10 @@ public class AuraData {
             String old_decay_rate = this.mapAura.get(aura).getDecayRate();
             this.mapAura.put(aura, new AuraGauge((long) Math.floor(gauge_unit * ConfigLoader.getDecayRate(old_decay_rate)), gauge_unit, old_decay_rate));
         }
-        Bukkit.getPluginManager().callEvent(new AuraApplyEvent(uuid, aura));
 
         if (!MythicCore.getAuraManager().entityAura.containsKey(this.uuid)) MythicCore.getAuraManager().entityAura.put(this.uuid, this);
+
+        Bukkit.getPluginManager().callEvent(new AuraApplyEvent(uuid, aura));
     }
 
     protected void setAura(String aura, long duration, double gauge_unit, String decay_rate) {
@@ -114,9 +115,10 @@ public class AuraData {
         if (!this.mapAura.containsKey(aura)) return;
 
         this.mapAura.remove(aura);
-        Bukkit.getScheduler().runTask(MythicCore.getInstance(), ()->Bukkit.getPluginManager().callEvent(new AuraTerminatedEvent(uuid, aura)));
 
         if (mapAura.isEmpty()) MythicCore.getAuraManager().entityAura.remove(this.uuid);
+
+        Bukkit.getScheduler().runTask(MythicCore.getInstance(), ()->Bukkit.getPluginManager().callEvent(new AuraTerminatedEvent(uuid, aura)));
     }
 
     public void clearAura() {

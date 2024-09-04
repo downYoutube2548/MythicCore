@@ -39,8 +39,8 @@ public class Utils {
         return input.split(regex);
     }
 
-    public static String Format(Double input) {
-        DecimalFormat df = new DecimalFormat("#,###.#");
+    public static String Format(Double input, String pattern) {
+        DecimalFormat df = new DecimalFormat(pattern);
         return df.format(input);
     }
 

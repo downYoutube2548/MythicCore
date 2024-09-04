@@ -89,15 +89,20 @@ test2:
 Deal elemental damage or physical damage <br /><br />
 
 
-| Attribute         | Aliases | Data Type    | Description                                     | Default   |
-|-------------------|---------|--------------|-------------------------------------------------|-----------|
-| amount            | a       | Double       | จำนวนดาเมจ                                      | 0         | 
-| element           | e       | String       | ประเภทของธาตุ                                   | (default) | 
-| gauge_unit        | gu      | String       | เกจของออร่าธาตุที่จะติด (Ex. 1A, 2.2B, 4C)      | (default) |
-| internal_cooldown | icd     | String, Long | คูลดาวน์การติดธาตุและการเกิดปฏิกิริยาธาตุ       | default   | 
-| formula           | dc, f   | String       | สูตรคำนวนดาเมจตาม config.yml ของ MythicCore     | (default) |
-| percent           | p       | Double       | Talent (%)                                      | 100       |
-| stat_STAT_ID      |         | Double       | Set custom modifier of specific stat            |           |
+| Attribute         | Aliases    | Data Type    | Description                                 | Default   |
+|-------------------|------------|--------------|---------------------------------------------|-----------|
+| amount            | a          | Double       | จำนวนดาเมจ                                  | 0         | 
+| element           | e          | String       | ประเภทของธาตุ                               | (default) | 
+| gauge_unit        | gu         | String       | เกจของออร่าธาตุที่จะติด (Ex. 1A, 2.2B, 4C)  | (default) |
+| internal_cooldown | icd        | String, Long | คูลดาวน์การติดธาตุและการเกิดปฏิกิริยาธาตุ   | default   | 
+| formula           | dc, f      | String       | สูตรคำนวนดาเมจตาม config.yml ของ MythicCore | (default) |
+| percent           | p          | Double       | Talent (%)                                  | 100       |
+| damageType        | dt         | String       | Damage Type                                 |           |
+| weaponType        | wt, weapon | String       | Weapon Type                                 |           |
+| calculate         |            | Boolean      | Calculate Damage                            |           |
+| triggerReaction   | tr         | Boolean      | Trigger Reaction                            |           |
+| shieldRefuse      | srf        | Boolean      | Shield Refuse                               |           |
+| stat_STAT_ID      |            | Double       | Set custom modifier of specific stat        |           |
 
 <br />
 

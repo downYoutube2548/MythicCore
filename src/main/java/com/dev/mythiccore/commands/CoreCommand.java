@@ -8,6 +8,8 @@ import com.dev.mythiccore.library.attributeModifier.MaxHealthStatHandler;
 import com.dev.mythiccore.reaction.ReactionManager;
 import com.dev.mythiccore.utils.ConfigLoader;
 import com.dev.mythiccore.utils.Utils;
+import com.dev.mythiccore.visuals.HealthBar;
+import com.dev.mythiccore.visuals.HealthBarSettings;
 import de.tr7zw.nbtapi.NBTItem;
 import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.api.player.EquipmentSlot;
@@ -19,20 +21,14 @@ import io.lumine.mythic.lib.player.PlayerMetadata;
 import io.lumine.mythic.lib.util.ConfigFile;
 import net.Indyuce.mmocore.api.player.PlayerData;
 import net.Indyuce.mmoitems.ItemStats;
-import net.Indyuce.mmoitems.MMOItems;
-import net.Indyuce.mmoitems.api.MMOItemsAPI;
-import net.Indyuce.mmoitems.api.Type;
 import net.Indyuce.mmoitems.api.item.mmoitem.LiveMMOItem;
 import net.Indyuce.mmoitems.api.item.mmoitem.MMOItem;
-import net.Indyuce.mmoitems.stat.LoreFormat;
 import net.Indyuce.mmoitems.stat.data.GemSocketsData;
 import net.Indyuce.mmoitems.stat.data.GemstoneData;
-import net.Indyuce.mmoitems.stat.data.StringData;
 import net.Indyuce.mmoitems.stat.data.type.Mergeable;
 import net.Indyuce.mmoitems.stat.data.type.StatData;
 import net.Indyuce.mmoitems.stat.type.GemStoneStat;
 import net.Indyuce.mmoitems.stat.type.ItemStat;
-import net.Indyuce.mmoitems.stat.type.StringStat;
 import net.Indyuce.mmoitems.util.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -49,10 +45,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
+import java.util.*;
 
 public class CoreCommand implements CommandExecutor, TabExecutor {
 
@@ -73,6 +66,10 @@ public class CoreCommand implements CommandExecutor, TabExecutor {
                     MythicLib.inst().getStats().registerStat(new BaseMaxHealthStatHandler(new ConfigFile("stats").getConfig(), Attribute.GENERIC_MAX_HEALTH, "MAX_HEALTH"));
                     MythicLib.inst().getStats().registerStat(new MaxHealthPercentStatHandler(new ConfigFile("stats").getConfig(), Attribute.GENERIC_MAX_HEALTH, "AST_MAX_HEALTH_BUFF_PERCENT"));
                     MythicLib.inst().getStats().registerStat(new MaxHealthStatHandler(new ConfigFile("stats").getConfig(), Attribute.GENERIC_MAX_HEALTH, "AST_MAX_HEALTH_BUFF"));
+
+                    HealthBar.defaultHealthBar = ConfigLoader.getDefaultHealthBar();
+                    HealthBar.customHealthBars = ConfigLoader.getCustomHealthBars();
+                    HealthBar.textReplace = ConfigLoader.getTextReplace();
 
                     sender.sendMessage(ConfigLoader.getMessage("reload-success", true));
                 }
@@ -207,6 +204,8 @@ public class CoreCommand implements CommandExecutor, TabExecutor {
 //                        );
 
                     }
+                } else if (args[0].equalsIgnoreCase("test2")) {
+
                 }
 
                 else {
@@ -228,7 +227,7 @@ public class CoreCommand implements CommandExecutor, TabExecutor {
 
         List<String> output = new ArrayList<>();
         if (args.length == 1) {
-            List<String> list = List.of("apply-aura", "nbt", "remove-entity", "test", "reload", "extract-gemstones");
+            List<String> list = List.of("apply-aura", "nbt", "test2", "remove-entity", "test", "reload", "extract-gemstones");
             output = tabComplete(args[0], list);
         }
         if (args.length > 1) {
