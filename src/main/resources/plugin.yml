@@ -4,7 +4,7 @@ main: com.dev.mythiccore.MythicCore
 api-version: 1.20
 depend: [MMOCore, MMOItems, MythicLib, MythicMobs]
 softdepend: [PlaceholderAPI, HolographicDisplays, ItemsAdder, ModelEngine]
-authors: [downYoutube2548, Teenkung123]
+authors: [downn_falls, Teenkung123]
 commands:
   mythiccore:
     permission: mythiccore.admin
